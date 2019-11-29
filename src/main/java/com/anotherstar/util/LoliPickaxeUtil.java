@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.Entity;
@@ -26,6 +27,9 @@ public class LoliPickaxeUtil {
 	}
 
 	public static void killPlayer(EntityPlayer player, EntityLivingBase source) {
+		if (ItemLoliPickaxe.invHaveLoliPickaxe(player)) {
+			return;
+		}
 		if (ConfigLoader.loliPickaxeClearInventory) {
 			player.inventory.clearInventory(null, -1);
 			InventoryEnderChest ec = player.getInventoryEnderChest();
@@ -91,7 +95,9 @@ public class LoliPickaxeUtil {
 						player.posX + range, player.posY + range, player.posZ + range));
 		for (Entity en : el) {
 			if (en instanceof EntityPlayer) {
-				killPlayer((EntityPlayer) en, player);
+				if (en != player) {
+					killPlayer((EntityPlayer) en, player);
+				}
 			} else if (en instanceof EntityLivingBase) {
 				killEntityLiving((EntityLivingBase) en, player);
 			} else {

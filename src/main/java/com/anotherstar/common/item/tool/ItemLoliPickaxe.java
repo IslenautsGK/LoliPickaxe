@@ -23,15 +23,11 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public class ItemLoliPickaxe extends ItemPickaxe {
 
-	public static Field stupidMojangProtectedVariable;
+	public static Field stupidMojangProtectedVariable = ReflectionHelper.findField(EntityLivingBase.class,
+			"recentlyHit", "field_70718_bc");
 
 	public static final Item.ToolMaterial LOLI = EnumHelper.addToolMaterial("LOLI", 32, Short.MAX_VALUE,
 			Float.MAX_VALUE, -2.0F, 200);
-
-	static {
-		stupidMojangProtectedVariable = ReflectionHelper.findField(EntityLivingBase.class,
-				new String[] { "recentlyHit", "field_70718_bc" });
-	}
 
 	public ItemLoliPickaxe() {
 		super(LOLI);
@@ -60,23 +56,17 @@ public class ItemLoliPickaxe extends ItemPickaxe {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase victim, EntityLivingBase player) {
-		LoliPickaxeUtil.killEntityLiving(victim, player);
-		return true;
-	}
-
-	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 		if (!entity.worldObj.isRemote) {
 			if (entity instanceof EntityPlayer) {
-				EntityPlayer victim = (EntityPlayer) entity;
-				LoliPickaxeUtil.killPlayer(victim, player);
+				LoliPickaxeUtil.killPlayer((EntityPlayer) entity, player);
+				return true;
+			} else if (entity instanceof EntityLivingBase) {
+				LoliPickaxeUtil.killEntityLiving((EntityLivingBase) entity, player);
 				return true;
 			} else if (ConfigLoader.loliPickaxeValidToAllEntity && !(entity instanceof EntityLivingBase)) {
-				entity.setDead();
-				if (ConfigLoader.loliPickaxeCompulsoryRemove) {
-					entity.worldObj.removeEntity(entity);
-				}
+				LoliPickaxeUtil.killEntity(entity);
+				return true;
 			}
 		}
 		return false;

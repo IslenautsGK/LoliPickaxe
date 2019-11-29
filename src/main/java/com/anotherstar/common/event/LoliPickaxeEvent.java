@@ -1,10 +1,12 @@
 package com.anotherstar.common.event;
 
 import java.util.List;
+import java.util.Set;
 
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 import com.anotherstar.util.LoliPickaxeUtil;
+import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
@@ -74,6 +76,8 @@ public class LoliPickaxeEvent {
 		}
 	}
 
+	private Set<String> flyingPlayer = Sets.newHashSet();
+
 	@SubscribeEvent
 	public void onPlayerUpdate(LivingEvent.LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
@@ -82,8 +86,9 @@ public class LoliPickaxeEvent {
 				player.hodeLoli--;
 			}
 			if (ItemLoliPickaxe.invHaveLoliPickaxe(player)) {
-				player.capabilities.setPlayerWalkSpeed(0.1F);
-				player.capabilities.setFlySpeed(0.05F);
+				if (!flyingPlayer.contains(player.getDisplayName())) {
+					flyingPlayer.add(player.getDisplayName());
+				}
 				player.isDead = false;
 				if (!player.worldObj.isRemote) {
 					player.clearActivePotions();
@@ -92,9 +97,13 @@ public class LoliPickaxeEvent {
 					if (ConfigLoader.loliPickaxeAutoKillRangeEntity) {
 						LoliPickaxeUtil.killRangeEntity(player.worldObj, player, ConfigLoader.loliPickaxeAutoKillRange);
 					}
+				} else {
+					player.capabilities.setPlayerWalkSpeed(0.1F);
+					player.capabilities.setFlySpeed(0.05F);
 				}
 			} else {
-				if (!player.capabilities.isCreativeMode) {
+				if (!player.capabilities.isCreativeMode && flyingPlayer.contains(player.getDisplayName())) {
+					flyingPlayer.remove(player.getDisplayName());
 					player.capabilities.allowFlying = false;
 					player.capabilities.isFlying = false;
 				}

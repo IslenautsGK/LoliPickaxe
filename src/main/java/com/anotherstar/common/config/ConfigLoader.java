@@ -1,10 +1,12 @@
 package com.anotherstar.common.config;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
 import com.anotherstar.common.AnotherStar;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -43,6 +45,7 @@ public class ConfigLoader {
 	public static Set<String> loliPickaxeBeyondRedemptionPlayerList;
 	public static boolean loliPickaxeFindOwner;
 	public static int loliPickaxeFindOwnerRange;
+	public static List<String> loliRecodeNames;
 
 	public static void init(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
@@ -114,8 +117,14 @@ public class ConfigLoader {
 				.getBoolean();
 		loliPickaxeFindOwnerRange = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 10, "氪金萝莉自动寻找所有者范围").getInt();
+		strs = config.get(Configuration.CATEGORY_GENERAL, "loliRecodeNames", new String[0], "额外唱片列表(声音:唱片名:唱片ID)")
+				.getStringList();
+		loliRecodeNames = Lists.newArrayList();
+		for (String str : strs) {
+			loliRecodeNames.add(str);
+		}
 		config.save();
-		logger.info("Finished loading config. ");
+		logger.info("Finished loading config.");
 	}
 
 	public static void save() {
@@ -164,6 +173,8 @@ public class ConfigLoader {
 				.setValue(loliPickaxeFindOwner);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 10, "氪金萝莉自动寻找所有者范围")
 				.setValue(loliPickaxeFindOwnerRange);
+		config.get(Configuration.CATEGORY_GENERAL, "loliRecodeNames", new String[0], "额外唱片列表(声音:唱片名:唱片ID)")
+				.setValues(loliRecodeNames.toArray(new String[0]));
 		config.save();
 	}
 
