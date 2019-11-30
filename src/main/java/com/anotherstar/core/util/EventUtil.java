@@ -35,22 +35,26 @@ public class EventUtil {
 		if (checkEntity(entity)) {
 			entity.setHealth(entity.getMaxHealth());
 			entity.isDead = false;
-			Entity source = src.getSourceOfDamage();
-			if (source != null) {
-				EntityLivingBase el = null;
-				if (source instanceof EntityArrow) {
-					Entity se = ((EntityArrow) source).shootingEntity;
-					if (se instanceof EntityLivingBase) {
-						el = (EntityLivingBase) se;
+			entity.loliDead = false;
+			entity.deathTime = 0;
+			if (ConfigLoader.loliPickaxeThorns) {
+				Entity source = src.getSourceOfDamage();
+				if (source != null) {
+					EntityLivingBase el = null;
+					if (source instanceof EntityArrow) {
+						Entity se = ((EntityArrow) source).shootingEntity;
+						if (se instanceof EntityLivingBase) {
+							el = (EntityLivingBase) se;
+						}
+					} else if (source instanceof EntityLivingBase) {
+						el = (EntityLivingBase) source;
 					}
-				} else if (source instanceof EntityLivingBase) {
-					el = (EntityLivingBase) source;
-				}
-				if (el != null) {
-					if (el instanceof EntityPlayer) {
-						LoliPickaxeUtil.killPlayer((EntityPlayer) el, entity);
-					} else {
-						LoliPickaxeUtil.killEntityLiving(el, entity);
+					if (el != null) {
+						if (el instanceof EntityPlayer) {
+							LoliPickaxeUtil.killPlayer((EntityPlayer) el, entity);
+						} else {
+							LoliPickaxeUtil.killEntityLiving(el, entity);
+						}
 					}
 				}
 			}
@@ -63,7 +67,10 @@ public class EventUtil {
 		boolean isLoli = checkEntity(entity);
 		if (ConfigLoader.loliPickaxeForbidOnLivingUpdate && !isLoli
 				&& (entity.loliDead || entity.isDead || entity.getHealth() == 0)) {
-			entity.isDead = true;
+			// entity.isDead = true;
+			if (++entity.deathTime == 20) {
+				entity.isDead = true;
+			}
 			return true;
 		}
 		if (ConfigLoader.loliPickaxeForbidOnLivingUpdateChangeHealth) {
@@ -74,9 +81,9 @@ public class EventUtil {
 			}
 			boolean result = MinecraftForge.EVENT_BUS.post(new LivingUpdateEvent(entity));
 			entity.setHealth(health);
-			if (health == 0 || entity.loliDead) {
-				entity.isDead = true;
-			}
+			/*
+			 * if (health == 0 || entity.loliDead) { entity.isDead = true; }
+			 */
 			if (isLoli) {
 				((EntityPlayer) entity).capabilities.allowFlying = true;
 				((EntityPlayer) entity).capabilities.isFlying = flying;
@@ -88,9 +95,9 @@ public class EventUtil {
 				flying = ((EntityPlayer) entity).capabilities.isFlying;
 			}
 			boolean result = MinecraftForge.EVENT_BUS.post(new LivingUpdateEvent(entity));
-			if (entity.loliDead) {
-				entity.isDead = true;
-			}
+			/*
+			 * if (entity.loliDead) { entity.isDead = true; }
+			 */
 			if (isLoli) {
 				((EntityPlayer) entity).capabilities.allowFlying = true;
 				((EntityPlayer) entity).capabilities.isFlying = flying;
@@ -101,11 +108,11 @@ public class EventUtil {
 
 	public static float getHealth(EntityLivingBase entity) {
 		if (checkEntity(entity)) {
-			entity.isDead = false;
+			// entity.isDead = false;
 			return 20;
 		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemption
 				&& ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
-			entity.isDead = true;
+			// entity.isDead = true;
 			return 0;
 		}
 		return entity.getHealth2();
@@ -114,27 +121,27 @@ public class EventUtil {
 	public static float getMaxHealth(EntityLivingBase entity) {
 		if (checkEntity(entity)) {
 			entity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
-			entity.isDead = false;
+			// entity.isDead = false;
 			return 20;
 		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemption
 				&& ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
-			entity.isDead = true;
+			// entity.isDead = true;
 			return 0;
 		}
 		return entity.getMaxHealth2();
 	}
 
 	public static void setHealth(EntityLivingBase entity, float health) {
-		if (health > 0) {
-			entity.loliDead = false;
-		}
+		/*
+		 * if (health > 0) { entity.loliDead = false; }
+		 */
 		entity.setHealth2(health);
 	}
 
 	public static void setDead(Entity entity) {
-		if (checkEntity(entity)) {
-			entity.isDead = false;
-		}
+		/*
+		 * if (checkEntity(entity)) { entity.isDead = false; }
+		 */
 	}
 
 	public static void dropAllItems(InventoryPlayer inventory) {

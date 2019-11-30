@@ -27,7 +27,7 @@ public class LoliPickaxeUtil {
 	}
 
 	public static void killPlayer(EntityPlayer player, EntityLivingBase source) {
-		if (ItemLoliPickaxe.invHaveLoliPickaxe(player)) {
+		if (ItemLoliPickaxe.invHaveLoliPickaxe(player) || player.loliDead) {
 			return;
 		}
 		if (ConfigLoader.loliPickaxeClearInventory) {
@@ -44,8 +44,8 @@ public class LoliPickaxeUtil {
 		player.setHealth(0.0F);
 		player.onDeath(new DamageSource("loli"));
 		if (ConfigLoader.loliPickaxeCompulsoryRemove) {
-			player.setDead();
-			player.isDead = true;
+			// player.setDead();
+			// player.isDead = true;
 			player.loliDead = true;
 		}
 		if (player instanceof EntityPlayerMP) {
@@ -63,7 +63,7 @@ public class LoliPickaxeUtil {
 	}
 
 	public static void killEntityLiving(EntityLivingBase entity, EntityLivingBase player) {
-		if (!(entity.worldObj.isRemote || entity.isDead || entity.getHealth() == 0.0F)) {
+		if (!(entity.worldObj.isRemote || entity.loliDead || entity.isDead || entity.getHealth() == 0.0F)) {
 			try {
 				stupidMojangProtectedVariable.setInt(entity, 60);
 			} catch (Exception e) {
@@ -74,8 +74,8 @@ public class LoliPickaxeUtil {
 			entity.setHealth(0.0F);
 			entity.onDeath(new EntityDamageSource("loli", player));
 			if (ConfigLoader.loliPickaxeCompulsoryRemove) {
-				entity.setDead();
-				entity.isDead = true;
+				// entity.setDead();
+				// entity.isDead = true;
 				entity.loliDead = true;
 			}
 		}

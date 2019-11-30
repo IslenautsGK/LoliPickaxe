@@ -90,6 +90,9 @@ public class LoliPickaxeEvent {
 					flyingPlayer.add(player.getDisplayName());
 				}
 				player.isDead = false;
+				player.deathTime = 0;
+				player.capabilities.flySpeed = 0.05F;
+				player.capabilities.walkSpeed = 0.1F;
 				if (!player.worldObj.isRemote) {
 					player.clearActivePotions();
 					player.extinguish();
@@ -97,9 +100,6 @@ public class LoliPickaxeEvent {
 					if (ConfigLoader.loliPickaxeAutoKillRangeEntity) {
 						LoliPickaxeUtil.killRangeEntity(player.worldObj, player, ConfigLoader.loliPickaxeAutoKillRange);
 					}
-				} else {
-					player.capabilities.setPlayerWalkSpeed(0.1F);
-					player.capabilities.setFlySpeed(0.05F);
 				}
 			} else {
 				if (!player.capabilities.isCreativeMode && flyingPlayer.contains(player.getDisplayName())) {

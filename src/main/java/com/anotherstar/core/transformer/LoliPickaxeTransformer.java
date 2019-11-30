@@ -352,6 +352,49 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();
+		} else if (name.equals("oi") || name.equals("net.minecraft.server.management.ServerConfigurationManager")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
+						String[] exceptions) {
+					if (name.equals("a") && desc.equals("(Lmw;IZ)Lmw;") || name.equals("respawnPlayer")) {
+						return new MethodVisitor(Opcodes.ASM4,
+								cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitCode() {
+								mv.visitVarInsn(Opcodes.ALOAD, 1);
+								mv.visitInsn(Opcodes.ICONST_0);
+								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
+										"loliDead", "Z");
+							};
+
+						};
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
+		} else if (name.equals("yw") || name.equals("net.minecraft.entity.player.PlayerCapabilities")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+					if (name.equals("f") || name.equals("g")) {
+						access = Opcodes.ACC_PUBLIC;
+					}
+					return cv.visitField(access, name, desc, signature, value);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
 		}
 		return basicClass;
 	}

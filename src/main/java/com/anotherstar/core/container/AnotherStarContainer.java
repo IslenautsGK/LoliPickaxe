@@ -23,7 +23,7 @@ public class AnotherStarContainer extends DummyModContainer {
 		ModMetadata meta = getMetadata();
 		meta.modId = "AnotherStarCore";
 		meta.name = "AnotherStarCore";
-		meta.version = "1.0.2";
+		meta.version = "1.0.4";
 		meta.authorList = Arrays.asList("Junior_Mo");
 		meta.description = "AnotherStarCore";
 		meta.url = "www.Junior_Mo.com";
