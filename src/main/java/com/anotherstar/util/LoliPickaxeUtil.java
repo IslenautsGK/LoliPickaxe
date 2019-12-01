@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.event.LoliTickEvent;
 import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,6 +49,7 @@ public class LoliPickaxeUtil {
 			// player.setDead();
 			// player.isDead = true;
 			player.loliDead = true;
+			delayKill(player, 20);
 		}
 		if (player instanceof EntityPlayerMP) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
@@ -77,6 +80,7 @@ public class LoliPickaxeUtil {
 				// entity.setDead();
 				// entity.isDead = true;
 				entity.loliDead = true;
+				delayKill(entity, 20);
 			}
 		}
 	}
@@ -105,6 +109,10 @@ public class LoliPickaxeUtil {
 			}
 		}
 		return el.size();
+	}
+
+	private static void delayKill(EntityLivingBase entity, int tick) {
+		LoliTickEvent.addTask(new LoliTickEvent.TickStartTask(tick, () -> entity.isDead = true), Phase.START);
 	}
 
 }

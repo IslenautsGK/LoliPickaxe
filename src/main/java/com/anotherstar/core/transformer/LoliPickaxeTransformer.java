@@ -75,6 +75,8 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					if (!AnotherStarCore.debug) {
 						FieldVisitor fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliDead", "Z", null, null);
 						fv.visitEnd();
+						fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliDeathTime", "I", null, null);
+						fv.visitEnd();
 					}
 					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
 							AnotherStarCore.debug ? "getHealth" : "aS", "()F", null, null);

@@ -7,6 +7,7 @@ import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.crafting.CraftingLoader;
 import com.anotherstar.common.event.DestroyBedrockEvent;
 import com.anotherstar.common.event.LoliPickaxeEvent;
+import com.anotherstar.common.event.LoliTickEvent;
 import com.anotherstar.common.event.PlayerJoinEvent;
 import com.anotherstar.common.item.ItemLoader;
 
@@ -28,6 +29,7 @@ public class CommonProxy {
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(new DestroyBedrockEvent());
 		MinecraftForge.EVENT_BUS.register(new LoliPickaxeEvent());
+		FMLCommonHandler.instance().bus().register(new LoliTickEvent());
 		FMLCommonHandler.instance().bus().register(new PlayerJoinEvent());
 		CraftingLoader.init();
 		new GuiElementLoader().init();

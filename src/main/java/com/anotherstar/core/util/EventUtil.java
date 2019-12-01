@@ -68,9 +68,10 @@ public class EventUtil {
 		if (ConfigLoader.loliPickaxeForbidOnLivingUpdate && !isLoli
 				&& (entity.loliDead || entity.isDead || entity.getHealth() == 0)) {
 			// entity.isDead = true;
-			if (++entity.deathTime == 20) {
+			if (++entity.loliDeathTime >= 20) {
 				entity.isDead = true;
 			}
+			entity.deathTime = entity.loliDeathTime;
 			return true;
 		}
 		if (ConfigLoader.loliPickaxeForbidOnLivingUpdateChangeHealth) {
