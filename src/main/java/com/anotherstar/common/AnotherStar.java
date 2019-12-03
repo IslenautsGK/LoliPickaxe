@@ -18,7 +18,7 @@ public class AnotherStar {
 
 	public static final String MODID = "AnotherStar";
 	public static final String NAME = "AnotherStar Mod";
-	public static final String VERSION = "1.0.5";
+	public static final String VERSION = "1.0.6";
 
 	@SidedProxy(clientSide = "com.anotherstar.client.ClientProxy", serverSide = "com.anotherstar.common.CommonProxy")
 	public static CommonProxy proxy;

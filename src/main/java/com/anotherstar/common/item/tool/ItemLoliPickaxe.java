@@ -21,7 +21,7 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
 
-public class ItemLoliPickaxe extends ItemPickaxe {
+public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 
 	public static Field stupidMojangProtectedVariable = ReflectionHelper.findField(EntityLivingBase.class,
 			"recentlyHit", "field_70718_bc");
@@ -143,6 +143,7 @@ public class ItemLoliPickaxe extends ItemPickaxe {
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
+		super.onUpdate(stack, world, entity, p_77663_4_, p_77663_5_);
 		if (entity instanceof EntityPlayer) {
 			if (stack.hasTagCompound()) {
 				NBTTagCompound nbt = stack.getTagCompound();
@@ -155,7 +156,17 @@ public class ItemLoliPickaxe extends ItemPickaxe {
 				stack.setTagCompound(nbt);
 			}
 		}
-		super.onUpdate(stack, world, entity, p_77663_4_, p_77663_5_);
+	}
+
+	@Override
+	public String getOwner(ItemStack stack) {
+		if (stack.hasTagCompound()) {
+			NBTTagCompound nbt = stack.getTagCompound();
+			if (nbt.hasKey("Owner")) {
+				return nbt.getString("Owner");
+			}
+		}
+		return "";
 	}
 
 	public static boolean invHaveLoliPickaxe(EntityPlayer player) {
@@ -163,10 +174,11 @@ public class ItemLoliPickaxe extends ItemPickaxe {
 			boolean hasLoli = false;
 			for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
 				ItemStack stack = player.inventory.getStackInSlot(i);
-				if (stack != null && stack.getItem() instanceof ItemLoliPickaxe && stack.hasTagCompound()) {
-					NBTTagCompound nbt = stack.getTagCompound();
-					if (nbt.hasKey("Owner")) {
-						if (nbt.getString("Owner").equals(player.getDisplayName())) {
+				if (stack != null && stack.getItem() instanceof ILoli) {
+					ILoli loli = (ILoli) stack.getItem();
+					String owner = loli.getOwner(stack);
+					if (!owner.isEmpty()) {
+						if (owner.equals(player.getDisplayName())) {
 							if (ConfigLoader.loliPickaxeDuration > 0) {
 								player.hodeLoli = ConfigLoader.loliPickaxeDuration;
 							}

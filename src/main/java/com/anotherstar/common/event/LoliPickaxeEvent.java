@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.item.tool.ILoli;
 import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 import com.anotherstar.util.LoliPickaxeUtil;
 import com.google.common.collect.Sets;
@@ -14,7 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -117,11 +118,11 @@ public class LoliPickaxeEvent {
 								player.posY + ConfigLoader.loliPickaxeFindOwnerRange,
 								player.posZ + ConfigLoader.loliPickaxeFindOwnerRange));
 				for (EntityItem entityItem : entityItems) {
-					if (entityItem.getEntityItem() != null
-							&& entityItem.getEntityItem().getItem() instanceof ItemLoliPickaxe
-							&& entityItem.getEntityItem().hasTagCompound()) {
-						NBTTagCompound nbt = entityItem.getEntityItem().getTagCompound();
-						if (nbt.hasKey("Owner") && nbt.getString("Owner").equals(player.getDisplayName())) {
+					ItemStack stack = entityItem.getEntityItem();
+					if (stack != null && stack.getItem() instanceof ILoli) {
+						ILoli loli = (ILoli) stack.getItem();
+						String owner = loli.getOwner(stack);
+						if (!owner.isEmpty() && owner.equals(player.getDisplayName())) {
 							entityItem.onCollideWithPlayer(player);
 						}
 					}
@@ -134,7 +135,7 @@ public class LoliPickaxeEvent {
 	public void onEntityItemJoinWorld(EntityJoinWorldEvent event) {
 		if (event.entity instanceof EntityItem) {
 			EntityItem entityItem = (EntityItem) event.entity;
-			if (entityItem.getEntityItem() != null && entityItem.getEntityItem().getItem() instanceof ItemLoliPickaxe) {
+			if (entityItem.getEntityItem() != null && entityItem.getEntityItem().getItem() instanceof ILoli) {
 				entityItem.invulnerable = true;
 				if (ConfigLoader.loliPickaxeFindOwner) {
 					entityItem.delayBeforeCanPickup = 0;
@@ -145,10 +146,11 @@ public class LoliPickaxeEvent {
 
 	@SubscribeEvent
 	public void onEntityItemPickup(EntityItemPickupEvent event) {
-		if (event.item.getEntityItem() != null && event.item.getEntityItem().getItem() instanceof ItemLoliPickaxe
-				&& event.item.getEntityItem().hasTagCompound()) {
-			NBTTagCompound nbt = event.item.getEntityItem().getTagCompound();
-			if (nbt.hasKey("Owner") && !nbt.getString("Owner").equals(event.entityPlayer.getDisplayName())) {
+		ItemStack stack = event.item.getEntityItem();
+		if (stack != null && stack.getItem() instanceof ILoli) {
+			ILoli loli = (ILoli) stack.getItem();
+			String owner = loli.getOwner(stack);
+			if (!(owner.isEmpty() || owner.equals(event.entityPlayer.getDisplayName()))) {
 				event.setCanceled(true);
 			}
 		}

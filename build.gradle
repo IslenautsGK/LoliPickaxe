@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0.4"
+version = "1.0.6"
 group= "com.anotherstar" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LoliPickaxe"
 
@@ -89,7 +89,7 @@ artifacts {
 }
 
 tasks.withType(JavaCompile) {
-options.encoding = "UTF-8"
+    options.encoding = "UTF-8"
 }
 
 sourceCompatibility = 1.8

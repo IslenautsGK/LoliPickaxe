@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.item.tool.ILoli;
 import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 import com.anotherstar.util.LoliPickaxeUtil;
 
@@ -150,16 +151,14 @@ public class EventUtil {
 			return;
 		}
 		for (int i = 0; i < inventory.mainInventory.length; ++i) {
-			if (inventory.mainInventory[i] != null
-					&& !(inventory.mainInventory[i].getItem() instanceof ItemLoliPickaxe)) {
+			if (inventory.mainInventory[i] != null && !(inventory.mainInventory[i].getItem() instanceof ILoli)) {
 				inventory.player.func_146097_a(inventory.mainInventory[i], true, false);
 				inventory.mainInventory[i] = null;
 			}
 		}
 
 		for (int i = 0; i < inventory.armorInventory.length; ++i) {
-			if (inventory.armorInventory[i] != null
-					&& !(inventory.armorInventory[i].getItem() instanceof ItemLoliPickaxe)) {
+			if (inventory.armorInventory[i] != null && !(inventory.armorInventory[i].getItem() instanceof ILoli)) {
 				inventory.player.func_146097_a(inventory.armorInventory[i], true, false);
 				inventory.armorInventory[i] = null;
 			}
@@ -176,7 +175,7 @@ public class EventUtil {
 			itemstack = inventory.mainInventory[i];
 			if (itemstack != null && (item == null || itemstack.getItem() == item)
 					&& (damage <= -1 || itemstack.getItemDamage() == damage)
-					&& !(itemstack.getItem() instanceof ItemLoliPickaxe)) {
+					&& !(itemstack.getItem() instanceof ILoli)) {
 				count += itemstack.stackSize;
 				inventory.mainInventory[i] = null;
 			}
