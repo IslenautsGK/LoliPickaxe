@@ -397,6 +397,33 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();
+		} else if (name.equals("t") || name.equals("net.minecraft.util.ChatAllowedCharacters")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
+						String[] exceptions) {
+					if (name.equals("a") && desc.equals("(C)Z") || name.equals("isAllowedCharacter")) {
+						return new MethodVisitor(Opcodes.ASM4,
+								cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitIntInsn(int opcode, int operand) {
+								if (opcode == Opcodes.SIPUSH && operand == 167) {
+									operand = 127;
+								}
+								super.visitIntInsn(opcode, operand);
+							};
+
+						};
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
 		}
 		return basicClass;
 	}
