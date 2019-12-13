@@ -2,7 +2,7 @@ package com.anotherstar.common.block;
 
 import java.util.Random;
 
-import com.anotherstar.common.AnotherStar;
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.common.item.ItemModRecord;
 import com.anotherstar.util.LoliCardUtil;
@@ -51,25 +51,25 @@ public class BlockLoli extends Block {
 				} else {
 					ByteBufUtils.writeUTF8String(buffer, "youdonthavecustonpictures");
 				}
-				AnotherStar.loliCardNetwork.sendToServer(new FMLProxyPacket(buffer, "loliCard"));
+				LoliPickaxe.loliCardNetwork.sendToServer(new FMLProxyPacket(buffer, "loliCard"));
 			}
 		} else {
 			if (itemStack != null) {
 				if (itemStack.getItem() == Items.iron_ingot) {
-					world.playSoundAtEntity(player, "anotherstar:block.lolisuccess", 1.0F, 1.0F);
+					world.playSoundAtEntity(player, "lolipickaxe:block.lolisuccess", 1.0F, 1.0F);
 				} else if (itemStack.getItem() instanceof ItemRecord
 						&& !(itemStack.getItem() instanceof ItemModRecord)) {
-					world.playSoundAtEntity(player, "anotherstar:block.lolisuccess", 1.0F, 1.0F);
+					world.playSoundAtEntity(player, "lolipickaxe:block.lolisuccess", 1.0F, 1.0F);
 					if (!player.capabilities.isCreativeMode) {
 						--itemStack.stackSize;
 					}
 					player.inventory.addItemStackToInventory(new ItemStack(ItemLoader.loliRecord));
 					player.inventoryContainer.detectAndSendChanges();
 				} else {
-					world.playSoundAtEntity(player, "anotherstar:block.lolisound", 1.0F, 1.0F);
+					world.playSoundAtEntity(player, "lolipickaxe:block.lolisound", 1.0F, 1.0F);
 				}
 			} else {
-				world.playSoundAtEntity(player, "anotherstar:block.lolisound", 1.0F, 1.0F);
+				world.playSoundAtEntity(player, "lolipickaxe:block.lolisound", 1.0F, 1.0F);
 			}
 		}
 		return true;

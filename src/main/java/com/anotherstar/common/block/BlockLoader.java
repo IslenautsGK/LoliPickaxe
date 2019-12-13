@@ -16,7 +16,7 @@ public class BlockLoader {
 
 	@SideOnly(Side.CLIENT)
 	public static void initRenders(FMLPreInitializationEvent event) {
-		blockLoli.setBlockTextureName("anotherstar:blockLoli");
+		blockLoli.setBlockTextureName("lolipickaxe:blockLoli");
 	}
 
 }

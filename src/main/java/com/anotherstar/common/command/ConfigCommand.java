@@ -18,9 +18,8 @@ public class ConfigCommand extends CommandBase {
 			"loliPickaxeAutoKillRange", "loliPickaxeDuration", "loliPickaxeDropProtectTime",
 			"loliPickaxeCompulsoryRemove", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory",
 			"loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage",
-			"loliPickaxeForbidOnLivingUpdateChangeHealth", "loliPickaxeForbidOnLivingUpdate",
-			"loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeFindOwner",
-			"loliPickaxeFindOwnerRange", "reload", "flagList" };
+			"loliPickaxeForbidOnLivingUpdate", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption",
+			"loliPickaxeFindOwner", "loliPickaxeFindOwnerRange", "loliPickaxeBlueScreenAttack", "reload", "flagList" };
 
 	@Override
 	public String getCommandName() {
@@ -82,9 +81,6 @@ public class ConfigCommand extends CommandBase {
 				case "loliPickaxeKickMessage":
 					ConfigLoader.loliPickaxeKickMessage = args[1];
 					break;
-				case "loliPickaxeForbidOnLivingUpdateChangeHealth":
-					ConfigLoader.loliPickaxeForbidOnLivingUpdateChangeHealth = parseBoolean(sender, args[1]);
-					break;
 				case "loliPickaxeForbidOnLivingUpdate":
 					ConfigLoader.loliPickaxeForbidOnLivingUpdate = parseBoolean(sender, args[1]);
 					break;
@@ -99,6 +95,9 @@ public class ConfigCommand extends CommandBase {
 					break;
 				case "loliPickaxeFindOwnerRange":
 					ConfigLoader.loliPickaxeFindOwnerRange = parseInt(sender, args[1]);
+					break;
+				case "loliPickaxeBlueScreenAttack":
+					ConfigLoader.loliPickaxeBlueScreenAttack = parseBoolean(sender, args[1]);
 					break;
 				default:
 					throw new WrongUsageException("commands.loli.usage");
@@ -131,13 +130,12 @@ public class ConfigCommand extends CommandBase {
 					sender.addChatMessage(new ChatComponentText("loliPickaxeDropItems:强制死亡掉落"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeKickPlayer:踢出玩家"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeKickMessage:踢出玩家消息"));
-					sender.addChatMessage(
-							new ChatComponentText("loliPickaxeForbidOnLivingUpdateChangeHealth:禁止实体更新事件修改生命值"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeForbidOnLivingUpdate:禁止死亡实体触发实体更新事件"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeReincarnation:对被攻击者发动伊邪那美(需同时开启踢出玩家)"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeBeyondRedemption:对被攻击者发动灵魂超度"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeFindOwner:是否自动寻找所有者"));
 					sender.addChatMessage(new ChatComponentText("loliPickaxeFindOwnerRange:自动寻找所有者范围"));
+					sender.addChatMessage(new ChatComponentText("loliPickaxeBlueScreenAttack:蓝屏打击"));
 				} else {
 					String value;
 					switch (args[0]) {
@@ -186,9 +184,6 @@ public class ConfigCommand extends CommandBase {
 					case "loliPickaxeKickMessage":
 						value = ConfigLoader.loliPickaxeKickMessage;
 						break;
-					case "loliPickaxeForbidOnLivingUpdateChangeHealth":
-						value = String.valueOf(ConfigLoader.loliPickaxeForbidOnLivingUpdateChangeHealth);
-						break;
 					case "loliPickaxeForbidOnLivingUpdate":
 						value = String.valueOf(ConfigLoader.loliPickaxeForbidOnLivingUpdate);
 						break;
@@ -203,6 +198,9 @@ public class ConfigCommand extends CommandBase {
 						break;
 					case "loliPickaxeFindOwnerRange":
 						value = String.valueOf(ConfigLoader.loliPickaxeFindOwnerRange);
+						break;
+					case "loliPickaxeBlueScreenAttack":
+						value = String.valueOf(ConfigLoader.loliPickaxeBlueScreenAttack);
 						break;
 					default:
 						throw new WrongUsageException("commands.loli.usage");
@@ -230,11 +228,11 @@ public class ConfigCommand extends CommandBase {
 			case "loliPickaxeClearInventory":
 			case "loliPickaxeDropItems":
 			case "loliPickaxeKickPlayer":
-			case "loliPickaxeForbidOnLivingUpdateChangeHealth":
 			case "loliPickaxeForbidOnLivingUpdate":
 			case "loliPickaxeReincarnation":
 			case "loliPickaxeBeyondRedemption":
 			case "loliPickaxeFindOwner":
+			case "loliPickaxeBlueScreenAttack":
 				return getListOfStringsFromIterableMatchingLastWord(args,
 						Arrays.asList(new String[] { "true", "false" }));
 			default:

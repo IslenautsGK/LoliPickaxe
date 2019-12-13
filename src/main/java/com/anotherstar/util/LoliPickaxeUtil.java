@@ -3,12 +3,15 @@ package com.anotherstar.util;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.event.LoliTickEvent;
 import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,6 +31,16 @@ public class LoliPickaxeUtil {
 				new String[] { "recentlyHit", "field_70718_bc" });
 	}
 
+	public static void kill(Entity entity, EntityLivingBase source) {
+		if (entity instanceof EntityPlayer) {
+			killPlayer((EntityPlayer) entity, source);
+		} else if (entity instanceof EntityLivingBase) {
+			killEntityLiving((EntityLivingBase) entity, source);
+		} else if (ConfigLoader.loliPickaxeValidToAllEntity) {
+			killEntity(entity);
+		}
+	}
+
 	public static void killPlayer(EntityPlayer player, EntityLivingBase source) {
 		if (ItemLoliPickaxe.invHaveLoliPickaxe(player) || player.loliDead) {
 			return;
@@ -42,17 +55,19 @@ public class LoliPickaxeUtil {
 		if (ConfigLoader.loliPickaxeDropItems) {
 			player.inventory.dropAllItems();
 		}
-		player.func_110142_aN().func_94547_a(new EntityDamageSource("loli", source), Float.MAX_VALUE, Float.MAX_VALUE);
+		DamageSource ds = source == null ? new DamageSource("loli") : new EntityDamageSource("loli", source);
+		player.func_110142_aN().func_94547_a(ds, Float.MAX_VALUE, Float.MAX_VALUE);
 		player.setHealth(0.0F);
-		player.onDeath(new DamageSource("loli"));
+		player.onDeath(ds);
 		if (ConfigLoader.loliPickaxeCompulsoryRemove) {
-			// player.setDead();
-			// player.isDead = true;
 			player.loliDead = true;
-			delayKill(player, 20);
+			delayKill(player, 21);
 		}
 		if (player instanceof EntityPlayerMP) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
+			if (ConfigLoader.loliPickaxeCompulsoryRemove) {
+				LoliPickaxe.loliDeadNetwork.sendTo(new FMLProxyPacket(Unpooled.buffer(), "loliDead"), playerMP);
+			}
 			if (ConfigLoader.loliPickaxeBeyondRedemption) {
 				ConfigLoader.addPlayerToBeyondRedemption(playerMP);
 			}
@@ -65,22 +80,20 @@ public class LoliPickaxeUtil {
 		}
 	}
 
-	public static void killEntityLiving(EntityLivingBase entity, EntityLivingBase player) {
+	public static void killEntityLiving(EntityLivingBase entity, EntityLivingBase source) {
 		if (!(entity.worldObj.isRemote || entity.loliDead || entity.isDead || entity.getHealth() == 0.0F)) {
 			try {
 				stupidMojangProtectedVariable.setInt(entity, 60);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			entity.func_110142_aN().func_94547_a(new EntityDamageSource("loli", player), Float.MAX_VALUE,
-					Float.MAX_VALUE);
+			DamageSource ds = source == null ? new DamageSource("loli") : new EntityDamageSource("loli", source);
+			entity.func_110142_aN().func_94547_a(ds, Float.MAX_VALUE, Float.MAX_VALUE);
 			entity.setHealth(0.0F);
-			entity.onDeath(new EntityDamageSource("loli", player));
+			entity.onDeath(ds);
 			if (ConfigLoader.loliPickaxeCompulsoryRemove) {
-				// entity.setDead();
-				// entity.isDead = true;
 				entity.loliDead = true;
-				delayKill(entity, 20);
+				delayKill(entity, 21);
 			}
 		}
 	}
@@ -97,11 +110,10 @@ public class LoliPickaxeUtil {
 				ConfigLoader.loliPickaxeValidToAllEntity ? Entity.class : EntityLivingBase.class,
 				AxisAlignedBB.getBoundingBox(player.posX - range, player.posY - range, player.posZ - range,
 						player.posX + range, player.posY + range, player.posZ + range));
+		el.remove(player);
 		for (Entity en : el) {
 			if (en instanceof EntityPlayer) {
-				if (en != player) {
-					killPlayer((EntityPlayer) en, player);
-				}
+				killPlayer((EntityPlayer) en, player);
 			} else if (en instanceof EntityLivingBase) {
 				killEntityLiving((EntityLivingBase) en, player);
 			} else {
@@ -112,7 +124,10 @@ public class LoliPickaxeUtil {
 	}
 
 	private static void delayKill(EntityLivingBase entity, int tick) {
-		LoliTickEvent.addTask(new LoliTickEvent.TickStartTask(tick, () -> entity.isDead = true), Phase.START);
+		LoliTickEvent.addTask(new LoliTickEvent.TickStartTask(tick, () -> {
+			entity.loliCool = true;
+			entity.isDead = true;
+		}), Phase.START);
 	}
 
 }

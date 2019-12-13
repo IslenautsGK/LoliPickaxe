@@ -15,12 +15,12 @@ public class ItemModRecord extends ItemRecord {
 		super(record);
 		setCreativeTab(CreativeTabs.tabMisc);
 		setUnlocalizedName(name);
-		this.file = ("anotherstar:record." + record);
+		this.file = ("lolipickaxe:record." + record);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister par1IconRegister) {
-		this.itemIcon = par1IconRegister.registerIcon(this.getUnlocalizedName().replaceAll("item\\.", "anotherstar:"));
+		this.itemIcon = par1IconRegister.registerIcon(this.getUnlocalizedName().replaceAll("item\\.", "lolipickaxe:"));
 	}
 
 	public ResourceLocation getRecordResource(String name) {

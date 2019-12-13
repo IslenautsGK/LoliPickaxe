@@ -32,7 +32,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
-		DEFLOLI = new ResourceLocation("anotherstar", "textures/gui/defloli.png");
+		DEFLOLI = new ResourceLocation("lolipickaxe", "textures/gui/defloli.png");
 	}
 
 	@Override

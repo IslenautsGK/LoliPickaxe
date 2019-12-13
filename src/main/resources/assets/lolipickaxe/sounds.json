@@ -1,0 +1,20 @@
+{
+  "block.lolisound": {
+    "category": "block",
+    "sounds": [
+      "loliSound"
+    ]
+  },
+  "block.lolisuccess": {
+    "category": "block",
+    "sounds": [
+      "loliSuccess"
+    ]
+  },
+  "record.Loli": {
+    "category": "record",
+    "sounds": [
+      "loliRecord"
+    ]
+  }
+}

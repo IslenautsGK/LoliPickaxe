@@ -66,55 +66,47 @@ public class EventUtil {
 
 	public static boolean onLivingUpdate(EntityLivingBase entity) {
 		boolean isLoli = checkEntity(entity);
+		if (!isLoli && (entity.loliCool || entity.loliDeathTime >= 20)) {
+			entity.isDead = true;
+			entity.deathTime = entity.loliDeathTime;
+			return true;
+		}
 		if (ConfigLoader.loliPickaxeForbidOnLivingUpdate && !isLoli
 				&& (entity.loliDead || entity.isDead || entity.getHealth() == 0)) {
-			// entity.isDead = true;
 			if (++entity.loliDeathTime >= 20) {
 				entity.isDead = true;
 			}
 			entity.deathTime = entity.loliDeathTime;
 			return true;
 		}
-		if (ConfigLoader.loliPickaxeForbidOnLivingUpdateChangeHealth) {
-			float health = entity.getHealth();
-			boolean flying = false;
-			if (isLoli) {
-				flying = ((EntityPlayer) entity).capabilities.isFlying;
-			}
-			boolean result = MinecraftForge.EVENT_BUS.post(new LivingUpdateEvent(entity));
-			entity.setHealth(health);
-			/*
-			 * if (health == 0 || entity.loliDead) { entity.isDead = true; }
-			 */
-			if (isLoli) {
-				((EntityPlayer) entity).capabilities.allowFlying = true;
-				((EntityPlayer) entity).capabilities.isFlying = flying;
-			}
-			return result;
-		} else {
-			boolean flying = false;
-			if (isLoli) {
-				flying = ((EntityPlayer) entity).capabilities.isFlying;
-			}
-			boolean result = MinecraftForge.EVENT_BUS.post(new LivingUpdateEvent(entity));
-			/*
-			 * if (entity.loliDead) { entity.isDead = true; }
-			 */
-			if (isLoli) {
-				((EntityPlayer) entity).capabilities.allowFlying = true;
-				((EntityPlayer) entity).capabilities.isFlying = flying;
-			}
-			return result;
+		boolean flying = false;
+		if (isLoli) {
+			flying = ((EntityPlayer) entity).capabilities.isFlying;
+		}
+		boolean result = MinecraftForge.EVENT_BUS.post(new LivingUpdateEvent(entity));
+		if (isLoli) {
+			((EntityPlayer) entity).capabilities.allowFlying = true;
+			((EntityPlayer) entity).capabilities.isFlying = flying;
+		}
+		entity.deathTime = entity.loliDeathTime;
+		return result;
+	}
+
+	public static void onUpdate(EntityLivingBase entity) {
+		boolean isLoli = checkEntity(entity);
+		if (!isLoli && (entity.loliDead || entity.getHealth() == 0)) {
+			entity.deathTime = ++entity.loliDeathTime;
+		}
+		if (!isLoli && (entity.loliCool || entity.loliDeathTime >= 20)) {
+			entity.isDead = true;
 		}
 	}
 
 	public static float getHealth(EntityLivingBase entity) {
 		if (checkEntity(entity)) {
-			// entity.isDead = false;
 			return 20;
 		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemption
 				&& ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
-			// entity.isDead = true;
 			return 0;
 		}
 		return entity.getHealth2();
@@ -123,27 +115,12 @@ public class EventUtil {
 	public static float getMaxHealth(EntityLivingBase entity) {
 		if (checkEntity(entity)) {
 			entity.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
-			// entity.isDead = false;
 			return 20;
 		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemption
 				&& ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
-			// entity.isDead = true;
 			return 0;
 		}
 		return entity.getMaxHealth2();
-	}
-
-	public static void setHealth(EntityLivingBase entity, float health) {
-		/*
-		 * if (health > 0) { entity.loliDead = false; }
-		 */
-		entity.setHealth2(health);
-	}
-
-	public static void setDead(Entity entity) {
-		/*
-		 * if (checkEntity(entity)) { entity.isDead = false; }
-		 */
 	}
 
 	public static void dropAllItems(InventoryPlayer inventory) {

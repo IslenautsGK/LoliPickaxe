@@ -22,7 +22,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.anotherstar.common.AnotherStar;
+import com.anotherstar.common.LoliPickaxe;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
@@ -50,7 +50,7 @@ public class LoliCardUtil {
 	private static ResourceLocation[] getPaintingsResourceLocations(String[] names) {
 		ResourceLocation[] paintings = new ResourceLocation[names.length];
 		for (int i = 0; i < names.length; i++) {
-			paintings[i] = new ResourceLocation("anotherstar", "textures/gui/customLoliCardPicture/" + names[i]);
+			paintings[i] = new ResourceLocation("lolipickaxe", "textures/gui/customLoliCardPicture/" + names[i]);
 		}
 		return paintings;
 	}
@@ -118,9 +118,9 @@ public class LoliCardUtil {
 	}
 
 	private static String[] getJarPaintings() {
-		String path = "assets/anotherstar/textures/gui/customLoliCardPicture/";
-		URL dirURL = AnotherStar.instance.getClass()
-				.getResource("/assets/anotherstar/textures/gui/customLoliCardPicture/");
+		String path = "assets/lolipickaxe/textures/gui/customLoliCardPicture/";
+		URL dirURL = LoliPickaxe.instance.getClass()
+				.getResource("/assets/lolipickaxe/textures/gui/customLoliCardPicture/");
 		if ((dirURL != null) && (dirURL.getProtocol().equals("file"))) {
 			try {
 				String[] newSet = new File(dirURL.toURI()).list();
@@ -213,7 +213,7 @@ public class LoliCardUtil {
 		try {
 			String ext = FilenameUtils.getExtension(resourceZipFile.getName());
 			if (ext.equals("zip")) {
-				String path = "assets/anotherstar/textures/gui/customLoliCardPicture/";
+				String path = "assets/lolipickaxe/textures/gui/customLoliCardPicture/";
 				ZipFile zippy = new ZipFile(resourceZipFile);
 				Enumeration packEntries = zippy.entries();
 				String fileName = "";
@@ -232,7 +232,7 @@ public class LoliCardUtil {
 					return (String[]) result.toArray(new String[result.size()]);
 				}
 			} else if (ext.equals("")) {
-				File paintingsLoc = new File(resourceZipFile, "assets/anotherstar/textures/gui/customLoliCardPicture/");
+				File paintingsLoc = new File(resourceZipFile, "assets/lolipickaxe/textures/gui/customLoliCardPicture/");
 				String[] finalSet = new String[0];
 				if (paintingsLoc.exists()) {
 					String[] newSet = paintingsLoc.list();

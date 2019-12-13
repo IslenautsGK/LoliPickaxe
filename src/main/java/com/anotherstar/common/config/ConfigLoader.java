@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 
-import com.anotherstar.common.AnotherStar;
+import com.anotherstar.common.LoliPickaxe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -37,7 +37,6 @@ public class ConfigLoader {
 	public static boolean loliPickaxeDropItems;
 	public static boolean loliPickaxeKickPlayer;
 	public static String loliPickaxeKickMessage;
-	public static boolean loliPickaxeForbidOnLivingUpdateChangeHealth;
 	public static boolean loliPickaxeForbidOnLivingUpdate;
 	public static boolean loliPickaxeReincarnation;
 	public static Set<String> loliPickaxeReincarnationPlayerList;
@@ -45,6 +44,7 @@ public class ConfigLoader {
 	public static Set<String> loliPickaxeBeyondRedemptionPlayerList;
 	public static boolean loliPickaxeFindOwner;
 	public static int loliPickaxeFindOwnerRange;
+	public static boolean loliPickaxeBlueScreenAttack;
 	public static List<String> loliRecodeNames;
 
 	public static void init(FMLPreInitializationEvent event) {
@@ -56,7 +56,7 @@ public class ConfigLoader {
 	public static void load() {
 		logger.info("Started loading config. ");
 		config.load();
-		loliPickaxeMaxRange = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMaxRange", 2, "氪金萝莉的最大采掘范围")
+		loliPickaxeMaxRange = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMaxRange", 5, "氪金萝莉的最大采掘范围")
 				.getInt();
 		loliPickaxeMandatoryDrop = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMandatoryDrop", false, "氪金萝莉是否会强制掉落方块").getBoolean();
@@ -65,7 +65,7 @@ public class ConfigLoader {
 		loliPickaxeKillRangeEntity = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRangeEntity", true, "氪金萝莉是否可以潜行右键杀死周围实体")
 				.getBoolean();
-		loliPickaxeKillRange = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRange", 5, "氪金萝莉杀死周围实体的范围")
+		loliPickaxeKillRange = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRange", 50, "氪金萝莉杀死周围实体的范围")
 				.getInt();
 		loliPickaxeAutoKillRangeEntity = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeAutoKillRangeEntity", false, "氪金萝莉是否自动杀死周围实体")
@@ -77,7 +77,7 @@ public class ConfigLoader {
 		loliPickaxeDropProtectTime = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDropProtectTime", 200, "氪金萝莉丢弃保护时间(ms)").getInt();
 		loliPickaxeCompulsoryRemove = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeCompulsoryRemove", false, "氪金萝莉强制清除生物").getBoolean();
+				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeCompulsoryRemove", true, "氪金萝莉强制清除生物").getBoolean();
 		loliPickaxeValidToAllEntity = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeValidToAllEntity", false, "氪金萝莉对全部实体有效").getBoolean();
 		loliPickaxeClearInventory = config
@@ -89,8 +89,6 @@ public class ConfigLoader {
 		loliPickaxeKickMessage = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKickMessage", "你被氪金萝莉踢出了服务器", "氪金萝莉踢出玩家消息")
 				.getString();
-		loliPickaxeForbidOnLivingUpdateChangeHealth = config.get(Configuration.CATEGORY_GENERAL,
-				"loliPickaxeForbidOnLivingUpdateChangeHealth", false, "禁止实体更新事件修改生命值").getBoolean();
 		loliPickaxeForbidOnLivingUpdate = config
 				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeForbidOnLivingUpdate", false, "禁止死亡实体触发实体更新事件")
 				.getBoolean();
@@ -116,7 +114,9 @@ public class ConfigLoader {
 		loliPickaxeFindOwner = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwner", true, "氪金萝莉是否自动寻找所有者")
 				.getBoolean();
 		loliPickaxeFindOwnerRange = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 10, "氪金萝莉自动寻找所有者范围").getInt();
+				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 50, "氪金萝莉自动寻找所有者范围").getInt();
+		loliPickaxeBlueScreenAttack = config
+				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBlueScreenAttack", false, "氪金萝莉蓝屏打击").getBoolean();
 		strs = config.get(Configuration.CATEGORY_GENERAL, "loliRecodeNames", new String[0], "额外唱片列表(声音:唱片名:唱片ID)")
 				.getStringList();
 		loliRecodeNames = Lists.newArrayList();
@@ -128,14 +128,14 @@ public class ConfigLoader {
 	}
 
 	public static void save() {
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMaxRange", 2, "氪金萝莉的最大采掘范围")
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMaxRange", 5, "氪金萝莉的最大采掘范围")
 				.setValue(loliPickaxeMaxRange);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMandatoryDrop", false, "氪金萝莉是否会强制掉落方块")
 				.setValue(loliPickaxeMandatoryDrop);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeThorns", true, "氪金萝莉是否会反伤").setValue(loliPickaxeThorns);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRangeEntity", true, "氪金萝莉是否可以潜行右键杀死周围实体")
 				.setValue(loliPickaxeKillRangeEntity);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRange", 5, "氪金萝莉杀死周围实体的范围")
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRange", 50, "氪金萝莉杀死周围实体的范围")
 				.setValue(loliPickaxeKillRange);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeAutoKillRangeEntity", false, "氪金萝莉是否自动杀死周围实体")
 				.setValue(loliPickaxeAutoKillRangeEntity);
@@ -145,7 +145,7 @@ public class ConfigLoader {
 				.setValue(loliPickaxeDuration);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDropProtectTime", 200, "氪金萝莉丢弃保护时间(ms)")
 				.setValue(loliPickaxeDropProtectTime);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeCompulsoryRemove", false, "氪金萝莉强制清除生物")
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeCompulsoryRemove", true, "氪金萝莉强制清除生物")
 				.setValue(loliPickaxeCompulsoryRemove);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeValidToAllEntity", false, "氪金萝莉对全部实体有效")
 				.setValue(loliPickaxeValidToAllEntity);
@@ -157,8 +157,6 @@ public class ConfigLoader {
 				.setValue(loliPickaxeKickPlayer);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKickMessage", "你被氪金萝莉踢出了服务器", "氪金萝莉踢出玩家消息")
 				.setValue(loliPickaxeKickMessage);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeForbidOnLivingUpdateChangeHealth", false,
-				"禁止实体更新事件修改生命值").setValue(loliPickaxeForbidOnLivingUpdateChangeHealth);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeForbidOnLivingUpdate", false, "禁止死亡实体触发实体更新事件")
 				.setValue(loliPickaxeForbidOnLivingUpdate);
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnation", false, "氪金萝莉对玩家发动伊邪那美(需同时开启踢出玩家)")
@@ -171,8 +169,10 @@ public class ConfigLoader {
 				.setValues(loliPickaxeBeyondRedemptionPlayerList.toArray(new String[0]));
 		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwner", true, "氪金萝莉是否自动寻找所有者")
 				.setValue(loliPickaxeFindOwner);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 10, "氪金萝莉自动寻找所有者范围")
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 50, "氪金萝莉自动寻找所有者范围")
 				.setValue(loliPickaxeFindOwnerRange);
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBlueScreenAttack", false, "氪金萝莉蓝屏打击")
+				.setValue(loliPickaxeBlueScreenAttack);
 		config.get(Configuration.CATEGORY_GENERAL, "loliRecodeNames", new String[0], "额外唱片列表(声音:唱片名:唱片ID)")
 				.setValues(loliRecodeNames.toArray(new String[0]));
 		config.save();
@@ -217,7 +217,6 @@ public class ConfigLoader {
 		buffer.writeBoolean(loliPickaxeDropItems);
 		buffer.writeBoolean(loliPickaxeKickPlayer);
 		ByteBufUtils.writeUTF8String(buffer, loliPickaxeKickMessage);
-		buffer.writeBoolean(loliPickaxeForbidOnLivingUpdateChangeHealth);
 		buffer.writeBoolean(loliPickaxeForbidOnLivingUpdate);
 		buffer.writeBoolean(loliPickaxeReincarnation);
 		buffer.writeInt(loliPickaxeReincarnationPlayerList.size());
@@ -229,13 +228,14 @@ public class ConfigLoader {
 		for (String uuid : loliPickaxeBeyondRedemptionPlayerList) {
 			ByteBufUtils.writeUTF8String(buffer, uuid);
 		}
-		if (player != null) {
-			AnotherStar.loliConfigNetwork.sendTo(new FMLProxyPacket(buffer, "loliConfig"), player);
-		} else {
-			AnotherStar.loliConfigNetwork.sendToAll(new FMLProxyPacket(buffer, "loliConfig"));
-		}
 		buffer.writeBoolean(loliPickaxeFindOwner);
 		buffer.writeInt(loliPickaxeFindOwnerRange);
+		buffer.writeBoolean(loliPickaxeBlueScreenAttack);
+		if (player != null) {
+			LoliPickaxe.loliConfigNetwork.sendTo(new FMLProxyPacket(buffer, "loliConfig"), player);
+		} else {
+			LoliPickaxe.loliConfigNetwork.sendToAll(new FMLProxyPacket(buffer, "loliConfig"));
+		}
 	}
 
 	public static void receptionChange(ByteBuf buffer) {
@@ -254,7 +254,6 @@ public class ConfigLoader {
 		loliPickaxeDropItems = buffer.readBoolean();
 		loliPickaxeKickPlayer = buffer.readBoolean();
 		loliPickaxeKickMessage = ByteBufUtils.readUTF8String(buffer);
-		loliPickaxeForbidOnLivingUpdateChangeHealth = buffer.readBoolean();
 		loliPickaxeForbidOnLivingUpdate = buffer.readBoolean();
 		loliPickaxeReincarnation = buffer.readBoolean();
 		int size = buffer.readInt();
@@ -270,6 +269,7 @@ public class ConfigLoader {
 		}
 		loliPickaxeFindOwner = buffer.readBoolean();
 		loliPickaxeFindOwnerRange = buffer.readInt();
+		loliPickaxeBlueScreenAttack = buffer.readBoolean();
 	}
 
 	public static Logger logger() {

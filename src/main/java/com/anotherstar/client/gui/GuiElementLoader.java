@@ -1,7 +1,7 @@
 package com.anotherstar.client.gui;
 
 import com.anotherstar.client.ClientProxy;
-import com.anotherstar.common.AnotherStar;
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.util.LoliCardUtil;
 
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -19,7 +19,7 @@ public class GuiElementLoader implements IGuiHandler {
 	}
 
 	public void init() {
-		NetworkRegistry.INSTANCE.registerGuiHandler(AnotherStar.instance, this);
+		NetworkRegistry.INSTANCE.registerGuiHandler(LoliPickaxe.instance, this);
 	}
 
 	@Override

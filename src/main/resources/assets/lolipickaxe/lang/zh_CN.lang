@@ -1,0 +1,20 @@
+﻿
+tile.loliBlock.name=萝莉方块
+
+item.loliCard.name=萝莉卡片
+
+item.loliPickaxe.name=§c氪金萝莉
+
+item.recordLoli.name=萝莉唱片
+
+item.record.Loli.desc=ばか変態煩い(av6752335)
+
+death.attack.loli=%1$s被%2$s用氪金萝莉抹杀了
+
+loliPickaxe.range=采掘范围更改为%1$s*%1$s*%1$s
+loliPickaxe.killrangeentity=攻击了周围%1$s*%1$s范围内的%2$s个生物
+
+commands.loli.usage=/loli <flag> [value]
+commands.loli.set=将%1$s的值设置成了%2$s
+commands.loli.get=%1$s的值为%2$s
+commands.loli.reload=已重新加载配置文件

@@ -33,8 +33,8 @@ public class ItemLoader {
 
 	@SideOnly(Side.CLIENT)
 	public static void initRenders(FMLPreInitializationEvent event) {
-		loliCard.setTextureName("anotherstar:loliCard");
-		loliPickaxe.setTextureName("anotherstar:loliPickaxe");
+		loliCard.setTextureName("lolipickaxe:loliCard");
+		loliPickaxe.setTextureName("lolipickaxe:loliPickaxe");
 	}
 
 }

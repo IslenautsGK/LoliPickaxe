@@ -1,7 +1,7 @@
 package com.anotherstar.common.item;
 
 import com.anotherstar.client.gui.GuiElementLoader;
-import com.anotherstar.common.AnotherStar;
+import com.anotherstar.common.LoliPickaxe;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -50,7 +50,7 @@ public class ItemLoliCard extends Item {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if (world.isRemote) {
-			player.openGui(AnotherStar.instance, GuiElementLoader.GUI_LOLICARD, world, (int) player.posX,
+			player.openGui(LoliPickaxe.instance, GuiElementLoader.GUI_LOLICARD, world, (int) player.posX,
 					(int) player.posY, (int) player.posZ);
 		}
 		return itemStack;

@@ -1,8 +1,8 @@
 [
 {
-  "modid": "AnotherStar",
-  "name": "AnotherStar Mod",
-  "description": "AnotherStar Mod",
+  "modid": "LoliPickaxe",
+  "name": "LoliPickaxe Mod",
+  "description": "LoliPickaxe Mod",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

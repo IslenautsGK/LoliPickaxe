@@ -17,15 +17,15 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0.6"
+version = "1.0.9"
 group= "com.anotherstar" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "LoliPickaxe"
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
     runDir = "eclipse"
-    //clientJvmArgs += "-Dfml.coreMods.load=com.anotherstar.core.AnotherStarCore"
-    //serverJvmArgs += "-Dfml.coreMods.load=com.anotherstar.core.AnotherStarCore"
+    //clientJvmArgs += "-Dfml.coreMods.load=com.anotherstar.core.LoliPickaxeCore"
+    //serverJvmArgs += "-Dfml.coreMods.load=com.anotherstar.core.LoliPickaxeCore"
 }
 
 dependencies {
@@ -67,7 +67,7 @@ processResources
 jar {
     manifest {
         attributes([
-                "FMLCorePlugin": "com.anotherstar.core.AnotherStarCore",
+                "FMLCorePlugin": "com.anotherstar.core.LoliPickaxeCore",
                 "FMLCorePluginContainsFMLMod": true
         ])
     }

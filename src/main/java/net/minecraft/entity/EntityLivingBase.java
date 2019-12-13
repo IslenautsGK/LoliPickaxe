@@ -53,6 +53,7 @@ import net.minecraftforge.common.ForgeHooks;
 public abstract class EntityLivingBase extends Entity {
 
 	public boolean loliDead;
+	public boolean loliCool;
 	public int loliDeathTime;
 	private static final UUID sprintingSpeedBoostModifierUUID = UUID.fromString("662A6B8D-DA3E-4C1C-8813-96EA6097278D");
 	private static final AttributeModifier sprintingSpeedBoostModifier = (new AttributeModifier(
@@ -736,9 +737,6 @@ public abstract class EntityLivingBase extends Entity {
 
 	public void setHealth(float p_70606_1_) {
 		this.dataWatcher.updateObject(6, Float.valueOf(MathHelper.clamp_float(p_70606_1_, 0.0F, this.getMaxHealth())));
-	}
-
-	public void setHealth2(float health) {
 	}
 
 	/**

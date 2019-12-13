@@ -23,9 +23,6 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 
-	public static Field stupidMojangProtectedVariable = ReflectionHelper.findField(EntityLivingBase.class,
-			"recentlyHit", "field_70718_bc");
-
 	public static final Item.ToolMaterial LOLI = EnumHelper.addToolMaterial("LOLI", 32, Short.MAX_VALUE,
 			Float.MAX_VALUE, -2.0F, 200);
 
@@ -58,16 +55,21 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 	@Override
 	public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 		if (!entity.worldObj.isRemote) {
+			boolean success = false;
 			if (entity instanceof EntityPlayer) {
 				LoliPickaxeUtil.killPlayer((EntityPlayer) entity, player);
-				return true;
+				success = true;
 			} else if (entity instanceof EntityLivingBase) {
 				LoliPickaxeUtil.killEntityLiving((EntityLivingBase) entity, player);
-				return true;
+				success = true;
 			} else if (ConfigLoader.loliPickaxeValidToAllEntity && !(entity instanceof EntityLivingBase)) {
 				LoliPickaxeUtil.killEntity(entity);
-				return true;
+				success = true;
 			}
+			if (success) {
+				player.worldObj.playSoundAtEntity(player, "lolipickaxe:block.lolisuccess", 1.0F, 1.0F);
+			}
+			return success;
 		}
 		return false;
 	}
@@ -81,7 +83,7 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 					IChatComponent ic = new ChatComponentTranslation("loliPickaxe.killrangeentity", new Object[] {
 							String.valueOf(ConfigLoader.loliPickaxeKillRange * 2), String.valueOf(count) });
 					player.addChatMessage(ic);
-					player.worldObj.playSoundAtEntity(player, "anotherstar:block.lolisuccess", 1.0F, 1.0F);
+					player.worldObj.playSoundAtEntity(player, "lolipickaxe:block.lolisuccess", 1.0F, 1.0F);
 				}
 			} else {
 				NBTTagCompound nbt = itemStack.stackTagCompound;
@@ -100,7 +102,7 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 				IChatComponent ic = new ChatComponentTranslation("loliPickaxe.range",
 						new Object[] { String.valueOf(1 + 2 * nbt.getInteger("range")) });
 				player.addChatMessage(ic);
-				player.worldObj.playSoundAtEntity(player, "anotherstar:block.lolisuccess", 1.0F, 1.0F);
+				player.worldObj.playSoundAtEntity(player, "lolipickaxe:block.lolisuccess", 1.0F, 1.0F);
 			}
 		}
 		return itemStack;
@@ -114,7 +116,7 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean flag) {
 		super.addInformation(stack, player, list, flag);
-		list.add("AnotherStar专属");
+		list.add("宸插湪GitHub涓婂紑婧�");
 	}
 
 	@Override

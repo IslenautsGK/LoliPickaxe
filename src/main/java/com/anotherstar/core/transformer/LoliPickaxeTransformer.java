@@ -8,7 +8,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import com.anotherstar.core.AnotherStarCore;
+import com.anotherstar.core.LoliPickaxeCore;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
@@ -72,14 +72,16 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				public void visit(int version, int access, String name, String signature, String superName,
 						String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
-					if (!AnotherStarCore.debug) {
+					if (!LoliPickaxeCore.debug) {
 						FieldVisitor fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliDead", "Z", null, null);
 						fv.visitEnd();
 						fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliDeathTime", "I", null, null);
 						fv.visitEnd();
+						fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliCool", "Z", null, null);
+						fv.visitEnd();
 					}
 					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-							AnotherStarCore.debug ? "getHealth" : "aS", "()F", null, null);
+							LoliPickaxeCore.debug ? "getHealth" : "aS", "()F", null, null);
 					mv.visitCode();
 					Label start = new Label();
 					mv.visitLabel(start);
@@ -93,7 +95,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					mv.visitMaxs(1, 1);
 					mv.visitEnd();
 					mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-							AnotherStarCore.debug ? "getMaxHealth" : "aY", "()F", null, null);
+							LoliPickaxeCore.debug ? "getMaxHealth" : "aY", "()F", null, null);
 					mv.visitCode();
 					start = new Label();
 					mv.visitLabel(start);
@@ -106,22 +108,6 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					mv.visitLocalVariable("this", "Lnet/minecraft/entity/EntityLivingBase;", null, start, end, 0);
 					mv.visitMaxs(1, 1);
 					mv.visitEnd();
-					mv = cv.visitMethod(Opcodes.ACC_PUBLIC, AnotherStarCore.debug ? "setHealth" : "g", "(F)V", null,
-							null);
-					mv.visitCode();
-					start = new Label();
-					mv.visitLabel(start);
-					mv.visitVarInsn(Opcodes.ALOAD, 0);
-					mv.visitVarInsn(Opcodes.FLOAD, 1);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "setHealth",
-							"(Lnet/minecraft/entity/EntityLivingBase;F)V", false);
-					mv.visitInsn(Opcodes.RETURN);
-					end = new Label();
-					mv.visitLabel(end);
-					mv.visitLocalVariable("this", "Lnet/minecraft/entity/EntityLivingBase;", null, start, end, 0);
-					mv.visitLocalVariable("health", "F", null, start, end, 1);
-					mv.visitMaxs(2, 2);
-					mv.visitEnd();
 				}
 
 				@Override
@@ -129,16 +115,26 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						String[] exceptions) {
 					if (name.equals("aS") && desc.equals("()F") || name.equals("getHealth")) {
 						return cv.visitMethod(access, "getHealth2", desc, signature, exceptions);
-					} else if (name.equals("g") && desc.equals("(F)V") || name.equals("setHealth")) {
-						return cv.visitMethod(access, "setHealth2", desc, signature, exceptions);
 					} else if (name.equals("aY") && desc.equals("()F") || name.equals("getMaxHealth")) {
 						return cv.visitMethod(access, "getMaxHealth2", desc, signature, exceptions);
 					} else if (name.equals("getHealth2")) {
 						return null;
-					} else if (name.equals("setHealth2")) {
-						return null;
 					} else if (name.equals("getMaxHealth2")) {
 						return null;
+					} else if (name.equals("h") && desc.equals("()V") || name.equals("onUpdate")) {
+						return new MethodVisitor(Opcodes.ASM4,
+								cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitInsn(int opcode) {
+								if (opcode == Opcodes.RETURN) {
+									mv.visitVarInsn(Opcodes.ALOAD, 0);
+									mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
+											"onUpdate", "(Lnet/minecraft/entity/EntityLivingBase;)V", false);
+								}
+								mv.visitInsn(opcode);
+							};
+
+						};
 					}
 					return cv.visitMethod(access, name, desc, signature, exceptions);
 				}
@@ -159,27 +155,6 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					return cv.visitField(access, name, desc, signature, value);
 				}
 
-				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
-					if (name.equals("B") && desc.equals("()V") || name.equals("setDead")) {
-						return new MethodVisitor(Opcodes.ASM4,
-								cv.visitMethod(access, name, desc, signature, exceptions)) {
-
-							public void visitInsn(int opcode) {
-								if (opcode == Opcodes.RETURN) {
-									mv.visitVarInsn(Opcodes.ALOAD, 0);
-									mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
-											"setDead", "(Lnet/minecraft/entity/Entity;)V", false);
-								}
-								mv.visitInsn(opcode);
-							};
-
-						};
-					}
-					return cv.visitMethod(access, name, desc, signature, exceptions);
-				}
-
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();
@@ -192,7 +167,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				public void visit(int version, int access, String name, String signature, String superName,
 						String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
-					if (!AnotherStarCore.debug) {
+					if (!LoliPickaxeCore.debug) {
 						FieldVisitor fv = cv.visitField(Opcodes.ACC_PUBLIC, "hodeLoli", "I", null, null);
 						fv.visitEnd();
 					}
@@ -371,6 +346,14 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 								mv.visitInsn(Opcodes.ICONST_0);
 								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
 										"loliDead", "Z");
+								mv.visitVarInsn(Opcodes.ALOAD, 1);
+								mv.visitInsn(Opcodes.ICONST_0);
+								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
+										"loliCool", "Z");
+								mv.visitVarInsn(Opcodes.ALOAD, 1);
+								mv.visitInsn(Opcodes.ICONST_0);
+								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
+										"loliDeathTime", "I");
 							};
 
 						};

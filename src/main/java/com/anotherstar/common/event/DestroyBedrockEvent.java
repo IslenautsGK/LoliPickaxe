@@ -56,7 +56,7 @@ public class DestroyBedrockEvent {
 					}
 				}
 			}
-			player.worldObj.playSoundEffect((double) X, (double) Y, (double) Z, "anotherstar:block.lolisuccess", 1.0F,
+			player.worldObj.playSoundEffect((double) X, (double) Y, (double) Z, "lolipickaxe:block.lolisuccess", 1.0F,
 					1.0F);
 		}
 	}
