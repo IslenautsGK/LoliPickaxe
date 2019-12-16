@@ -1,211 +1,170 @@
 package com.anotherstar.common.command;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.config.annotation.ConfigField.ValurType;
+import com.google.common.collect.Lists;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
 
 public class ConfigCommand extends CommandBase {
 
-	private static final String[] flags = { "loliPickaxeMaxRange", "loliPickaxeMandatoryDrop", "loliPickaxeThorns",
-			"loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity",
-			"loliPickaxeAutoKillRange", "loliPickaxeDuration", "loliPickaxeDropProtectTime",
-			"loliPickaxeCompulsoryRemove", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory",
-			"loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage",
-			"loliPickaxeForbidOnLivingUpdate", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption",
-			"loliPickaxeFindOwner", "loliPickaxeFindOwnerRange", "loliPickaxeBlueScreenAttack", "reload", "flagList" };
-
 	@Override
-	public String getCommandName() {
+	public String getName() {
 		return "loli";
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender p_71518_1_) {
+	public String getUsage(ICommandSender sender) {
 		return "commands.loli.usage";
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] args) {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (args.length > 0 && args.length < 3) {
 			if (args.length > 1) {
-				switch (args[0]) {
-				case "loliPickaxeMaxRange":
-					ConfigLoader.loliPickaxeMaxRange = parseInt(sender, args[1]);
-					break;
-				case "loliPickaxeMandatoryDrop":
-					ConfigLoader.loliPickaxeMandatoryDrop = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeThorns":
-					ConfigLoader.loliPickaxeThorns = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeKillRangeEntity":
-					ConfigLoader.loliPickaxeKillRangeEntity = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeKillRange":
-					ConfigLoader.loliPickaxeKillRange = parseInt(sender, args[1]);
-					break;
-				case "loliPickaxeAutoKillRangeEntity":
-					ConfigLoader.loliPickaxeAutoKillRangeEntity = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeAutoKillRange":
-					ConfigLoader.loliPickaxeAutoKillRange = parseInt(sender, args[1]);
-					break;
-				case "loliPickaxeDuration":
-					ConfigLoader.loliPickaxeDuration = parseInt(sender, args[1]);
-					break;
-				case "loliPickaxeDropProtectTime":
-					ConfigLoader.loliPickaxeDropProtectTime = parseInt(sender, args[1]);
-					break;
-				case "loliPickaxeCompulsoryRemove":
-					ConfigLoader.loliPickaxeCompulsoryRemove = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeValidToAllEntity":
-					ConfigLoader.loliPickaxeValidToAllEntity = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeClearInventory":
-					ConfigLoader.loliPickaxeClearInventory = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeDropItems":
-					ConfigLoader.loliPickaxeDropItems = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeKickPlayer":
-					ConfigLoader.loliPickaxeKickPlayer = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeKickMessage":
-					ConfigLoader.loliPickaxeKickMessage = args[1];
-					break;
-				case "loliPickaxeForbidOnLivingUpdate":
-					ConfigLoader.loliPickaxeForbidOnLivingUpdate = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeReincarnation":
-					ConfigLoader.loliPickaxeReincarnation = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeBeyondRedemption":
-					ConfigLoader.loliPickaxeBeyondRedemption = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeFindOwner":
-					ConfigLoader.loliPickaxeFindOwner = parseBoolean(sender, args[1]);
-					break;
-				case "loliPickaxeFindOwnerRange":
-					ConfigLoader.loliPickaxeFindOwnerRange = parseInt(sender, args[1]);
-					break;
-				case "loliPickaxeBlueScreenAttack":
-					ConfigLoader.loliPickaxeBlueScreenAttack = parseBoolean(sender, args[1]);
-					break;
-				default:
+				if (ConfigLoader.commandFlags.contains(args[0])) {
+					try {
+						switch (ConfigLoader.flagAnnotations.get(args[0]).valueType()) {
+						case INT:
+							ConfigLoader.flagFields.get(args[0]).setInt(null, parseInt(args[1]));
+							break;
+						case DOUBLE:
+							ConfigLoader.flagFields.get(args[0]).setDouble(null, parseDouble(args[1]));
+							break;
+						case BOOLEAN:
+							ConfigLoader.flagFields.get(args[0]).setBoolean(null, parseBoolean(args[1]));
+							break;
+						case STRING:
+							ConfigLoader.flagFields.get(args[0]).set(null, args[1]);
+							break;
+						default:
+							throw new WrongUsageException("commands.loli.usage");
+						}
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				} else {
 					throw new WrongUsageException("commands.loli.usage");
 				}
 				ConfigLoader.save();
 				if (!sender.getEntityWorld().isRemote) {
 					ConfigLoader.sandChange(null);
 				}
-				sender.addChatMessage(new ChatComponentTranslation("commands.loli.set", args[0], args[1]));
+				TextComponentString flagText = new TextComponentString(args[0]);
+				flagText.getStyle().setColor(TextFormatting.AQUA);
+				TextComponentString commentText = new TextComponentString(
+						ConfigLoader.flagAnnotations.get(args[0]).comment());
+				commentText.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
+				TextComponentString valueText = new TextComponentString(args[1]);
+				valueText.getStyle().setColor(TextFormatting.RED);
+				sender.sendMessage(new TextComponentTranslation("commands.loli.set", flagText, commentText, valueText));
 			} else {
-				if (args[0].equals("reload")) {
+				if (ConfigLoader.commandFlags.contains(args[0])) {
+					try {
+						String value;
+						Field field = ConfigLoader.flagFields.get(args[0]);
+						switch (ConfigLoader.flagAnnotations.get(args[0]).valueType()) {
+						case INT:
+							value = String.valueOf(field.getInt(null));
+							break;
+						case DOUBLE:
+							value = String.valueOf(field.getDouble(null));
+							break;
+						case BOOLEAN:
+							value = String.valueOf(field.getBoolean(null));
+							break;
+						case STRING:
+							value = (String) field.get(null);
+							break;
+						default:
+							throw new WrongUsageException("commands.loli.usage");
+						}
+						TextComponentString flagText = new TextComponentString(args[0]);
+						flagText.getStyle().setColor(TextFormatting.AQUA);
+						TextComponentString commentText = new TextComponentString(
+								ConfigLoader.flagAnnotations.get(args[0]).comment());
+						commentText.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
+						TextComponentString valueText = new TextComponentString(value);
+						valueText.getStyle().setColor(TextFormatting.RED);
+						sender.sendMessage(
+								new TextComponentTranslation("commands.loli.get", flagText, commentText, valueText));
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				} else if (args[0].equals("reload")) {
 					ConfigLoader.load();
 					if (!sender.getEntityWorld().isRemote) {
 						ConfigLoader.sandChange(null);
 					}
-					sender.addChatMessage(new ChatComponentTranslation("commands.loli.reload"));
-				} else if (args[0].equals("flagList")) {
-					sender.addChatMessage(new ChatComponentText("loliPickaxeMaxRange:最大采掘范围"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeMandatoryDrop:是否会强制掉落方块"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeThorns:是否会反伤"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeKillRangeEntity:是否可以潜行右键杀死周围实体"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeKillRange:杀死周围实体的范围"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeAutoKillRangeEntity:是否自动杀死周围实体"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeAutoKillRange:自动杀死周围实体的范围"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeDuration:效果持续时间(Tick)"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeDropProtectTime:丢弃保护时间(ms)"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeCompulsoryRemove:强制清除生物"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeValidToAllEntity:致死效果对全部实体有效"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeClearInventory:清除被攻击者的背包"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeDropItems:强制死亡掉落"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeKickPlayer:踢出玩家"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeKickMessage:踢出玩家消息"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeForbidOnLivingUpdate:禁止死亡实体触发实体更新事件"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeReincarnation:对被攻击者发动伊邪那美(需同时开启踢出玩家)"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeBeyondRedemption:对被攻击者发动灵魂超度"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeFindOwner:是否自动寻找所有者"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeFindOwnerRange:自动寻找所有者范围"));
-					sender.addChatMessage(new ChatComponentText("loliPickaxeBlueScreenAttack:蓝屏打击"));
-				} else {
-					String value;
-					switch (args[0]) {
-					case "loliPickaxeMaxRange":
-						value = String.valueOf(ConfigLoader.loliPickaxeMaxRange);
-						break;
-					case "loliPickaxeMandatoryDrop":
-						value = String.valueOf(ConfigLoader.loliPickaxeMandatoryDrop);
-						break;
-					case "loliPickaxeThorns":
-						value = String.valueOf(ConfigLoader.loliPickaxeThorns);
-						break;
-					case "loliPickaxeKillRangeEntity":
-						value = String.valueOf(ConfigLoader.loliPickaxeKillRangeEntity);
-						break;
-					case "loliPickaxeKillRange":
-						value = String.valueOf(ConfigLoader.loliPickaxeKillRange);
-						break;
-					case "loliPickaxeAutoKillRangeEntity":
-						value = String.valueOf(ConfigLoader.loliPickaxeAutoKillRangeEntity);
-						break;
-					case "loliPickaxeAutoKillRange":
-						value = String.valueOf(ConfigLoader.loliPickaxeAutoKillRange);
-						break;
-					case "loliPickaxeDuration":
-						value = String.valueOf(ConfigLoader.loliPickaxeDuration);
-						break;
-					case "loliPickaxeDropProtectTime":
-						value = String.valueOf(ConfigLoader.loliPickaxeDropProtectTime);
-						break;
-					case "loliPickaxeCompulsoryRemove":
-						value = String.valueOf(ConfigLoader.loliPickaxeCompulsoryRemove);
-						break;
-					case "loliPickaxeValidToAllEntity":
-						value = String.valueOf(ConfigLoader.loliPickaxeValidToAllEntity);
-						break;
-					case "loliPickaxeClearInventory":
-						value = String.valueOf(ConfigLoader.loliPickaxeClearInventory);
-						break;
-					case "loliPickaxeDropItems":
-						value = String.valueOf(ConfigLoader.loliPickaxeDropItems);
-						break;
-					case "loliPickaxeKickPlayer":
-						value = String.valueOf(ConfigLoader.loliPickaxeKickPlayer);
-						break;
-					case "loliPickaxeKickMessage":
-						value = ConfigLoader.loliPickaxeKickMessage;
-						break;
-					case "loliPickaxeForbidOnLivingUpdate":
-						value = String.valueOf(ConfigLoader.loliPickaxeForbidOnLivingUpdate);
-						break;
-					case "loliPickaxeReincarnation":
-						value = String.valueOf(ConfigLoader.loliPickaxeReincarnation);
-						break;
-					case "loliPickaxeBeyondRedemption":
-						value = String.valueOf(ConfigLoader.loliPickaxeBeyondRedemption);
-						break;
-					case "loliPickaxeFindOwner":
-						value = String.valueOf(ConfigLoader.loliPickaxeFindOwner);
-						break;
-					case "loliPickaxeFindOwnerRange":
-						value = String.valueOf(ConfigLoader.loliPickaxeFindOwnerRange);
-						break;
-					case "loliPickaxeBlueScreenAttack":
-						value = String.valueOf(ConfigLoader.loliPickaxeBlueScreenAttack);
-						break;
-					default:
-						throw new WrongUsageException("commands.loli.usage");
+					sender.sendMessage(new TextComponentTranslation("commands.loli.reload"));
+				} else if (args[0].equals("listFlag")) {
+					for (String flag : ConfigLoader.commandFlags) {
+						TextComponentString flagText = new TextComponentString(flag);
+						flagText.getStyle().setColor(TextFormatting.AQUA)
+								.setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/loli " + flag));
+						TextComponentString commentText = new TextComponentString(
+								ConfigLoader.flagAnnotations.get(flag).comment());
+						commentText.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
+						sender.sendMessage(new TextComponentTranslation("commands.loli.list", flagText, commentText));
 					}
-					sender.addChatMessage(new ChatComponentTranslation("commands.loli.get", args[0], value));
+				} else if (args[0].equals("listValue")) {
+					for (String flag : ConfigLoader.commandFlags) {
+						try {
+							String value;
+							Field field = ConfigLoader.flagFields.get(flag);
+							switch (ConfigLoader.flagAnnotations.get(flag).valueType()) {
+							case INT:
+								value = String.valueOf(field.getInt(null));
+								break;
+							case DOUBLE:
+								value = String.valueOf(field.getDouble(null));
+								break;
+							case BOOLEAN:
+								value = String.valueOf(field.getBoolean(null));
+								break;
+							case STRING:
+								value = (String) field.get(null);
+								break;
+							default:
+								throw new WrongUsageException("commands.loli.usage");
+							}
+							TextComponentString flagText = new TextComponentString(flag);
+							flagText.getStyle().setColor(TextFormatting.AQUA)
+									.setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/loli " + flag));
+							TextComponentString commentText = new TextComponentString(
+									ConfigLoader.flagAnnotations.get(flag).comment());
+							commentText.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
+							TextComponentString valueText = new TextComponentString(value);
+							valueText.getStyle().setColor(TextFormatting.RED);
+							sender.sendMessage(new TextComponentTranslation("commands.loli.get", flagText, commentText,
+									valueText));
+						} catch (IllegalArgumentException e) {
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
+					}
+				} else {
+					throw new WrongUsageException("commands.loli.usage");
 				}
 			}
 		} else {
@@ -214,32 +173,22 @@ public class ConfigCommand extends CommandBase {
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
+			BlockPos targetPos) {
 		if (args.length == 1) {
-			return getListOfStringsFromIterableMatchingLastWord(args, Arrays.asList(flags));
+			List<String> list = Lists.newArrayList(ConfigLoader.commandFlags);
+			list.add("reload");
+			list.add("listFlag");
+			list.add("listValue");
+			return getListOfStringsMatchingLastWord(args, list);
 		} else if (args.length == 2) {
-			switch (args[0]) {
-			case "loliPickaxeMandatoryDrop":
-			case "loliPickaxeThorns":
-			case "loliPickaxeKillRangeEntity":
-			case "loliPickaxeAutoKillRangeEntity":
-			case "loliPickaxeCompulsoryRemove":
-			case "loliPickaxeValidToAllEntity":
-			case "loliPickaxeClearInventory":
-			case "loliPickaxeDropItems":
-			case "loliPickaxeKickPlayer":
-			case "loliPickaxeForbidOnLivingUpdate":
-			case "loliPickaxeReincarnation":
-			case "loliPickaxeBeyondRedemption":
-			case "loliPickaxeFindOwner":
-			case "loliPickaxeBlueScreenAttack":
-				return getListOfStringsFromIterableMatchingLastWord(args,
-						Arrays.asList(new String[] { "true", "false" }));
-			default:
-				return null;
+			if (ConfigLoader.commandFlags.contains(args[0])) {
+				if (ConfigLoader.flagAnnotations.get(args[0]).valueType() == ValurType.BOOLEAN) {
+					return getListOfStringsMatchingLastWord(args, Arrays.asList(new String[] { "true", "false" }));
+				}
 			}
 		}
-		return null;
+		return Collections.<String>emptyList();
 	}
 
 }

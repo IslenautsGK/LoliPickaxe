@@ -1,180 +1,303 @@
 package com.anotherstar.common.config;
 
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import org.apache.logging.log4j.Logger;
-
-import com.anotherstar.common.LoliPickaxe;
+import com.anotherstar.common.config.annotation.ConfigField;
+import com.anotherstar.common.config.annotation.ConfigField.ConfigType;
+import com.anotherstar.common.config.annotation.ConfigField.ValurType;
+import com.anotherstar.common.item.tool.ILoli;
+import com.anotherstar.network.LoliConfigPacket;
+import com.anotherstar.network.NetworkHandler;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ConfigLoader {
 
 	private static Configuration config;
-	private static Logger logger;
+	public static final List<String> flags = Lists.newArrayList();
+	public static final List<String> commandFlags = Lists.newArrayList();
+	public static final List<String> guiFlags = Lists.newArrayList();
+	public static final Map<String, ConfigField> flagAnnotations = Maps.newHashMap();
+	public static final Map<String, Field> flagFields = Maps.newHashMap();
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "最大采掘范围", valueType = ValurType.INT, intDefaultValue = 5)
 	public static int loliPickaxeMaxRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "强制掉落方块", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeMandatoryDrop;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "反伤", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeThorns;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "潜行右键杀死周围实体", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeKillRangeEntity;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "潜行右键杀死周围实体的范围", valueType = ValurType.INT, intDefaultValue = 50)
 	public static int loliPickaxeKillRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "自动杀死周围实体", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeAutoKillRangeEntity;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "自动杀死周围实体的范围", valueType = ValurType.INT, intDefaultValue = 5)
 	public static int loliPickaxeAutoKillRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "效果持续时间(Tick)", valueType = ValurType.INT, intDefaultValue = 200)
 	public static int loliPickaxeDuration;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "丢弃保护时间(ms)", valueType = ValurType.INT, intDefaultValue = 200)
 	public static int loliPickaxeDropProtectTime;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "强制清除生物", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeCompulsoryRemove;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "范围攻击对非怪物有效", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeValidToAmityEntity;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "对全部实体有效", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeValidToAllEntity;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "清空玩家背包", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeClearInventory;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "缴械", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeDropItems;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "踢出玩家", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeKickPlayer;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "踢出玩家消息", valueType = ValurType.STRING, stringDefaultValue = "你被氪金萝莉踢出了服务器")
 	public static String loliPickaxeKickMessage;
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "禁止死亡实体触发实体更新事件", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeForbidOnLivingUpdate;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "伊邪那美(需同时开启踢出玩家)", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeReincarnation;
-	public static Set<String> loliPickaxeReincarnationPlayerList;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "伊邪那美玩家列表", valueType = ValurType.LIST, listDefaultValue = {})
+	public static List<String> loliPickaxeReincarnationPlayerList;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "灵魂超度", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeBeyondRedemption;
-	public static Set<String> loliPickaxeBeyondRedemptionPlayerList;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "灵魂超度玩家列表", valueType = ValurType.LIST, listDefaultValue = {})
+	public static List<String> loliPickaxeBeyondRedemptionPlayerList;
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "寻找所有者", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeFindOwner;
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "寻找所有者范围", valueType = ValurType.INT, intDefaultValue = 50)
 	public static int loliPickaxeFindOwnerRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "蓝屏打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeBlueScreenAttack;
-	public static List<String> loliRecodeNames;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "崩溃打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliPickaxeExitAttack;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "未响应打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliPickaxeFailRespondAttack;
+	@ConfigField(type = {
+			ConfigType.CONFIG }, comment = "强制死亡延迟特化列表(实体ID:Tick)", valueType = ValurType.MAP, mapDefaultValue = {
+					"ender_dragon:201" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
+	public static Map<String, Integer> loliPickaxeDelayRemoveList;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "左键范围攻击", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeKillFacing;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "范围攻击范围", valueType = ValurType.INT, intDefaultValue = 100)
+	public static int loliPickaxeKillFacingRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "范围攻击斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1)
+	public static double loliPickaxeKillFacingSlope;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = {
+			"loliPickaxeMandatoryDrop", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange",
+			"loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeDuration",
+			"loliPickaxeDropProtectTime", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity",
+			"loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer",
+			"loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption",
+			"loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack",
+			"loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
+	public static List<String> loliPickaxeGuiChangeList;
+
+	static {
+		try {
+			Field[] fields = ConfigLoader.class.getFields();
+			for (Field field : fields) {
+				if (field.isAnnotationPresent(ConfigField.class)) {
+					ConfigField annotation = field.getAnnotation(ConfigField.class);
+					flags.add(field.getName());
+					flagAnnotations.put(field.getName(), annotation);
+					flagFields.put(field.getName(), field);
+					ConfigType[] types = annotation.type();
+					for (ConfigType type : types) {
+						switch (type) {
+						case COMMAND:
+							commandFlags.add(field.getName());
+							break;
+						case GUI:
+							guiFlags.add(field.getName());
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void init(FMLPreInitializationEvent event) {
-		logger = event.getModLog();
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		load();
 	}
 
 	public static void load() {
-		logger.info("Started loading config. ");
 		config.load();
-		loliPickaxeMaxRange = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMaxRange", 5, "氪金萝莉的最大采掘范围")
-				.getInt();
-		loliPickaxeMandatoryDrop = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMandatoryDrop", false, "氪金萝莉是否会强制掉落方块").getBoolean();
-		loliPickaxeThorns = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeThorns", true, "氪金萝莉是否会反伤")
-				.getBoolean();
-		loliPickaxeKillRangeEntity = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRangeEntity", true, "氪金萝莉是否可以潜行右键杀死周围实体")
-				.getBoolean();
-		loliPickaxeKillRange = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRange", 50, "氪金萝莉杀死周围实体的范围")
-				.getInt();
-		loliPickaxeAutoKillRangeEntity = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeAutoKillRangeEntity", false, "氪金萝莉是否自动杀死周围实体")
-				.getBoolean();
-		loliPickaxeAutoKillRange = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeAutoKillRange", 5, "氪金萝莉自动杀死周围实体的范围").getInt();
-		loliPickaxeDuration = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDuration", 200, "氪金萝莉效果持续时间(Tick)")
-				.getInt();
-		loliPickaxeDropProtectTime = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDropProtectTime", 200, "氪金萝莉丢弃保护时间(ms)").getInt();
-		loliPickaxeCompulsoryRemove = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeCompulsoryRemove", true, "氪金萝莉强制清除生物").getBoolean();
-		loliPickaxeValidToAllEntity = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeValidToAllEntity", false, "氪金萝莉对全部实体有效").getBoolean();
-		loliPickaxeClearInventory = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeClearInventory", false, "氪金萝莉清背包").getBoolean();
-		loliPickaxeDropItems = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDropItems", false, "氪金萝莉缴械")
-				.getBoolean();
-		loliPickaxeKickPlayer = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKickPlayer", false, "氪金萝莉踢出玩家")
-				.getBoolean();
-		loliPickaxeKickMessage = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKickMessage", "你被氪金萝莉踢出了服务器", "氪金萝莉踢出玩家消息")
-				.getString();
-		loliPickaxeForbidOnLivingUpdate = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeForbidOnLivingUpdate", false, "禁止死亡实体触发实体更新事件")
-				.getBoolean();
-		loliPickaxeReincarnation = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnation", false, "氪金萝莉对玩家发动伊邪那美(需同时开启踢出玩家)")
-				.getBoolean();
-		String[] strs = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnationPlayerList", new String[0], "伊邪那美玩家列表")
-				.getStringList();
-		loliPickaxeReincarnationPlayerList = Sets.newHashSet();
-		for (String str : strs) {
-			loliPickaxeReincarnationPlayerList.add(str);
-		}
-		loliPickaxeBeyondRedemption = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBeyondRedemption", false, "氪金萝莉使玩家万劫不复").getBoolean();
-		strs = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBeyondRedemptionPlayerList", new String[0], "万劫不复玩家列表")
-				.getStringList();
-		loliPickaxeBeyondRedemptionPlayerList = Sets.newHashSet();
-		for (String str : strs) {
-			loliPickaxeBeyondRedemptionPlayerList.add(str);
-		}
-		loliPickaxeFindOwner = config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwner", true, "氪金萝莉是否自动寻找所有者")
-				.getBoolean();
-		loliPickaxeFindOwnerRange = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 50, "氪金萝莉自动寻找所有者范围").getInt();
-		loliPickaxeBlueScreenAttack = config
-				.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBlueScreenAttack", false, "氪金萝莉蓝屏打击").getBoolean();
-		strs = config.get(Configuration.CATEGORY_GENERAL, "loliRecodeNames", new String[0], "额外唱片列表(声音:唱片名:唱片ID)")
-				.getStringList();
-		loliRecodeNames = Lists.newArrayList();
-		for (String str : strs) {
-			loliRecodeNames.add(str);
+		try {
+			for (String flag : flags) {
+				Field field = flagFields.get(flag);
+				ConfigField annotation = flagAnnotations.get(flag);
+				switch (annotation.valueType()) {
+				case INT:
+					field.setInt(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
+							annotation.intDefaultValue(), annotation.comment()).getInt());
+					break;
+				case DOUBLE:
+					field.setDouble(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
+							annotation.doubleDefaultValue(), annotation.comment()).getDouble());
+					break;
+				case BOOLEAN:
+					field.setBoolean(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
+							annotation.booleanDefaultValue(), annotation.comment()).getBoolean());
+					break;
+				case STRING:
+					field.set(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
+							annotation.stringDefaultValue(), annotation.comment()).getString());
+					break;
+				case LIST: {
+					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(),
+							annotation.listDefaultValue(), annotation.comment()).getStringList();
+					List<String> list = Lists.newArrayList();
+					for (String str : strs) {
+						list.add(str);
+					}
+					field.set(null, list);
+					break;
+				}
+				case MAP: {
+					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(),
+							annotation.mapDefaultValue(), annotation.comment()).getStringList();
+					Map map = Maps.newHashMap();
+					for (String str : strs) {
+						int index = str.lastIndexOf(':');
+						Object key;
+						switch (annotation.mapKeyType()) {
+						case INT:
+							key = Integer.parseInt(str.substring(0, index));
+							break;
+						case DOUBLE:
+							key = Double.parseDouble(str.substring(0, index));
+							break;
+						case BOOLEAN:
+							key = Boolean.parseBoolean(str.substring(0, index));
+							break;
+						case STRING:
+							key = str.substring(0, index);
+							break;
+						default:
+							continue;
+						}
+						Object value;
+						switch (annotation.mapValueType()) {
+						case INT:
+							value = Integer.parseInt(str.substring(index + 1, str.length()));
+							break;
+						case DOUBLE:
+							value = Double.parseDouble(str.substring(index + 1, str.length()));
+							break;
+						case BOOLEAN:
+							value = Boolean.parseBoolean(str.substring(index + 1, str.length()));
+							break;
+						case STRING:
+							value = str.substring(index + 1, str.length());
+							break;
+						default:
+							continue;
+						}
+						map.put(key, value);
+					}
+					field.set(null, map);
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 		config.save();
-		logger.info("Finished loading config.");
 	}
 
 	public static void save() {
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMaxRange", 5, "氪金萝莉的最大采掘范围")
-				.setValue(loliPickaxeMaxRange);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeMandatoryDrop", false, "氪金萝莉是否会强制掉落方块")
-				.setValue(loliPickaxeMandatoryDrop);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeThorns", true, "氪金萝莉是否会反伤").setValue(loliPickaxeThorns);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRangeEntity", true, "氪金萝莉是否可以潜行右键杀死周围实体")
-				.setValue(loliPickaxeKillRangeEntity);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKillRange", 50, "氪金萝莉杀死周围实体的范围")
-				.setValue(loliPickaxeKillRange);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeAutoKillRangeEntity", false, "氪金萝莉是否自动杀死周围实体")
-				.setValue(loliPickaxeAutoKillRangeEntity);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeAutoKillRange", 5, "氪金萝莉自动杀死周围实体的范围")
-				.setValue(loliPickaxeAutoKillRange);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDuration", 200, "氪金萝莉效果持续时间(Tick)")
-				.setValue(loliPickaxeDuration);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDropProtectTime", 200, "氪金萝莉丢弃保护时间(ms)")
-				.setValue(loliPickaxeDropProtectTime);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeCompulsoryRemove", true, "氪金萝莉强制清除生物")
-				.setValue(loliPickaxeCompulsoryRemove);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeValidToAllEntity", false, "氪金萝莉对全部实体有效")
-				.setValue(loliPickaxeValidToAllEntity);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeClearInventory", false, "氪金萝莉清背包")
-				.setValue(loliPickaxeClearInventory);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeDropItems", false, "氪金萝莉缴械")
-				.setValue(loliPickaxeClearInventory);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKickPlayer", false, "氪金萝莉踢出玩家")
-				.setValue(loliPickaxeKickPlayer);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeKickMessage", "你被氪金萝莉踢出了服务器", "氪金萝莉踢出玩家消息")
-				.setValue(loliPickaxeKickMessage);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeForbidOnLivingUpdate", false, "禁止死亡实体触发实体更新事件")
-				.setValue(loliPickaxeForbidOnLivingUpdate);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnation", false, "氪金萝莉对玩家发动伊邪那美(需同时开启踢出玩家)")
-				.setValue(loliPickaxeReincarnation);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnationPlayerList", new String[0], "伊邪那美玩家列表")
-				.setValues(loliPickaxeReincarnationPlayerList.toArray(new String[0]));
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBeyondRedemption", false, "氪金萝莉使玩家万劫不复")
-				.setValue(loliPickaxeBeyondRedemption);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBeyondRedemptionPlayerList", new String[0], "万劫不复玩家列表")
-				.setValues(loliPickaxeBeyondRedemptionPlayerList.toArray(new String[0]));
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwner", true, "氪金萝莉是否自动寻找所有者")
-				.setValue(loliPickaxeFindOwner);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeFindOwnerRange", 50, "氪金萝莉自动寻找所有者范围")
-				.setValue(loliPickaxeFindOwnerRange);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBlueScreenAttack", false, "氪金萝莉蓝屏打击")
-				.setValue(loliPickaxeBlueScreenAttack);
-		config.get(Configuration.CATEGORY_GENERAL, "loliRecodeNames", new String[0], "额外唱片列表(声音:唱片名:唱片ID)")
-				.setValues(loliRecodeNames.toArray(new String[0]));
+		try {
+			for (String flag : flags) {
+				Field field = flagFields.get(flag);
+				ConfigField annotation = flagAnnotations.get(flag);
+				switch (annotation.valueType()) {
+				case INT:
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.intDefaultValue(),
+							annotation.comment()).setValue(field.getInt(null));
+					break;
+				case DOUBLE:
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.doubleDefaultValue(),
+							annotation.comment()).setValue(field.getDouble(null));
+					break;
+				case BOOLEAN:
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.booleanDefaultValue(),
+							annotation.comment()).setValue(field.getBoolean(null));
+					break;
+				case STRING:
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.stringDefaultValue(),
+							annotation.comment()).setValue((String) field.get(null));
+					break;
+				case LIST: {
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(),
+							annotation.comment()).setValues(((List<String>) field.get(null)).toArray(new String[0]));
+					break;
+				}
+				case MAP: {
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(),
+							annotation.comment())
+							.setValues(((Map<?, ?>) field.get(null)).entrySet().stream()
+									.map(entry -> entry.getKey().toString() + ":" + entry.getValue().toString())
+									.toArray(String[]::new));
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 		config.save();
 	}
 
@@ -201,79 +324,326 @@ public class ConfigLoader {
 	}
 
 	public static void sandChange(EntityPlayerMP player) {
-		ByteBuf buffer = Unpooled.buffer();
-		buffer.writeInt(loliPickaxeMaxRange);
-		buffer.writeBoolean(loliPickaxeMandatoryDrop);
-		buffer.writeBoolean(loliPickaxeThorns);
-		buffer.writeBoolean(loliPickaxeKillRangeEntity);
-		buffer.writeInt(loliPickaxeKillRange);
-		buffer.writeBoolean(loliPickaxeAutoKillRangeEntity);
-		buffer.writeInt(loliPickaxeAutoKillRange);
-		buffer.writeInt(loliPickaxeDuration);
-		buffer.writeInt(loliPickaxeDropProtectTime);
-		buffer.writeBoolean(loliPickaxeCompulsoryRemove);
-		buffer.writeBoolean(loliPickaxeValidToAllEntity);
-		buffer.writeBoolean(loliPickaxeClearInventory);
-		buffer.writeBoolean(loliPickaxeDropItems);
-		buffer.writeBoolean(loliPickaxeKickPlayer);
-		ByteBufUtils.writeUTF8String(buffer, loliPickaxeKickMessage);
-		buffer.writeBoolean(loliPickaxeForbidOnLivingUpdate);
-		buffer.writeBoolean(loliPickaxeReincarnation);
-		buffer.writeInt(loliPickaxeReincarnationPlayerList.size());
-		for (String uuid : loliPickaxeReincarnationPlayerList) {
-			ByteBufUtils.writeUTF8String(buffer, uuid);
-		}
-		buffer.writeBoolean(loliPickaxeBeyondRedemption);
-		buffer.writeInt(loliPickaxeBeyondRedemptionPlayerList.size());
-		for (String uuid : loliPickaxeBeyondRedemptionPlayerList) {
-			ByteBufUtils.writeUTF8String(buffer, uuid);
-		}
-		buffer.writeBoolean(loliPickaxeFindOwner);
-		buffer.writeInt(loliPickaxeFindOwnerRange);
-		buffer.writeBoolean(loliPickaxeBlueScreenAttack);
-		if (player != null) {
-			LoliPickaxe.loliConfigNetwork.sendTo(new FMLProxyPacket(buffer, "loliConfig"), player);
-		} else {
-			LoliPickaxe.loliConfigNetwork.sendToAll(new FMLProxyPacket(buffer, "loliConfig"));
+		try {
+			NBTTagCompound data = new NBTTagCompound();
+			for (String flag : flags) {
+				Field field = flagFields.get(flag);
+				ConfigField annotation = flagAnnotations.get(flag);
+				switch (annotation.valueType()) {
+				case INT:
+					data.setInteger(field.getName(), field.getInt(null));
+					break;
+				case DOUBLE:
+					data.setDouble(field.getName(), field.getDouble(null));
+					break;
+				case BOOLEAN:
+					data.setBoolean(field.getName(), field.getBoolean(null));
+					break;
+				case STRING:
+					data.setString(field.getName(), (String) field.get(null));
+					break;
+				case LIST: {
+					NBTTagList list = new NBTTagList();
+					for (String str : (List<String>) field.get(null)) {
+						list.appendTag(new NBTTagString(str));
+					}
+					data.setTag(field.getName(), list);
+					break;
+				}
+				case MAP: {
+					NBTTagList list = new NBTTagList();
+					for (Map.Entry entry : ((Map<?, ?>) field.get(null)).entrySet()) {
+						list.appendTag(new NBTTagString(entry.getKey().toString() + ":" + entry.getValue().toString()));
+					}
+					data.setTag(field.getName(), list);
+					break;
+				}
+				default:
+					break;
+				}
+			}
+			if (player == null) {
+				NetworkHandler.INSTANCE.sendMessageToAll(new LoliConfigPacket(data));
+			} else {
+				NetworkHandler.INSTANCE.sendMessageToPlayer(new LoliConfigPacket(data), player);
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public static void receptionChange(ByteBuf buffer) {
-		loliPickaxeMaxRange = buffer.readInt();
-		loliPickaxeMandatoryDrop = buffer.readBoolean();
-		loliPickaxeThorns = buffer.readBoolean();
-		loliPickaxeKillRangeEntity = buffer.readBoolean();
-		loliPickaxeKillRange = buffer.readInt();
-		loliPickaxeAutoKillRangeEntity = buffer.readBoolean();
-		loliPickaxeAutoKillRange = buffer.readInt();
-		loliPickaxeDuration = buffer.readInt();
-		loliPickaxeDropProtectTime = buffer.readInt();
-		loliPickaxeCompulsoryRemove = buffer.readBoolean();
-		loliPickaxeValidToAllEntity = buffer.readBoolean();
-		loliPickaxeClearInventory = buffer.readBoolean();
-		loliPickaxeDropItems = buffer.readBoolean();
-		loliPickaxeKickPlayer = buffer.readBoolean();
-		loliPickaxeKickMessage = ByteBufUtils.readUTF8String(buffer);
-		loliPickaxeForbidOnLivingUpdate = buffer.readBoolean();
-		loliPickaxeReincarnation = buffer.readBoolean();
-		int size = buffer.readInt();
-		loliPickaxeReincarnationPlayerList.clear();
-		for (int i = 0; i < size; i++) {
-			loliPickaxeReincarnationPlayerList.add(ByteBufUtils.readUTF8String(buffer));
+	public static void receptionChange(NBTTagCompound data) {
+		try {
+			for (String flag : flags) {
+				Field field = flagFields.get(flag);
+				ConfigField annotation = flagAnnotations.get(flag);
+				switch (annotation.valueType()) {
+				case INT:
+					field.setInt(null, data.getInteger(field.getName()));
+					break;
+				case DOUBLE:
+					field.setDouble(null, data.getDouble(field.getName()));
+					break;
+				case BOOLEAN:
+					field.setBoolean(null, data.getBoolean(field.getName()));
+					break;
+				case STRING:
+					field.set(null, data.getString(field.getName()));
+					break;
+				case LIST: {
+					NBTTagList nbtlist = data.getTagList(field.getName(), 8);
+					List<String> list = Lists.newArrayList();
+					for (NBTBase nbt : nbtlist) {
+						list.add(((NBTTagString) nbt).getString());
+					}
+					field.set(null, list);
+					break;
+				}
+				case MAP: {
+					NBTTagList list = data.getTagList(field.getName(), 8);
+					Map map = Maps.newHashMap();
+					for (NBTBase nbt : list) {
+						String str = ((NBTTagString) nbt).getString();
+						int index = str.lastIndexOf(':');
+						Object key;
+						switch (annotation.mapKeyType()) {
+						case INT:
+							key = Integer.parseInt(str.substring(0, index));
+							break;
+						case DOUBLE:
+							key = Double.parseDouble(str.substring(0, index));
+							break;
+						case BOOLEAN:
+							key = Boolean.parseBoolean(str.substring(0, index));
+							break;
+						case STRING:
+							key = str.substring(0, index);
+							break;
+						default:
+							continue;
+						}
+						Object value;
+						switch (annotation.mapValueType()) {
+						case INT:
+							value = Integer.parseInt(str.substring(index + 1, str.length()));
+							break;
+						case DOUBLE:
+							value = Double.parseDouble(str.substring(index + 1, str.length()));
+							break;
+						case BOOLEAN:
+							value = Boolean.parseBoolean(str.substring(index + 1, str.length()));
+							break;
+						case STRING:
+							value = str.substring(index + 1, str.length());
+							break;
+						default:
+							continue;
+						}
+						map.put(key, value);
+					}
+					field.set(null, map);
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 		}
-		loliPickaxeBeyondRedemption = buffer.readBoolean();
-		size = buffer.readInt();
-		loliPickaxeBeyondRedemptionPlayerList.clear();
-		for (int i = 0; i < size; i++) {
-			loliPickaxeBeyondRedemptionPlayerList.add(ByteBufUtils.readUTF8String(buffer));
-		}
-		loliPickaxeFindOwner = buffer.readBoolean();
-		loliPickaxeFindOwnerRange = buffer.readInt();
-		loliPickaxeBlueScreenAttack = buffer.readBoolean();
 	}
 
-	public static Logger logger() {
-		return logger;
+	public static int getInt(ItemStack stack, String flag) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.INT) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
+						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
+						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getInteger(flag);
+				} else {
+					try {
+						return flagFields.get(flag).getInt(null);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	public static double getDouble(ItemStack stack, String flag) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.DOUBLE) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
+						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
+						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+					NBTTagCompound stackFlags = stack.getTagCompound().getCompoundTag(ILoli.CONFIG);
+					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getDouble(flag);
+				} else {
+					try {
+						return flagFields.get(flag).getDouble(null);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	public static boolean getBoolean(ItemStack stack, String flag) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.BOOLEAN) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
+						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
+						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getBoolean(flag);
+				} else {
+					try {
+						return flagFields.get(flag).getBoolean(null);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public static String getString(ItemStack stack, String flag) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.STRING) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
+						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
+						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getString(flag);
+				} else {
+					try {
+						return (String) flagFields.get(flag).get(null);
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public static void setInt(ItemStack stack, String flag, int value) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.INT) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+					NBTTagCompound nbt;
+					if (!stack.hasTagCompound()) {
+						nbt = new NBTTagCompound();
+						stack.setTagCompound(nbt);
+					} else {
+						nbt = stack.getTagCompound();
+					}
+					NBTTagCompound stackFlags;
+					if (nbt.hasKey(ILoli.CONFIG)) {
+						stackFlags = nbt.getCompoundTag(ILoli.CONFIG);
+					} else {
+						stackFlags = new NBTTagCompound();
+						nbt.setTag(ILoli.CONFIG, stackFlags);
+					}
+					stackFlags.setInteger(flag, value);
+				}
+			}
+		}
+	}
+
+	public static void setDouble(ItemStack stack, String flag, double value) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.DOUBLE) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+					NBTTagCompound nbt;
+					if (!stack.hasTagCompound()) {
+						nbt = new NBTTagCompound();
+						stack.setTagCompound(nbt);
+					} else {
+						nbt = stack.getTagCompound();
+					}
+					NBTTagCompound stackFlags;
+					if (nbt.hasKey(ILoli.CONFIG)) {
+						stackFlags = nbt.getCompoundTag(ILoli.CONFIG);
+					} else {
+						stackFlags = new NBTTagCompound();
+						nbt.setTag(ILoli.CONFIG, stackFlags);
+					}
+					stackFlags.setDouble(flag, value);
+				}
+			}
+		}
+	}
+
+	public static void setBoolean(ItemStack stack, String flag, boolean value) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.BOOLEAN) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+					NBTTagCompound nbt;
+					if (!stack.hasTagCompound()) {
+						nbt = new NBTTagCompound();
+						stack.setTagCompound(nbt);
+					} else {
+						nbt = stack.getTagCompound();
+					}
+					NBTTagCompound stackFlags;
+					if (nbt.hasKey(ILoli.CONFIG)) {
+						stackFlags = nbt.getCompoundTag(ILoli.CONFIG);
+					} else {
+						stackFlags = new NBTTagCompound();
+						nbt.setTag(ILoli.CONFIG, stackFlags);
+					}
+					stackFlags.setBoolean(flag, value);
+				}
+			}
+		}
+	}
+
+	public static void setString(ItemStack stack, String flag, String value) {
+		if (flags.contains(flag)) {
+			ConfigField annotation = flagAnnotations.get(flag);
+			if (annotation.valueType() == ValurType.STRING) {
+				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+					NBTTagCompound nbt;
+					if (!stack.hasTagCompound()) {
+						nbt = new NBTTagCompound();
+						stack.setTagCompound(nbt);
+					} else {
+						nbt = stack.getTagCompound();
+					}
+					NBTTagCompound stackFlags;
+					if (nbt.hasKey(ILoli.CONFIG)) {
+						stackFlags = nbt.getCompoundTag(ILoli.CONFIG);
+					} else {
+						stackFlags = new NBTTagCompound();
+						nbt.setTag(ILoli.CONFIG, stackFlags);
+					}
+					stackFlags.setString(flag, value);
+				}
+			}
+		}
 	}
 
 }

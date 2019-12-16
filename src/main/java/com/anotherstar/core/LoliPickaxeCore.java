@@ -1,12 +1,9 @@
 package com.anotherstar.core;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 public class LoliPickaxeCore implements IFMLLoadingPlugin {
 
@@ -31,8 +28,10 @@ public class LoliPickaxeCore implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		debug = !(Boolean) data.get("runtimeDeobfuscationEnabled");
-		blueScreenExe = new File(((File) data.get("coremodLocation")).getParentFile().getParentFile(),
-				"BlueScreen.exe");
+		if (!debug) {
+			blueScreenExe = new File(((File) data.get("coremodLocation")).getParentFile().getParentFile(),
+					"BlueScreen.exe");
+		}
 	}
 
 	@Override

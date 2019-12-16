@@ -1,24 +1,20 @@
 package com.anotherstar.common;
 
-import com.anotherstar.network.ServerPacketHandler;
-
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = LoliPickaxe.MODID, name = LoliPickaxe.NAME, version = LoliPickaxe.VERSION, acceptedMinecraftVersions = "1.7.10")
 public class LoliPickaxe {
 
-	public static final String MODID = "LoliPickaxe";
+	public static final String MODID = "lolipickaxe";
 	public static final String NAME = "LoliPickaxe Mod";
-	public static final String VERSION = "1.0.9";
+	public static final String VERSION = "1.1.1";
 
 	@SidedProxy(clientSide = "com.anotherstar.client.ClientProxy", serverSide = "com.anotherstar.common.CommonProxy")
 	public static CommonProxy proxy;
@@ -26,18 +22,8 @@ public class LoliPickaxe {
 	@Instance(LoliPickaxe.MODID)
 	public static LoliPickaxe instance;
 
-	public static FMLEventChannel loliCardNetwork;
-	public static FMLEventChannel loliConfigNetwork;
-	public static FMLEventChannel loliDeadNetwork;
-
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		loliCardNetwork = NetworkRegistry.INSTANCE.newEventDrivenChannel("loliCard");
-		loliCardNetwork.register(new ServerPacketHandler());
-		loliConfigNetwork = NetworkRegistry.INSTANCE.newEventDrivenChannel("loliConfig");
-		loliConfigNetwork.register(new ServerPacketHandler());
-		loliDeadNetwork = NetworkRegistry.INSTANCE.newEventDrivenChannel("loliDead");
-		loliDeadNetwork.register(new ServerPacketHandler());
 		proxy.preInit(event);
 	}
 

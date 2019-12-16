@@ -1,40 +1,31 @@
 package com.anotherstar.common.item;
 
-import java.util.List;
-
-import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.item.tool.ItemLoliPickaxe;
-import com.google.common.collect.Lists;
 
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemLoader {
 
-	public final static Item loliCard = new ItemLoliCard();
-	public final static Item loliPickaxe = new ItemLoliPickaxe();
-	public final static Item loliRecord = new ItemModRecord("Loli", "recordLoli");
-	public final static List<Item> loliRecords = Lists.newArrayList();
+	public final static ItemLoliPickaxe loliPickaxe = new ItemLoliPickaxe();
 
-	public static void init(FMLPreInitializationEvent event) {
-		GameRegistry.registerItem(loliCard, "loli_card");
-		GameRegistry.registerItem(loliPickaxe, "loli_pickaxe");
-		GameRegistry.registerItem(loliRecord, "loli_record");
-		for (String loliRecordName : ConfigLoader.loliRecodeNames) {
-			String[] name = loliRecordName.split(":");
-			Item record = new ItemModRecord(name[0], name[1]);
-			loliRecords.add(record);
-			GameRegistry.registerItem(record, name[2]);
-		}
+	@SubscribeEvent
+	public void registerItem(RegistryEvent.Register<Item> event) {
+		event.getRegistry().register(loliPickaxe.setRegistryName(LoliPickaxe.MODID, "loli_pickaxe"));
 	}
 
+	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public static void initRenders(FMLPreInitializationEvent event) {
-		loliCard.setTextureName("lolipickaxe:loliCard");
-		loliPickaxe.setTextureName("lolipickaxe:loliPickaxe");
+	public void registerModel(ModelRegistryEvent event) {
+		ModelLoader.setCustomModelResourceLocation(loliPickaxe, 0,
+				new ModelResourceLocation(loliPickaxe.getRegistryName(), "inventory"));
 	}
 
 }
