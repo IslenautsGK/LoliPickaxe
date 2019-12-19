@@ -8,4 +8,6 @@ public interface ILoli {
 
 	String getOwner(ItemStack stack);
 
+	int getRange(ItemStack stack);
+	
 }

@@ -1,5 +1,35 @@
 ﻿
+itemGroup.loli=§c氪金萝莉
+itemGroup.loliRecipe=§c氪金萝莉-合成材料
+
 item.loliPickaxe.name=§c氪金萝莉
+item.loliDispersal.name=§c萝莉退散!
+item.bugEntityClear.name=§c清除只在客户端存在的生物(擦屁股)
+item.loliPickaxeCore_0.name=§c一级萝莉核心
+item.loliPickaxeCore_1.name=§c二级萝莉核心
+item.loliPickaxeCore_2.name=§c三级萝莉核心
+item.loliPickaxeCore_3.name=§c四级萝莉核心
+item.loliPickaxeCore_4.name=§c五级萝莉核心
+item.loliPickaxeCore_5.name=§c六级萝莉核心
+item.loliPickaxeCore_6.name=§c七级萝莉核心
+item.loliPickaxeCore_7.name=§c八级萝莉核心
+item.loliPickaxeCore_8.name=§c九级萝莉核心
+item.loliPickaxeCore_9.name=§c氪金萝莉核心
+item.loliPickaxeStick_0.name=§c一级萝莉手柄
+item.loliPickaxeStick_1.name=§c二级萝莉手柄
+item.loliPickaxeStick_2.name=§c三级萝莉手柄
+item.loliPickaxeStick_3.name=§c四级萝莉手柄
+item.loliPickaxeStick_4.name=§c五级萝莉手柄
+item.loliPickaxeStick_5.name=§c六级萝莉手柄
+item.loliPickaxeStick_6.name=§c七级萝莉手柄
+item.loliPickaxeStick_7.name=§c八级萝莉手柄
+item.loliPickaxeStick_8.name=§c九级萝莉手柄
+item.loliPickaxeStick_9.name=§c氪金萝莉手柄
+
+item.loliRecord.name=萝莉唱片
+item.record.lolirecord.desc=ばか変態煩い(av6752335)
+
+item.loliCard.name=萝莉卡片
 
 death.attack.loli=%1$s被%2$s用氪金萝莉抹杀了
 
@@ -7,9 +37,16 @@ loliPickaxe.range=采掘范围更改为%1$s*%1$s*%1$s
 loliPickaxe.killrangeentity=攻击了周围%1$s*%1$s范围内的%2$s个生物
 
 commands.loli.usage=/loli <flag> [value]
+commands.loli.notfound=未知的配置
+commands.loli.errortype=类型错误
 commands.loli.set=将%1$s(§d%2$s)的值设置成了%3$s
 commands.loli.get=%1$s(§d%2$s)的值为%3$s
 commands.loli.list=%1$s(§d%2$s)
 commands.loli.reload=已重新加载配置文件
+commands.loliattack.usage=/loliattack <玩家> <攻击特效>
+commands.loliattack.notfound=未知的攻击特效
 
 entity.Loli.name=萝莉
+
+key.category.lolipickaxe=§c氪金萝莉
+key.lolipickaxe.loli_config=配置§c氪金萝莉

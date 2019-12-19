@@ -1,0 +1,24 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"group" : "lolipickaxe:loli_pickaxe",
+	"result" : {
+		"item" : "lolipickaxe:loli_pickaxe_core",
+		"count" : 1,
+		"data" : 0
+	},
+	"pattern" : ["XYX", "YZY", "XYX"],
+	"key" : {
+		"X" : {
+			"item" : "minecraft:diamond",
+			"data" : 0
+		},
+		"Y" : {
+			"item" : "minecraft:emerald",
+			"data" : 0
+		},
+		"Z" : {
+			"item" : "minecraft:nether_star",
+			"data" : 0
+		}
+	}
+}

@@ -29,6 +29,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class LoliPickaxeEvent {
 
+	public static Set<Class<? extends Entity>> antiEntity = Sets.newHashSet();
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onLiftClick(PlayerInteractEvent.LeftClickEmpty event) {
@@ -145,7 +147,14 @@ public class LoliPickaxeEvent {
 
 	@SubscribeEvent
 	public void onEntityItemJoinWorld(EntityJoinWorldEvent event) {
-		if (event.getEntity() instanceof EntityItem) {
+		Entity entity = event.getEntity();
+		for (Class<? extends Entity> clazz : antiEntity) {
+			if (clazz.isInstance(entity)) {
+				event.setCanceled(true);
+				return;
+			}
+		}
+		if (entity instanceof EntityItem) {
 			EntityItem entityItem = (EntityItem) event.getEntity();
 			if (!entityItem.getItem().isEmpty() && entityItem.getItem().getItem() instanceof ILoli) {
 				entityItem.invulnerable = true;

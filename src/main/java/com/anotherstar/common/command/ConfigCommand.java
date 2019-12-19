@@ -53,7 +53,7 @@ public class ConfigCommand extends CommandBase {
 							ConfigLoader.flagFields.get(args[0]).set(null, args[1]);
 							break;
 						default:
-							throw new WrongUsageException("commands.loli.usage");
+							throw new WrongUsageException("commands.loli.errortype");
 						}
 					} catch (IllegalArgumentException e) {
 						e.printStackTrace();
@@ -61,7 +61,7 @@ public class ConfigCommand extends CommandBase {
 						e.printStackTrace();
 					}
 				} else {
-					throw new WrongUsageException("commands.loli.usage");
+					throw new WrongUsageException("commands.loli.notfound");
 				}
 				ConfigLoader.save();
 				if (!sender.getEntityWorld().isRemote) {
@@ -94,7 +94,7 @@ public class ConfigCommand extends CommandBase {
 							value = (String) field.get(null);
 							break;
 						default:
-							throw new WrongUsageException("commands.loli.usage");
+							throw new WrongUsageException("commands.loli.errortype");
 						}
 						TextComponentString flagText = new TextComponentString(args[0]);
 						flagText.getStyle().setColor(TextFormatting.AQUA);
@@ -111,7 +111,7 @@ public class ConfigCommand extends CommandBase {
 						e.printStackTrace();
 					}
 				} else if (args[0].equals("reload")) {
-					ConfigLoader.load();
+					ConfigLoader.load(true);
 					if (!sender.getEntityWorld().isRemote) {
 						ConfigLoader.sandChange(null);
 					}
@@ -145,7 +145,7 @@ public class ConfigCommand extends CommandBase {
 								value = (String) field.get(null);
 								break;
 							default:
-								throw new WrongUsageException("commands.loli.usage");
+								throw new WrongUsageException("commands.loli.errortype");
 							}
 							TextComponentString flagText = new TextComponentString(flag);
 							flagText.getStyle().setColor(TextFormatting.AQUA)

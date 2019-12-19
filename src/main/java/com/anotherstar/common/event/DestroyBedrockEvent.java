@@ -1,7 +1,7 @@
 package com.anotherstar.common.event;
 
 import com.anotherstar.common.config.ConfigLoader;
-import com.anotherstar.common.item.tool.ItemLoliPickaxe;
+import com.anotherstar.common.item.tool.ILoli;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -22,19 +21,14 @@ public class DestroyBedrockEvent {
 
 	@SubscribeEvent
 	public void onPlayerMine(PlayerInteractEvent.LeftClickBlock event) {
-		if (!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemLoliPickaxe) {
+		if (!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ILoli) {
 			breakBlock(event.getItemStack(), event.getPos(), event.getEntityPlayer());
 		}
 	}
 
 	private void breakBlock(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-		if (!player.world.isRemote && !player.capabilities.isCreativeMode
-				&& itemstack.getItem() instanceof ItemLoliPickaxe) {
-			int range = 1;
-			NBTTagCompound nbt = itemstack.getTagCompound();
-			if (nbt != null && nbt.hasKey("range")) {
-				range = nbt.getInteger("range");
-			}
+		if (!player.world.isRemote && !player.capabilities.isCreativeMode && itemstack.getItem() instanceof ILoli) {
+			int range = Math.min(((ILoli) itemstack.getItem()).getRange(itemstack), ConfigLoader.loliPickaxeMaxRange);
 			for (int i = -range; i <= range; i++) {
 				for (int j = -range; j <= range; j++) {
 					for (int k = -range; k <= range; k++) {

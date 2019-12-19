@@ -436,6 +436,61 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.world.World")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
+						String[] exceptions) {
+					if (name.equals("k") && desc.equals("()V") || name.equals("updateEntities")) {
+						return new MethodVisitor(Opcodes.ASM4,
+								cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitCode() {
+								mv.visitVarInsn(Opcodes.ALOAD, 0);
+								mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
+										"updateEntities", "(Lnet/minecraft/world/World;)V", false);
+							};
+
+						};
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.client.multiplayer.WorldClient")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
+						String[] exceptions) {
+					if (name.equals("e") && desc.equals("(I)Lvg;") || name.equals("removeEntityFromWorld")) {
+
+						return new MethodVisitor(Opcodes.ASM4,
+								cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitCode() {
+								mv.visitVarInsn(Opcodes.ALOAD, 0);
+								mv.visitVarInsn(Opcodes.ILOAD, 1);
+								mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
+										"removeEntityFromWorld", "(Lnet/minecraft/client/multiplayer/WorldClient;I)V",
+										false);
+							};
+
+						};
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
 		}
 		return basicClass;
 	}

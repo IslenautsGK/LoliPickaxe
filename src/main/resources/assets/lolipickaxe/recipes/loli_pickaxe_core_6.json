@@ -1,0 +1,16 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"group" : "lolipickaxe:loli_pickaxe",
+	"result" : {
+		"item" : "lolipickaxe:loli_pickaxe_core",
+		"count" : 1,
+		"data" : 6
+	},
+	"pattern" : ["XXX", "XXX", "XXX"],
+	"key" : {
+		"X" : {
+			"item" : "lolipickaxe:loli_pickaxe_core",
+			"data" : 5
+		}
+	}
+}

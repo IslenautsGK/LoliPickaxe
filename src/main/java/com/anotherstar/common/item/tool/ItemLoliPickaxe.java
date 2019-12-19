@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.IEntityLoli;
 import com.anotherstar.util.LoliPickaxeUtil;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +40,7 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 	public ItemLoliPickaxe() {
 		super(LOLI);
 		this.setUnlocalizedName("loliPickaxe");
-		this.setCreativeTab(CreativeTabs.TOOLS);
+		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
 	}
 
 	@Override
@@ -205,6 +205,16 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 			}
 		}
 		return "";
+	}
+
+	@Override
+	public int getRange(ItemStack stack) {
+		int range = 1;
+		NBTTagCompound nbt = stack.getTagCompound();
+		if (nbt != null && nbt.hasKey("range")) {
+			range = nbt.getInteger("range");
+		}
+		return range;
 	}
 
 }

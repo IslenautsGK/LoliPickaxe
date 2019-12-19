@@ -129,6 +129,15 @@ public class ConfigLoader {
 			"loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack",
 			"loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
 	public static List<String> loliPickaxeGuiChangeList;
+	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = {
+			"lolirecord:loliRecord:loli_record" })
+	public static List<String> loliRecodeNames;
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "萝莉卡片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1)
+	public static double loliCardDropProbability;
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "萝莉唱片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.001)
+	public static double loliRecordDropProbability;
 
 	static {
 		try {
@@ -161,15 +170,27 @@ public class ConfigLoader {
 
 	public static void init(FMLPreInitializationEvent event) {
 		config = new Configuration(event.getSuggestedConfigurationFile());
-		load();
+		load(false);
 	}
 
-	public static void load() {
+	public static void load(boolean reload) {
 		config.load();
 		try {
 			for (String flag : flags) {
 				Field field = flagFields.get(flag);
 				ConfigField annotation = flagAnnotations.get(flag);
+				if (reload) {
+					boolean canReload = false;
+					for (ConfigType type : annotation.type()) {
+						if (type == ConfigType.CONFIG) {
+							canReload = true;
+							break;
+						}
+					}
+					if (!canReload) {
+						continue;
+					}
+				}
 				switch (annotation.valueType()) {
 				case INT:
 					field.setInt(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
@@ -259,6 +280,16 @@ public class ConfigLoader {
 			for (String flag : flags) {
 				Field field = flagFields.get(flag);
 				ConfigField annotation = flagAnnotations.get(flag);
+				boolean canSave = false;
+				for (ConfigType type : annotation.type()) {
+					if (type == ConfigType.CONFIG) {
+						canSave = true;
+						break;
+					}
+				}
+				if (!canSave) {
+					continue;
+				}
 				switch (annotation.valueType()) {
 				case INT:
 					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.intDefaultValue(),

@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.IEntityLoli;
+import com.anotherstar.common.event.LoliPickaxeEvent;
 import com.anotherstar.common.event.LoliTickEvent;
 import com.anotherstar.common.item.tool.ILoli;
 import com.anotherstar.network.LoliDeadPacket;
+import com.anotherstar.network.LoliKillEntityPacket;
 import com.anotherstar.network.NetworkHandler;
 import com.google.common.collect.Lists;
 
@@ -129,7 +131,10 @@ public class LoliPickaxeUtil {
 			DamageSource ds = source == null ? new DamageSource("loli") : new EntityDamageSource("loli", source);
 			entity.getCombatTracker().trackDamage(ds, Float.MAX_VALUE, Float.MAX_VALUE);
 			entity.setHealth(0.0F);
+			Class<? extends EntityLivingBase> clazz = entity.getClass();
+			LoliPickaxeEvent.antiEntity.add(clazz);
 			entity.onDeath(ds);
+			LoliPickaxeEvent.antiEntity.remove(clazz);
 			if (ConfigLoader.getBoolean(getLoliPickaxe(source), "loliPickaxeCompulsoryRemove")) {
 				entity.loliDead = true;
 				delayKill(entity);
@@ -181,6 +186,7 @@ public class LoliPickaxeUtil {
 		LoliTickEvent.addTask(new LoliTickEvent.TickStartTask(tick, () -> {
 			entity.loliCool = true;
 			entity.isDead = true;
+			NetworkHandler.INSTANCE.sendMessageToAll(new LoliKillEntityPacket(entity.dimension, entity.getEntityId()));
 		}), Phase.START);
 	}
 

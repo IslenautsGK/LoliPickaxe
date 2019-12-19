@@ -1,9 +1,9 @@
 package com.anotherstar.client.event;
 
-import com.anotherstar.client.gui.LoliGUIHandler;
 import com.anotherstar.client.key.KeyLoader;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.common.item.tool.ILoli;
 
 import net.minecraft.client.Minecraft;

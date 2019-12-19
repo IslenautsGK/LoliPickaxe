@@ -3,8 +3,10 @@ package com.anotherstar.core.util;
 import javax.annotation.Nullable;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.entity.IEntityLoli;
 import com.anotherstar.util.LoliPickaxeUtil;
 
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -16,10 +18,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EventUtil {
 
@@ -94,6 +99,14 @@ public class EventUtil {
 		}
 	}
 
+	public static void updateEntities(World world) {
+		for (Entity entity : world.loadedEntityList) {
+			if (entity instanceof IEntityLoli) {
+				entity.isDead = ((IEntityLoli) entity).isDispersal();
+			}
+		}
+	}
+
 	public static float getHealth(EntityLivingBase entity) {
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
 			return 20;
@@ -147,6 +160,14 @@ public class EventUtil {
 	public static void writePlayerData(SaveHandler handler, EntityPlayer player) {
 		if (!(ConfigLoader.loliPickaxeReincarnationPlayerList.contains(player.getUniqueID().toString()))) {
 			handler.writePlayerData2(player);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static void removeEntityFromWorld(WorldClient client, int entityID) {
+		Entity entity = client.getEntityByID(entityID);
+		if (entity instanceof IEntityLoli) {
+			((IEntityLoli) entity).setDispersal(true);
 		}
 	}
 

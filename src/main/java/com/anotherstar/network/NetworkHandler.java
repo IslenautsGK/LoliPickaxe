@@ -24,6 +24,9 @@ public enum NetworkHandler {
 				Side.CLIENT);
 		this.channel.registerMessage(LoliItemConfigPacket.MessageHandler.class, LoliItemConfigPacket.class, index++,
 				Side.SERVER);
+		this.channel.registerMessage(LoliKillEntityPacket.MessageHandler.class, LoliKillEntityPacket.class, index++,
+				Side.CLIENT);
+		this.channel.registerMessage(LoliCardPacket.MessageHandler.class, LoliCardPacket.class, index++, Side.SERVER);
 	}
 
 	public void sendMessageToDim(IMessage msg, int dim) {

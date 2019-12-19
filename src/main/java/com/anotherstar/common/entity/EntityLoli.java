@@ -17,14 +17,20 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ITeleporter;
 
 public class EntityLoli extends EntityCreature implements IEntityLoli {
+
+	private boolean dispersal;
+	public boolean dimChangeing;
 
 	public EntityLoli(World worldIn) {
 		super(worldIn);
 		setSize(0.5F, 0.9F);
 		moveHelper = new EntityLoliMoveHelper(this);
 		setPathPriority(PathNodeType.WATER, 0);
+		dispersal = false;
+		dimChangeing = false;
 	}
 
 	@Override
@@ -94,6 +100,39 @@ public class EntityLoli extends EntityCreature implements IEntityLoli {
 	@Override
 	public boolean isChild() {
 		return true;
+	}
+
+	@Override
+	protected void outOfWorld() {
+		dismountRidingEntity();
+		setLocationAndAngles(posX, 256, posZ, rotationYaw, rotationPitch);
+	}
+
+	@Override
+	public Entity changeDimension(int dimensionIn, ITeleporter teleporter) {
+		dispersal = true;
+		return super.changeDimension(dimensionIn, teleporter);
+	}
+
+	@Override
+	public void onRemovedFromWorld() {
+		if (!dispersal && !world.isRemote) {
+			EntityLoli loli = new EntityLoli(world);
+			loli.copyLocationAndAnglesFrom(this);
+			world.spawnEntity(loli);
+			dispersal = true;
+		}
+		super.onRemovedFromWorld();
+	}
+
+	@Override
+	public boolean isDispersal() {
+		return dispersal;
+	}
+
+	@Override
+	public void setDispersal(boolean value) {
+		dispersal = value;
 	}
 
 }

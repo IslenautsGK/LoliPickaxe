@@ -1,13 +1,15 @@
 package com.anotherstar.common;
 
-import com.anotherstar.client.gui.LoliGUIHandler;
 import com.anotherstar.common.command.ConfigCommand;
+import com.anotherstar.common.command.LoliBuffAttackCommand;
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.EntityLoader;
 import com.anotherstar.common.event.DestroyBedrockEvent;
+import com.anotherstar.common.event.LoliDropEvent;
 import com.anotherstar.common.event.LoliPickaxeEvent;
 import com.anotherstar.common.event.LoliTickEvent;
 import com.anotherstar.common.event.PlayerJoinEvent;
+import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.network.NetworkHandler;
 
@@ -30,6 +32,7 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new LoliPickaxeEvent());
 		MinecraftForge.EVENT_BUS.register(new LoliTickEvent());
 		MinecraftForge.EVENT_BUS.register(new PlayerJoinEvent());
+		MinecraftForge.EVENT_BUS.register(new LoliDropEvent());
 		NetworkHandler.INSTANCE.name();
 		LoliGUIHandler.INSTANCE.name();
 	}
@@ -39,6 +42,7 @@ public class CommonProxy {
 
 	public void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new ConfigCommand());
+		event.registerServerCommand(new LoliBuffAttackCommand());
 	}
 
 }

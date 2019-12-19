@@ -1,7 +1,9 @@
 package com.anotherstar.client;
 
 import com.anotherstar.client.event.LoliKeyEvent;
+import com.anotherstar.client.event.ResourcePackReloadEvent;
 import com.anotherstar.client.key.KeyLoader;
+import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.CommonProxy;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -22,6 +24,8 @@ public class ClientProxy extends CommonProxy {
 		super.init(event);
 		KeyLoader.init();
 		MinecraftForge.EVENT_BUS.register(new LoliKeyEvent());
+		MinecraftForge.EVENT_BUS.register(new ResourcePackReloadEvent());
+		LoliCardUtil.updateCustomArtDatas();
 	}
 
 	@Override

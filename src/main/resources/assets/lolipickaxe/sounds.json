@@ -1,8 +1,10 @@
 {
-  "lolisuccess": {
-    "category": "block",
-    "sounds": [
-      "lolipickaxe:lolisuccess"
-    ]
-  }
+	"lolisuccess" : {
+		"category" : "block",
+		"sounds" : ["lolipickaxe:lolisuccess"]
+	},
+	"lolirecord" : {
+		"category" : "record",
+		"sounds" : ["lolipickaxe:lolirecord"]
+	}
 }
