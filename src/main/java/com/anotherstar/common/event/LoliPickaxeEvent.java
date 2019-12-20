@@ -16,6 +16,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -60,22 +62,24 @@ public class LoliPickaxeEvent {
 		}
 		EntityLivingBase entity = event.getEntityLiving();
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(event.getEntityLiving())) {
-			Entity source = event.getSource().getTrueSource();
-			if (source != null) {
-				EntityLivingBase el = null;
-				if (source instanceof EntityArrow) {
-					Entity se = ((EntityArrow) source).shootingEntity;
-					if (se instanceof EntityLivingBase) {
-						el = (EntityLivingBase) se;
+			if (ConfigLoader.getBoolean(LoliPickaxeUtil.getLoliPickaxe(entity), "loliPickaxeThorns")) {
+				Entity source = event.getSource().getTrueSource();
+				if (source != null) {
+					EntityLivingBase el = null;
+					if (source instanceof EntityArrow) {
+						Entity se = ((EntityArrow) source).shootingEntity;
+						if (se instanceof EntityLivingBase) {
+							el = (EntityLivingBase) se;
+						}
+					} else if (source instanceof EntityLivingBase) {
+						el = (EntityLivingBase) source;
 					}
-				} else if (source instanceof EntityLivingBase) {
-					el = (EntityLivingBase) source;
-				}
-				if (el != null) {
-					if (el instanceof EntityPlayer) {
-						LoliPickaxeUtil.killPlayer((EntityPlayer) el, entity);
-					} else {
-						LoliPickaxeUtil.killEntityLiving(el, entity);
+					if (el != null) {
+						if (el instanceof EntityPlayer) {
+							LoliPickaxeUtil.killPlayer((EntityPlayer) el, entity);
+						} else {
+							LoliPickaxeUtil.killEntityLiving(el, entity);
+						}
 					}
 				}
 			}
@@ -94,6 +98,8 @@ public class LoliPickaxeEvent {
 			entity.deathTime = 0;
 			if (!entity.world.isRemote) {
 				entity.clearActivePotions();
+				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 400, 0, false, false));
+				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 400, 0, false, false));
 				entity.extinguish();
 				if (ConfigLoader.getBoolean(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRangeEntity")) {
 					LoliPickaxeUtil.killRangeEntity(entity.world, entity,

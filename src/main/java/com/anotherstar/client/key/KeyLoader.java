@@ -13,9 +13,17 @@ public class KeyLoader {
 
 	public static final KeyBinding LOLI_CONFIG = new KeyBinding("key." + LoliPickaxe.MODID + ".loli_config",
 			KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_N, "key.category." + LoliPickaxe.MODID);
+	public static final KeyBinding LOLI_PICKAXE_CONTAINER = new KeyBinding(
+			"key." + LoliPickaxe.MODID + ".loli_pickaxe_container", KeyConflictContext.IN_GAME, KeyModifier.NONE,
+			Keyboard.KEY_B, "key.category." + LoliPickaxe.MODID);
+	public static final KeyBinding LOLI_PICKAXE_CONTAINER_BLACKLIST = new KeyBinding(
+			"key." + LoliPickaxe.MODID + ".loli_pickaxe_container_blacklist", KeyConflictContext.IN_GAME,
+			KeyModifier.NONE, Keyboard.KEY_U, "key.category." + LoliPickaxe.MODID);
 
 	public static void init() {
 		ClientRegistry.registerKeyBinding(LOLI_CONFIG);
+		ClientRegistry.registerKeyBinding(LOLI_PICKAXE_CONTAINER);
+		ClientRegistry.registerKeyBinding(LOLI_PICKAXE_CONTAINER_BLACKLIST);
 	}
 
 }

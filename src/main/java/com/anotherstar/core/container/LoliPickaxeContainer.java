@@ -23,7 +23,7 @@ public class LoliPickaxeContainer extends DummyModContainer {
 		ModMetadata meta = getMetadata();
 		meta.modId = "lolipickaxecore";
 		meta.name = "LoliPickaxeCore";
-		meta.version = "1.1.8";
+		meta.version = "1.2.0";
 		meta.authorList = Arrays.asList("Is_GK");
 		meta.description = "LoliPickaxeCore";
 		meta.url = "www.Is_GK.com";

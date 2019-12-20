@@ -18,7 +18,7 @@ public class LoliPickaxe {
 
 	public static final String MODID = "lolipickaxe";
 	public static final String NAME = "LoliPickaxe Mod";
-	public static final String VERSION = "1.1.8";
+	public static final String VERSION = "1.2.0";
 
 	public CreativeTabs loliTabs = new CreativeTabs("loli") {
 

@@ -1,5 +1,7 @@
 package com.anotherstar.common.gui;
 
+import com.anotherstar.client.gui.GUIContainerBlaceListLoliPickaxe;
+import com.anotherstar.client.gui.GUIContainerLoliPickaxe;
 import com.anotherstar.client.gui.GUILoliCard;
 import com.anotherstar.client.gui.GUILoliConfig;
 import com.anotherstar.client.util.LoliCardUtil;
@@ -19,6 +21,8 @@ public enum LoliGUIHandler implements IGuiHandler {
 
 	public static final int GUI_LOLI_CONFIG = 1;
 	public static final int GUI_LOLI_CARD = 2;
+	public static final int GUI_LOLI_PICKAXE_CONTAINER = 3;
+	public static final int GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST = 4;
 
 	private LoliGUIHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(LoliPickaxe.instance, this);
@@ -26,6 +30,16 @@ public enum LoliGUIHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		switch (ID) {
+		case GUI_LOLI_PICKAXE_CONTAINER:
+			return new ContainerLoliPickaxe(player, player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND),
+					x);
+		case GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST:
+			return new ContainerBlaceListLoliPickaxe(player,
+					player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x);
+		default:
+			break;
+		}
 		return null;
 	}
 
@@ -51,6 +65,12 @@ public enum LoliGUIHandler implements IGuiHandler {
 			}
 			break;
 		}
+		case GUI_LOLI_PICKAXE_CONTAINER:
+			return new GUIContainerLoliPickaxe(new ContainerLoliPickaxe(player,
+					player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x));
+		case GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST:
+			return new GUIContainerBlaceListLoliPickaxe(new ContainerBlaceListLoliPickaxe(player,
+					player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x));
 		default:
 			break;
 		}

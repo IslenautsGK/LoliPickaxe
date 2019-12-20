@@ -1,6 +1,7 @@
 package com.anotherstar.common.event;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.gui.InventoryLoliPickaxe;
 import com.anotherstar.common.item.tool.ILoli;
 
 import net.minecraft.block.Block;
@@ -9,7 +10,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -26,9 +30,16 @@ public class DestroyBedrockEvent {
 		}
 	}
 
-	private void breakBlock(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
-		if (!player.world.isRemote && !player.capabilities.isCreativeMode && itemstack.getItem() instanceof ILoli) {
-			int range = Math.min(((ILoli) itemstack.getItem()).getRange(itemstack), ConfigLoader.loliPickaxeMaxRange);
+	private void breakBlock(ItemStack loli, BlockPos pos, EntityPlayer player) {
+		if (!player.world.isRemote && !player.capabilities.isCreativeMode && loli.getItem() instanceof ILoli) {
+			int range = Math.min(((ILoli) loli.getItem()).getRange(loli), ConfigLoader.loliPickaxeMaxRange);
+			boolean auto = ConfigLoader.getBoolean(loli, "loliPickaxeAutoAccept");
+			InventoryLoliPickaxe inventory = null;
+			if (auto) {
+				inventory = new InventoryLoliPickaxe(loli);
+				inventory.openInventory(player);
+			}
+			NonNullList<ItemStack> drops = NonNullList.create();
 			for (int i = -range; i <= range; i++) {
 				for (int j = -range; j <= range; j++) {
 					for (int k = -range; k <= range; k++) {
@@ -41,21 +52,76 @@ public class DestroyBedrockEvent {
 						}
 						NonNullList<ItemStack> dropStacks = NonNullList.create();
 						block.getDrops(dropStacks, player.world, curPos, state, 5);
-						if (dropStacks.isEmpty() && ConfigLoader.getBoolean(itemstack, "loliPickaxeMandatoryDrop")) {
+						if (dropStacks.isEmpty() && ConfigLoader.getBoolean(loli, "loliPickaxeMandatoryDrop")) {
 							ItemStack dropStack = new ItemStack(block, 1, meta);
-							EntityItem item = new EntityItem(player.world, pos.getX() + 0.5, pos.getY() + 0.5,
-									pos.getZ() + 0.5, dropStack);
-							player.world.spawnEntity(item);
-						} else {
-							for (ItemStack dropStack : dropStacks) {
-								EntityItem item = new EntityItem(player.world, pos.getX() + 0.5, pos.getY() + 0.5,
-										pos.getZ() + 0.5, dropStack);
-								player.world.spawnEntity(item);
-							}
+							dropStacks.add(dropStack);
 						}
+						drops.addAll(dropStacks);
 						player.world.setBlockToAir(curPos);
 					}
 				}
+			}
+			NonNullList<ItemStack> blacklist = NonNullList.create();
+			if (loli.hasTagCompound() && loli.getTagCompound().hasKey("Blacklist")) {
+				NBTTagList blackList = loli.getTagCompound().getTagList("Blacklist", 10);
+				for (int i = 0; i < blackList.tagCount(); i++) {
+					NBTTagCompound black = blackList.getCompoundTagAt(i);
+					if (black.hasKey("Name") && black.hasKey("Damage")) {
+						ItemStack blackStack = new ItemStack(Item.getByNameOrId(black.getString("Name")), 1,
+								black.getInteger("Damage"));
+						blacklist.add(blackStack);
+					}
+				}
+			}
+			if (!blacklist.isEmpty()) {
+				drops.removeIf(stack -> {
+					for (ItemStack black : blacklist) {
+						if (black.isItemEqual(stack)) {
+							return true;
+						}
+					}
+					return false;
+				});
+			}
+			if (auto) {
+				for (ItemStack dropStack : drops) {
+					for (int m = 0; m < ConfigLoader.loliPickaxeMaxPage; m++) {
+						NonNullList<ItemStack> stacks = inventory.getPage(m);
+						for (int n = 0; n < stacks.size(); n++) {
+							ItemStack slotStack = stacks.get(n);
+							if (slotStack.isEmpty()) {
+								stacks.set(n, dropStack.copy());
+								dropStack.setCount(0);
+								break;
+							} else {
+								int count = Math.min(slotStack.getMaxStackSize() - slotStack.getCount(),
+										dropStack.getCount());
+								if (count > 0 && slotStack.isItemEqual(dropStack)
+										&& ItemStack.areItemStackTagsEqual(slotStack, dropStack)) {
+									slotStack.grow(count);
+									dropStack.shrink(count);
+									if (dropStack.isEmpty()) {
+										break;
+									}
+								}
+							}
+						}
+						if (dropStack.isEmpty()) {
+							break;
+						}
+					}
+				}
+			}
+			drops.removeIf(stack -> stack.isEmpty());
+			if (!drops.isEmpty()) {
+				for (ItemStack dropStack : drops) {
+					EntityItem item = new EntityItem(player.world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+							dropStack);
+					player.world.spawnEntity(item);
+				}
+			}
+			if (auto) {
+				inventory.closeInventory(player);
 			}
 			if (player instanceof EntityPlayerMP) {
 				BlockPos playerPos = player.getPosition();

@@ -1,10 +1,15 @@
 package com.anotherstar.client.event;
 
+import org.lwjgl.input.Keyboard;
+
 import com.anotherstar.client.key.KeyLoader;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.common.item.tool.ILoli;
+import com.anotherstar.network.LoliPickaxeContainerOpenPackte;
+import com.anotherstar.network.LoliPickaxeDropAll;
+import com.anotherstar.network.NetworkHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +28,18 @@ public class LoliKeyEvent {
 					&& !ConfigLoader.loliPickaxeGuiChangeList.isEmpty()) {
 				player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_CONFIG, player.world, 0, 0, 0);
 			}
+		}
+		if (KeyLoader.LOLI_PICKAXE_CONTAINER.isPressed()) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+				NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeDropAll());
+			} else {
+				NetworkHandler.INSTANCE.sendMessageToServer(
+						new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER));
+			}
+		}
+		if (KeyLoader.LOLI_PICKAXE_CONTAINER_BLACKLIST.isPressed()) {
+			NetworkHandler.INSTANCE.sendMessageToServer(
+					new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST));
 		}
 	}
 

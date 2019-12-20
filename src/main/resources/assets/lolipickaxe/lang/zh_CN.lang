@@ -26,6 +26,8 @@ item.loliPickaxeStick_7.name=§c八级萝莉手柄
 item.loliPickaxeStick_8.name=§c九级萝莉手柄
 item.loliPickaxeStick_9.name=§c氪金萝莉手柄
 
+container.loliPickaxe=§c氪金萝莉储藏室
+
 item.loliRecord.name=萝莉唱片
 item.record.lolirecord.desc=ばか変態煩い(av6752335)
 
@@ -50,3 +52,5 @@ entity.Loli.name=萝莉
 
 key.category.lolipickaxe=§c氪金萝莉
 key.lolipickaxe.loli_config=配置§c氪金萝莉
+key.lolipickaxe.loli_pickaxe_container=打开§c氪金萝莉储藏室
+key.lolipickaxe.loli_pickaxe_container_blacklist=打开§c氪金萝莉黑名单

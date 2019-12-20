@@ -127,7 +127,8 @@ public class ConfigLoader {
 			"loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer",
 			"loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption",
 			"loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack",
-			"loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
+			"loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope",
+			"loliPickaxeAutoAccept" })
 	public static List<String> loliPickaxeGuiChangeList;
 	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = {
 			"lolirecord:loliRecord:loli_record" })
@@ -138,6 +139,12 @@ public class ConfigLoader {
 	@ConfigField(type = { ConfigType.CONFIG,
 			ConfigType.COMMAND }, comment = "萝莉唱片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.001)
 	public static double loliRecordDropProbability;
+	@ConfigField(type = { ConfigType.CONFIG,
+			ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 50)
+	public static int loliPickaxeMaxPage;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
+			ConfigType.GUI }, comment = "自动收纳进储藏室", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeAutoAccept;
 
 	static {
 		try {

@@ -1,6 +1,7 @@
 package com.anotherstar.common.event;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.gui.ContainerLoliPickaxe;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
@@ -25,6 +26,13 @@ public class PlayerJoinEvent {
 					.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("点击前往链接")));
 			message.appendSibling(submsg);
 			event.player.sendMessage(message);
+		}
+	}
+
+	@SubscribeEvent
+	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event) {
+		if (event.player.openContainer != null && event.player.openContainer instanceof ContainerLoliPickaxe) {
+			((ContainerLoliPickaxe) event.player.openContainer).inventory.closeInventory(event.player);
 		}
 	}
 
