@@ -56,7 +56,8 @@ public class GUILoliConfig extends GuiScreen {
 			switch (button.id) {
 			case 0:
 				if (stack.hasTagCompound()) {
-					NetworkHandler.INSTANCE.sendMessageToServer(new LoliItemConfigPacket(stack.getTagCompound()));
+					NetworkHandler.INSTANCE
+							.sendMessageToServer(new LoliItemConfigPacket(ConfigLoader.getItemConfigs(stack)));
 				}
 				mc.displayGuiScreen((GuiScreen) null);
 				break;

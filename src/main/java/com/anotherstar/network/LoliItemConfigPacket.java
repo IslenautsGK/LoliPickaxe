@@ -1,5 +1,6 @@
 package com.anotherstar.network;
 
+import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.item.tool.ILoli;
 
 import io.netty.buffer.ByteBuf;
@@ -41,7 +42,7 @@ public class LoliItemConfigPacket implements IMessage {
 		public IMessage onMessage(LoliItemConfigPacket message, MessageContext ctx) {
 			ItemStack stack = ctx.getServerHandler().player.getHeldItemMainhand();
 			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-				stack.setTagCompound(message.getData());
+				ConfigLoader.setItemConfigs(stack, message.getData());
 			}
 			return null;
 		}

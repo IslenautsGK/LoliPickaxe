@@ -2,7 +2,7 @@ package com.anotherstar.common.item.tool;
 
 import net.minecraft.item.ItemStack;
 
-public interface ILoli {
+public interface ILoli extends IContainer {
 	
 	static final String CONFIG = "LoliConfig";
 

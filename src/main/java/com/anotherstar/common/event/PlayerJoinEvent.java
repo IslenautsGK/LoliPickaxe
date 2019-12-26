@@ -18,12 +18,8 @@ public class PlayerJoinEvent {
 		if (event.player instanceof EntityPlayerMP) {
 			ConfigLoader.sandChange((EntityPlayerMP) event.player);
 			TextComponentString message = new TextComponentString("§2LoliPickaxe§f开源地址: ");
-			TextComponentTranslation submsg = new TextComponentTranslation(
-					"§9§nhttps://github.com/IslenautsGK/LoliPickaxe");
-			submsg.getStyle()
-					.setClickEvent(
-							new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/IslenautsGK/LoliPickaxe"))
-					.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("点击前往链接")));
+			TextComponentTranslation submsg = new TextComponentTranslation("§9§nhttps://github.com/IslenautsGK/LoliPickaxe");
+			submsg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/IslenautsGK/LoliPickaxe")).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("点击前往链接")));
 			message.appendSibling(submsg);
 			event.player.sendMessage(message);
 		}

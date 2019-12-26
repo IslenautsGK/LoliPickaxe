@@ -1,0 +1,12 @@
+{
+	"parent" : "item/generated",
+	"textures" : {
+		"layer0" : "lolipickaxe:items/loli_entity_soul_addon"
+	},
+	"overrides" : [{
+				"predicate" : {
+					"lolipickaxe:end" : 1
+				},
+				"model" : "lolipickaxe:item/loli_entity_soul_addon_end"
+			}]
+}

@@ -18,13 +18,13 @@ public class LoliPickaxe {
 
 	public static final String MODID = "lolipickaxe";
 	public static final String NAME = "LoliPickaxe Mod";
-	public static final String VERSION = "1.2.0";
+	public static final String VERSION = "@VERSION@";
 
 	public CreativeTabs loliTabs = new CreativeTabs("loli") {
 
 		@Override
 		public ItemStack getTabIconItem() {
-			return new ItemStack(ItemLoader.loliPickaxeCore, 1, 9);
+			return new ItemStack(ItemLoader.entitySoul, 1, ItemLoader.entitySoul.getSubCount() - 1);
 		}
 
 	};

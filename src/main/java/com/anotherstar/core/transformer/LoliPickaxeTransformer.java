@@ -22,8 +22,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("onLivingDeath")) {
 						MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
 						mv.visitCode();
@@ -31,8 +30,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						mv.visitLabel(start);
 						mv.visitVarInsn(Opcodes.ALOAD, 0);
 						mv.visitVarInsn(Opcodes.ALOAD, 1);
-						mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "onLivingDeath",
-								"(Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/DamageSource;)Z", false);
+						mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "onLivingDeath", "(Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/util/DamageSource;)Z", false);
 						mv.visitInsn(Opcodes.IRETURN);
 						Label end = new Label();
 						mv.visitLabel(end);
@@ -47,8 +45,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						Label start = new Label();
 						mv.visitLabel(start);
 						mv.visitVarInsn(Opcodes.ALOAD, 0);
-						mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
-								"onLivingUpdate", "(Lnet/minecraft/entity/EntityLivingBase;)Z", false);
+						mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "onLivingUpdate", "(Lnet/minecraft/entity/EntityLivingBase;)Z", false);
 						mv.visitInsn(Opcodes.IRETURN);
 						Label end = new Label();
 						mv.visitLabel(end);
@@ -70,15 +67,14 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 
 				@Override
 				public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-					if (name.equals("aT")) {
+					if (name.equals("aT") || name.equals("aE")) {
 						access = Opcodes.ACC_PUBLIC;
 					}
 					return cv.visitField(access, name, desc, signature, value);
 				}
 
 				@Override
-				public void visit(int version, int access, String name, String signature, String superName,
-						String[] interfaces) {
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
 					if (!LoliPickaxeCore.debug) {
 						FieldVisitor fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliDead", "Z", null, null);
@@ -88,28 +84,24 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						fv = cv.visitField(Opcodes.ACC_PUBLIC, "loliCool", "Z", null, null);
 						fv.visitEnd();
 					}
-					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-							LoliPickaxeCore.debug ? "getHealth" : "cd", "()F", null, null);
+					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, LoliPickaxeCore.debug ? "getHealth" : "cd", "()F", null, null);
 					mv.visitCode();
 					Label start = new Label();
 					mv.visitLabel(start);
 					mv.visitVarInsn(Opcodes.ALOAD, 0);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "getHealth",
-							"(Lnet/minecraft/entity/EntityLivingBase;)F", false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "getHealth", "(Lnet/minecraft/entity/EntityLivingBase;)F", false);
 					mv.visitInsn(Opcodes.FRETURN);
 					Label end = new Label();
 					mv.visitLabel(end);
 					mv.visitLocalVariable("this", "Lnet/minecraft/entity/EntityLivingBase;", null, start, end, 0);
 					mv.visitMaxs(1, 1);
 					mv.visitEnd();
-					mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL,
-							LoliPickaxeCore.debug ? "getMaxHealth" : "cj", "()F", null, null);
+					mv = cv.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, LoliPickaxeCore.debug ? "getMaxHealth" : "cj", "()F", null, null);
 					mv.visitCode();
 					start = new Label();
 					mv.visitLabel(start);
 					mv.visitVarInsn(Opcodes.ALOAD, 0);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "getMaxHealth",
-							"(Lnet/minecraft/entity/EntityLivingBase;)F", false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "getMaxHealth", "(Lnet/minecraft/entity/EntityLivingBase;)F", false);
 					mv.visitInsn(Opcodes.FRETURN);
 					end = new Label();
 					mv.visitLabel(end);
@@ -119,8 +111,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				}
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("cd") && desc.equals("()F") || name.equals("getHealth")) {
 						return cv.visitMethod(access, "getHealth2", desc, signature, exceptions);
 					} else if (name.equals("cj") && desc.equals("()F") || name.equals("getMaxHealth")) {
@@ -128,14 +119,12 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					} else if (name.equals("getHealth2") || name.equals("getMaxHealth2")) {
 						return null;
 					} else if (name.equals("B_") && desc.equals("()V") || name.equals("onUpdate")) {
-						return new MethodVisitor(Opcodes.ASM4,
-								cv.visitMethod(access, name, desc, signature, exceptions)) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
 
 							public void visitInsn(int opcode) {
 								if (opcode == Opcodes.RETURN) {
 									mv.visitVarInsn(Opcodes.ALOAD, 0);
-									mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
-											"onUpdate", "(Lnet/minecraft/entity/EntityLivingBase;)V", false);
+									mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "onUpdate", "(Lnet/minecraft/entity/EntityLivingBase;)V", false);
 								}
 								mv.visitInsn(opcode);
 							};
@@ -170,8 +159,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public void visit(int version, int access, String name, String signature, String superName,
-						String[] interfaces) {
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
 					if (!LoliPickaxeCore.debug) {
 						FieldVisitor fv = cv.visitField(Opcodes.ACC_PUBLIC, "hodeLoli", "I", null, null);
@@ -188,27 +176,21 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public void visit(int version, int access, String name, String signature, String superName,
-						String[] interfaces) {
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
-					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "dropAllItems" : "o",
-							"()V", null, null);
+					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "dropAllItems" : "o", "()V", null, null);
 					mv.visitCode();
 					Label start = new Label();
 					mv.visitLabel(start);
 					mv.visitVarInsn(Opcodes.ALOAD, 0);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "dropAllItems",
-							"(Lnet/minecraft/entity/player/InventoryPlayer;)V", false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "dropAllItems", "(Lnet/minecraft/entity/player/InventoryPlayer;)V", false);
 					mv.visitInsn(Opcodes.RETURN);
 					Label end = new Label();
 					mv.visitLabel(end);
 					mv.visitLocalVariable("this", "Lnet/minecraft/entity/player/InventoryPlayer;", null, start, end, 0);
 					mv.visitMaxs(1, 1);
 					mv.visitEnd();
-					mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "clearMatchingItems" : "a",
-							LoliPickaxeCore.debug ? "(Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)I"
-									: "(Lain;IILfy;)I",
-							null, null);
+					mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "clearMatchingItems" : "a", LoliPickaxeCore.debug ? "(Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)I" : "(Lain;IILfy;)I", null, null);
 					mv.visitCode();
 					start = new Label();
 					mv.visitLabel(start);
@@ -217,10 +199,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					mv.visitVarInsn(Opcodes.ILOAD, 2);
 					mv.visitVarInsn(Opcodes.ILOAD, 3);
 					mv.visitVarInsn(Opcodes.ALOAD, 4);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
-							"clearMatchingItems",
-							"(Lnet/minecraft/entity/player/InventoryPlayer;Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)I",
-							false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "clearMatchingItems", "(Lnet/minecraft/entity/player/InventoryPlayer;Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)I", false);
 					mv.visitInsn(Opcodes.IRETURN);
 					end = new Label();
 					mv.visitLabel(end);
@@ -234,8 +213,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				}
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("o") && desc.equals("()V") || name.equals("dropAllItems")) {
 						return cv.visitMethod(access, "dropAllItems2", desc, signature, exceptions);
 					} else if (name.equals("a") && desc.equals("(Lain;IILfy;)I") || name.equals("clearMatchingItems")) {
@@ -255,20 +233,15 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public void visit(int version, int access, String name, String signature, String superName,
-						String[] interfaces) {
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
-					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "disconnect" : "b",
-							LoliPickaxeCore.debug ? "(Lnet/minecraft/util/text/ITextComponent;)V" : "(Lhh;)V", null,
-							null);
+					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "disconnect" : "b", LoliPickaxeCore.debug ? "(Lnet/minecraft/util/text/ITextComponent;)V" : "(Lhh;)V", null, null);
 					mv.visitCode();
 					Label start = new Label();
 					mv.visitLabel(start);
 					mv.visitVarInsn(Opcodes.ALOAD, 0);
 					mv.visitVarInsn(Opcodes.ALOAD, 1);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "disconnect",
-							"(Lnet/minecraft/network/NetHandlerPlayServer;Lnet/minecraft/util/text/ITextComponent;)V",
-							false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "disconnect", "(Lnet/minecraft/network/NetHandlerPlayServer;Lnet/minecraft/util/text/ITextComponent;)V", false);
 					mv.visitInsn(Opcodes.RETURN);
 					Label end = new Label();
 					mv.visitLabel(end);
@@ -279,8 +252,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				}
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("b") && desc.equals("(Lhh;)V") || name.equals("disconnect")) {
 						return cv.visitMethod(access, "disconnect2", desc, signature, exceptions);
 					} else if (name.equals("disconnect2")) {
@@ -298,23 +270,15 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public void visit(int version, int access, String name, String signature, String superName,
-						String[] interfaces) {
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 					super.visit(version, access, name, signature, superName, interfaces);
-					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC,
-							LoliPickaxeCore.debug ? "readPlayerData" : "b",
-							LoliPickaxeCore.debug
-									? "(Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/nbt/NBTTagCompound;"
-									: "(Laed;)Lfy;",
-							null, null);
+					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "readPlayerData" : "b", LoliPickaxeCore.debug ? "(Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/nbt/NBTTagCompound;" : "(Laed;)Lfy;", null, null);
 					mv.visitCode();
 					Label start = new Label();
 					mv.visitLabel(start);
 					mv.visitVarInsn(Opcodes.ALOAD, 0);
 					mv.visitVarInsn(Opcodes.ALOAD, 1);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "readPlayerData",
-							"(Lnet/minecraft/world/storage/SaveHandler;Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/nbt/NBTTagCompound;",
-							false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "readPlayerData", "(Lnet/minecraft/world/storage/SaveHandler;Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/nbt/NBTTagCompound;", false);
 					mv.visitInsn(Opcodes.ARETURN);
 					Label end = new Label();
 					mv.visitLabel(end);
@@ -322,17 +286,13 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					mv.visitLocalVariable("player", "Lnet/minecraft/entity/player/EntityPlayer;", null, start, end, 1);
 					mv.visitMaxs(2, 2);
 					mv.visitEnd();
-					mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "writePlayerData" : "a",
-							LoliPickaxeCore.debug ? "(Lnet/minecraft/entity/player/EntityPlayer;)V" : "(Laed;)V", null,
-							null);
+					mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "writePlayerData" : "a", LoliPickaxeCore.debug ? "(Lnet/minecraft/entity/player/EntityPlayer;)V" : "(Laed;)V", null, null);
 					mv.visitCode();
 					start = new Label();
 					mv.visitLabel(start);
 					mv.visitVarInsn(Opcodes.ALOAD, 0);
 					mv.visitVarInsn(Opcodes.ALOAD, 1);
-					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "writePlayerData",
-							"(Lnet/minecraft/world/storage/SaveHandler;Lnet/minecraft/entity/player/EntityPlayer;)V",
-							false);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "writePlayerData", "(Lnet/minecraft/world/storage/SaveHandler;Lnet/minecraft/entity/player/EntityPlayer;)V", false);
 					mv.visitInsn(Opcodes.RETURN);
 					end = new Label();
 					mv.visitLabel(end);
@@ -343,8 +303,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				}
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("b") && desc.equals("(Laed;)Lfy;") || name.equals("readPlayerData")) {
 						return cv.visitMethod(access, "readPlayerData2", desc, signature, exceptions);
 					} else if (name.equals("a") && desc.equals("(Laed;)V") || name.equals("writePlayerData")) {
@@ -364,25 +323,20 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("a") && desc.equals("(Loq;IZ)Loq;") || name.equals("recreatePlayerEntity")) {
-						return new MethodVisitor(Opcodes.ASM4,
-								cv.visitMethod(access, name, desc, signature, exceptions)) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
 
 							public void visitCode() {
 								mv.visitVarInsn(Opcodes.ALOAD, 1);
 								mv.visitInsn(Opcodes.ICONST_0);
-								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
-										"loliDead", "Z");
+								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP", "loliDead", "Z");
 								mv.visitVarInsn(Opcodes.ALOAD, 1);
 								mv.visitInsn(Opcodes.ICONST_0);
-								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
-										"loliCool", "Z");
+								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP", "loliCool", "Z");
 								mv.visitVarInsn(Opcodes.ALOAD, 1);
 								mv.visitInsn(Opcodes.ICONST_0);
-								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP",
-										"loliDeathTime", "I");
+								mv.visitFieldInsn(Opcodes.PUTFIELD, "net/minecraft/entity/player/EntityPlayerMP", "loliDeathTime", "I");
 							};
 
 						};
@@ -415,11 +369,9 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("a") && desc.equals("(C)Z") || name.equals("isAllowedCharacter")) {
-						return new MethodVisitor(Opcodes.ASM4,
-								cv.visitMethod(access, name, desc, signature, exceptions)) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
 
 							public void visitIntInsn(int opcode, int operand) {
 								if (opcode == Opcodes.SIPUSH && operand == 167) {
@@ -442,16 +394,13 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("k") && desc.equals("()V") || name.equals("updateEntities")) {
-						return new MethodVisitor(Opcodes.ASM4,
-								cv.visitMethod(access, name, desc, signature, exceptions)) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
 
 							public void visitCode() {
 								mv.visitVarInsn(Opcodes.ALOAD, 0);
-								mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
-										"updateEntities", "(Lnet/minecraft/world/World;)V", false);
+								mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "updateEntities", "(Lnet/minecraft/world/World;)V", false);
 							};
 
 						};
@@ -468,24 +417,49 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
 
 				@Override
-				public MethodVisitor visitMethod(int access, String name, String desc, String signature,
-						String[] exceptions) {
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("e") && desc.equals("(I)Lvg;") || name.equals("removeEntityFromWorld")) {
 
-						return new MethodVisitor(Opcodes.ASM4,
-								cv.visitMethod(access, name, desc, signature, exceptions)) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
 
 							public void visitCode() {
 								mv.visitVarInsn(Opcodes.ALOAD, 0);
 								mv.visitVarInsn(Opcodes.ILOAD, 1);
-								mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil",
-										"removeEntityFromWorld", "(Lnet/minecraft/client/multiplayer/WorldClient;I)V",
-										false);
+								mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "removeEntityFromWorld", "(Lnet/minecraft/client/multiplayer/WorldClient;I)V", false);
 							};
 
 						};
 					}
 					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.block.Block")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+					super.visit(version, access, name, signature, superName, interfaces);
+					if (!LoliPickaxeCore.debug) {
+						MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "getLoliSilkTouchDrop", "(Lnet/minecraft/block/state/IBlockState;)Lnet/minecraft/item/ItemStack;", null, null);
+						mv.visitCode();
+						Label start = new Label();
+						mv.visitLabel(start);
+						mv.visitVarInsn(Opcodes.ALOAD, 0);
+						mv.visitVarInsn(Opcodes.ALOAD, 1);
+						mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "aow", "u", "(Lawt;)Laip;", false);
+						mv.visitInsn(Opcodes.ARETURN);
+						Label end = new Label();
+						mv.visitLabel(end);
+						mv.visitLocalVariable("this", "Lnet/minecraft/block/Block;", null, start, end, 0);
+						mv.visitLocalVariable("message", "Lnet/minecraft/block/state/IBlockState;", null, start, end, 1);
+						mv.visitMaxs(2, 2);
+						mv.visitEnd();
+					}
 				}
 
 			};

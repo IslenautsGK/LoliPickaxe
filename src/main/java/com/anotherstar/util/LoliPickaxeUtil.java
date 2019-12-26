@@ -56,7 +56,7 @@ public class LoliPickaxeUtil {
 		ItemStack stack = getLoliPickaxe(source);
 		List<Entity> entitys = Lists.newArrayList();
 		int range = ConfigLoader.getInt(stack, "loliPickaxeKillFacingRange");
-		int slope = ConfigLoader.getInt(stack, "loliPickaxeKillFacingSlope");
+		double slope = ConfigLoader.getDouble(stack, "loliPickaxeKillFacingSlope");
 		boolean all = ConfigLoader.getBoolean(stack, "loliPickaxeValidToAllEntity");
 		for (int dist = 0; dist <= range; dist += 2) {
 			AxisAlignedBB bb = source.getEntityBoundingBox();
@@ -204,7 +204,7 @@ public class LoliPickaxeUtil {
 						String owner = loli.getOwner(stack);
 						if (!owner.isEmpty()) {
 							if (owner.equals(player.getName())) {
-								int time = ConfigLoader.getInt(stack, "loliPickaxeDuration");
+								int time = ConfigLoader.loliPickaxeDuration;
 								if (time > 0 && time > player.hodeLoli) {
 									player.hodeLoli = time;
 								}
@@ -235,7 +235,7 @@ public class LoliPickaxeUtil {
 						String owner = loli.getOwner(stack);
 						if (!owner.isEmpty()) {
 							if (owner.equals(player.getName())) {
-								int time = ConfigLoader.getInt(stack, "loliPickaxeDuration");
+								int time = ConfigLoader.loliPickaxeDuration;
 								if (time > 0 && time > player.hodeLoli) {
 									player.hodeLoli = time;
 								}

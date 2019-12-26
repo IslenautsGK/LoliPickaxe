@@ -1,7 +1,7 @@
 package com.anotherstar.network;
 
 import com.anotherstar.common.LoliPickaxe;
-import com.anotherstar.common.item.tool.ILoli;
+import com.anotherstar.common.item.tool.IContainer;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -40,15 +40,20 @@ public class LoliPickaxeContainerOpenPackte implements IMessage {
 		@Override
 		public IMessage onMessage(LoliPickaxeContainerOpenPackte message, MessageContext ctx) {
 			EntityPlayerMP player = ctx.getServerHandler().player;
-			ItemStack stack = player.getHeldItemMainhand();
-			boolean mainhand = true;
-			if (stack.isEmpty() || !(stack.getItem() instanceof ILoli)) {
-				stack = ctx.getServerHandler().player.getHeldItemOffhand();
-				mainhand = false;
-			}
-			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-				player.openGui(LoliPickaxe.instance, message.getId(), player.world,
-						mainhand ? player.inventory.currentItem : -1, mainhand ? 0 : 1, 0);
+			if (!player.getServer().isCallingFromMinecraftThread()) {
+				player.getServer().addScheduledTask(() -> {
+					this.onMessage(message, ctx);
+				});
+			} else {
+				ItemStack stack = player.getHeldItemMainhand();
+				boolean mainhand = true;
+				if (stack.isEmpty() || !(stack.getItem() instanceof IContainer)) {
+					stack = ctx.getServerHandler().player.getHeldItemOffhand();
+					mainhand = false;
+				}
+				if (!stack.isEmpty() && stack.getItem() instanceof IContainer && ((IContainer) stack.getItem()).hasInventory(stack)) {
+					player.openGui(LoliPickaxe.instance, message.getId(), player.world, mainhand ? player.inventory.currentItem : -1, mainhand ? 0 : 1, 0);
+				}
 			}
 			return null;
 		}

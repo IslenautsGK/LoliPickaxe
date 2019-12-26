@@ -102,8 +102,8 @@ public class LoliPickaxeEvent {
 				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 400, 0, false, false));
 				entity.extinguish();
 				if (ConfigLoader.getBoolean(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRangeEntity")) {
-					LoliPickaxeUtil.killRangeEntity(entity.world, entity,
-							ConfigLoader.getInt(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRange"));
+					int range = ConfigLoader.getInt(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRange");
+					LoliPickaxeUtil.killRangeEntity(entity.world, entity, range);
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 package com.anotherstar.common.gui;
 
-import com.anotherstar.common.item.tool.ILoli;
+import com.anotherstar.common.item.tool.IContainer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -21,7 +21,7 @@ public class ContainerBlaceListLoliPickaxe extends Container {
 	private int slotIndex;
 
 	public ContainerBlaceListLoliPickaxe(EntityPlayer player, ItemStack stack, int slotIndex) {
-		if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+		if (!stack.isEmpty() && stack.getItem() instanceof IContainer) {
 			this.stack = stack;
 			this.player = player;
 			this.slotIndex = slotIndex;
@@ -51,8 +51,7 @@ public class ContainerBlaceListLoliPickaxe extends Container {
 					for (int i = 0; i < blackList.tagCount(); i++) {
 						NBTTagCompound black = blackList.getCompoundTagAt(i);
 						if (black.hasKey("Slot") && black.hasKey("Name") && black.hasKey("Damage")) {
-							ItemStack blackStack = new ItemStack(Item.getByNameOrId(black.getString("Name")), 1,
-									black.getInteger("Damage"));
+							ItemStack blackStack = new ItemStack(Item.getByNameOrId(black.getString("Name")), 1, black.getInteger("Damage"));
 							items.setStackInSlot(black.getInteger("Slot"), blackStack);
 
 						}

@@ -138,7 +138,7 @@ public abstract class EntityLivingBase extends Entity {
 	public int deathTime;
 	public float prevSwingProgress;
 	public float swingProgress;
-	protected int ticksSinceLastSwing;
+	public int ticksSinceLastSwing;
 	public float prevLimbSwingAmount;
 	public float limbSwingAmount;
 	public float limbSwing;

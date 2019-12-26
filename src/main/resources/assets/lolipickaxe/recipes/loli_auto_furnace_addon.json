@@ -1,0 +1,17 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"group" : "lolipickaxe:loli_auto_furnace_addon",
+	"result" : {
+		"item" : "lolipickaxe:loli_auto_furnace_addon",
+		"count" : 1
+	},
+	"pattern" : ["XYX", "YXY", "XYX"],
+	"key" : {
+		"X" : {
+			"item" : "minecraft:blaze_rod"
+		},
+		"Y" : {
+			"item" : "minecraft:lava_bucket"
+		}
+	}
+}

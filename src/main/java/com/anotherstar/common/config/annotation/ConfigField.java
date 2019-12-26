@@ -17,7 +17,23 @@ public @interface ConfigField {
 
 	int intDefaultValue() default 0;
 
+	int intMinValue() default 0;
+
+	int intMaxValue() default 0;
+
+	String intMinValueField() default "";
+
+	String intMaxValueField() default "";
+
 	double doubleDefaultValue() default 0.0;
+
+	double doubleMinValue() default 0;
+
+	double doubleMaxValue() default 0;
+
+	String doubleMinValueField() default "";
+
+	String doubleMaxValueField() default "";
 
 	boolean booleanDefaultValue() default false;
 

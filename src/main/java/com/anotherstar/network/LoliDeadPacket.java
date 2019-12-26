@@ -70,8 +70,15 @@ public class LoliDeadPacket implements IMessage {
 		@SideOnly(Side.CLIENT)
 		public IMessage onMessage(LoliDeadPacket message, MessageContext ctx) {
 			if (message.isGui() && !(Minecraft.getMinecraft().currentScreen instanceof GuiGameOver)) {
-				Minecraft.getMinecraft().displayGuiScreen(
-						new GuiGameOver(Minecraft.getMinecraft().player.getCombatTracker().getDeathMessage()));
+				if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
+					Minecraft.getMinecraft().addScheduledTask(() -> {
+						Minecraft.getMinecraft().displayGuiScreen(
+								new GuiGameOver(Minecraft.getMinecraft().player.getCombatTracker().getDeathMessage()));
+					});
+				} else {
+					Minecraft.getMinecraft().displayGuiScreen(
+							new GuiGameOver(Minecraft.getMinecraft().player.getCombatTracker().getDeathMessage()));
+				}
 			}
 			if (message.isFailRespond()) {
 				if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {

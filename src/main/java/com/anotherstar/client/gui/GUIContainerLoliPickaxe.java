@@ -14,8 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GUIContainerLoliPickaxe extends GuiContainer {
 
-	private static final ResourceLocation LOLI_PICKAXE_CONTAINER_GUI_TEXTURE = new ResourceLocation(LoliPickaxe.MODID,
-			"textures/gui/container/loli_pickaxe_container.png");
+	private static final ResourceLocation LOLI_PICKAXE_CONTAINER_GUI_TEXTURE = new ResourceLocation(LoliPickaxe.MODID, "textures/gui/container/loli_pickaxe_container.png");
 
 	private ContainerLoliPickaxe loliContainer;
 	private GuiButton pre;
@@ -51,6 +50,11 @@ public class GUIContainerLoliPickaxe extends GuiContainer {
 				break;
 			}
 		}
+	}
+
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {

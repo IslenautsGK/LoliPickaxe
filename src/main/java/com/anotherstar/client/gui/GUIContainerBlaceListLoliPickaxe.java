@@ -9,12 +9,16 @@ import net.minecraft.util.ResourceLocation;
 
 public class GUIContainerBlaceListLoliPickaxe extends GuiContainer {
 
-	private static final ResourceLocation LOLI_PICKAXE_CONTAINER_BLACELIST_GUI_TEXTURE = new ResourceLocation(
-			LoliPickaxe.MODID, "textures/gui/container/loli_pickaxe_container_blacklist.png");
+	private static final ResourceLocation LOLI_PICKAXE_CONTAINER_BLACELIST_GUI_TEXTURE = new ResourceLocation(LoliPickaxe.MODID, "textures/gui/container/loli_pickaxe_container_blacklist.png");
 
 	public GUIContainerBlaceListLoliPickaxe(ContainerBlaceListLoliPickaxe inventorySlots) {
 		super(inventorySlots);
 		this.ySize = 256;
+	}
+
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override

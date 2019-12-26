@@ -31,120 +31,98 @@ public class ConfigLoader {
 	public static final List<String> guiFlags = Lists.newArrayList();
 	public static final Map<String, ConfigField> flagAnnotations = Maps.newHashMap();
 	public static final Map<String, Field> flagFields = Maps.newHashMap();
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "最大采掘范围", valueType = ValurType.INT, intDefaultValue = 5)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "最大采掘范围", valueType = ValurType.INT, intDefaultValue = 5)
 	public static int loliPickaxeMaxRange;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "强制掉落方块", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "强制掉落方块", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeMandatoryDrop;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "反伤", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "时运等级", valueType = ValurType.INT, intDefaultValue = 5, intMinValue = 0, intMaxValueField = "loliPickaxeMaxFortuneLevel")
+	public static int loliPickaxeFortuneLevel;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "最大时运等级", valueType = ValurType.INT, intDefaultValue = 10)
+	public static int loliPickaxeMaxFortuneLevel;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "精准采集", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliPickaxeSilkTouch;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动熔炼", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliPickaxeAutoFurnace;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 50)
+	public static int loliPickaxeMaxPage;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动收纳进储藏室", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeAutoAccept;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "反伤", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeThorns;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "潜行右键杀死周围实体", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "潜行右键杀死周围实体", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeKillRangeEntity;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "潜行右键杀死周围实体的范围", valueType = ValurType.INT, intDefaultValue = 50)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "潜行右键杀死周围实体的范围", valueType = ValurType.INT, intDefaultValue = 50, intMinValue = 0, intMaxValueField = "loliPickaxeMaxKillRange")
 	public static int loliPickaxeKillRange;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "自动杀死周围实体", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "潜行右键杀死周围实体的最大范围", valueType = ValurType.INT, intDefaultValue = 100)
+	public static int loliPickaxeMaxKillRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动杀死周围实体", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeAutoKillRangeEntity;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "自动杀死周围实体的范围", valueType = ValurType.INT, intDefaultValue = 5)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动杀死周围实体的范围", valueType = ValurType.INT, intDefaultValue = 5, intMinValue = 0, intMaxValueField = "loliPickaxeMaxAutoKillRange")
 	public static int loliPickaxeAutoKillRange;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "效果持续时间(Tick)", valueType = ValurType.INT, intDefaultValue = 200)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "自动杀死周围实体的最大范围", valueType = ValurType.INT, intDefaultValue = 10)
+	public static int loliPickaxeMaxAutoKillRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "效果持续时间(Tick)", valueType = ValurType.INT, intDefaultValue = 200)
 	public static int loliPickaxeDuration;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "丢弃保护时间(ms)", valueType = ValurType.INT, intDefaultValue = 200)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "丢弃保护时间(ms)", valueType = ValurType.INT, intDefaultValue = 200)
 	public static int loliPickaxeDropProtectTime;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "强制清除生物", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "强制清除生物", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeCompulsoryRemove;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "范围攻击对非怪物有效", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "范围攻击对非怪物有效", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeValidToAmityEntity;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "对全部实体有效", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "对全部实体有效", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeValidToAllEntity;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "清空玩家背包", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "清空玩家背包", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeClearInventory;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "缴械", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "缴械", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeDropItems;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "踢出玩家", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "踢出玩家", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeKickPlayer;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "踢出玩家消息", valueType = ValurType.STRING, stringDefaultValue = "你被氪金萝莉踢出了服务器")
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "踢出玩家消息", valueType = ValurType.STRING, stringDefaultValue = "你被氪金萝莉踢出了服务器")
 	public static String loliPickaxeKickMessage;
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "禁止死亡实体触发实体更新事件", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "禁止死亡实体触发实体更新事件", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeForbidOnLivingUpdate;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "伊邪那美(需同时开启踢出玩家)", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "伊邪那美(需同时开启踢出玩家)", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeReincarnation;
 	@ConfigField(type = { ConfigType.CONFIG }, comment = "伊邪那美玩家列表", valueType = ValurType.LIST, listDefaultValue = {})
 	public static List<String> loliPickaxeReincarnationPlayerList;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "灵魂超度", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "灵魂超度", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeBeyondRedemption;
 	@ConfigField(type = { ConfigType.CONFIG }, comment = "灵魂超度玩家列表", valueType = ValurType.LIST, listDefaultValue = {})
 	public static List<String> loliPickaxeBeyondRedemptionPlayerList;
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "寻找所有者", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "寻找所有者", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeFindOwner;
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "寻找所有者范围", valueType = ValurType.INT, intDefaultValue = 50)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "寻找所有者范围", valueType = ValurType.INT, intDefaultValue = 50)
 	public static int loliPickaxeFindOwnerRange;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "蓝屏打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "蓝屏打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeBlueScreenAttack;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "崩溃打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "蹦溃打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeExitAttack;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "未响应打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "未响应打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeFailRespondAttack;
-	@ConfigField(type = {
-			ConfigType.CONFIG }, comment = "强制死亡延迟特化列表(实体ID:Tick)", valueType = ValurType.MAP, mapDefaultValue = {
-					"ender_dragon:201" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "强制死亡延迟特化列表(实体ID:Tick)", valueType = ValurType.MAP, mapDefaultValue = { "ender_dragon:201" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
 	public static Map<String, Integer> loliPickaxeDelayRemoveList;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "左键范围攻击", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "左键范围攻击", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeKillFacing;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "范围攻击范围", valueType = ValurType.INT, intDefaultValue = 100)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "范围攻击范围", valueType = ValurType.INT, intDefaultValue = 50, intMinValue = 0, intMaxValueField = "loliPickaxeMaxKillFacingRange")
 	public static int loliPickaxeKillFacingRange;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "范围攻击斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "范围攻击最大范围", valueType = ValurType.INT, intDefaultValue = 200)
+	public static int loliPickaxeMaxKillFacingRange;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "范围攻击斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1, doubleMinValue = 0, doubleMaxValueField = "loliPickaxeMaxKillFacingSlope")
 	public static double loliPickaxeKillFacingSlope;
-	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = {
-			"loliPickaxeMandatoryDrop", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange",
-			"loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeDuration",
-			"loliPickaxeDropProtectTime", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity",
-			"loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer",
-			"loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption",
-			"loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack",
-			"loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope",
-			"loliPickaxeAutoAccept" })
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "范围攻击最大斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
+	public static double loliPickaxeMaxKillFacingSlope;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeFortuneLevel", "loliPickaxeSilkTouch", "loliPickaxeAutoFurnace", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
 	public static List<String> loliPickaxeGuiChangeList;
-	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = {
-			"lolirecord:loliRecord:loli_record" })
+	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = { "lolirecord:loliRecord:loli_record" })
 	public static List<String> loliRecodeNames;
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "萝莉卡片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉卡片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1)
 	public static double loliCardDropProbability;
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "萝莉唱片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.001)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉唱片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.001)
 	public static double loliRecordDropProbability;
-	@ConfigField(type = { ConfigType.CONFIG,
-			ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 50)
-	public static int loliPickaxeMaxPage;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND,
-			ConfigType.GUI }, comment = "自动收纳进储藏室", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
-	public static boolean loliPickaxeAutoAccept;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "生物灵魂掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.01)
+	public static double entitySoulDropProbability;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉模型ID", valueType = ValurType.STRING, stringDefaultValue = "touhou_little_maid:remilia_scarlet")
+	public static String loliModelId;
 
 	static {
 		try {
@@ -200,24 +178,19 @@ public class ConfigLoader {
 				}
 				switch (annotation.valueType()) {
 				case INT:
-					field.setInt(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
-							annotation.intDefaultValue(), annotation.comment()).getInt());
+					field.setInt(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.intDefaultValue(), annotation.comment()).getInt());
 					break;
 				case DOUBLE:
-					field.setDouble(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
-							annotation.doubleDefaultValue(), annotation.comment()).getDouble());
+					field.setDouble(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.doubleDefaultValue(), annotation.comment()).getDouble());
 					break;
 				case BOOLEAN:
-					field.setBoolean(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
-							annotation.booleanDefaultValue(), annotation.comment()).getBoolean());
+					field.setBoolean(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.booleanDefaultValue(), annotation.comment()).getBoolean());
 					break;
 				case STRING:
-					field.set(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(),
-							annotation.stringDefaultValue(), annotation.comment()).getString());
+					field.set(null, config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.stringDefaultValue(), annotation.comment()).getString());
 					break;
 				case LIST: {
-					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(),
-							annotation.listDefaultValue(), annotation.comment()).getStringList();
+					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(), annotation.comment()).getStringList();
 					List<String> list = Lists.newArrayList();
 					for (String str : strs) {
 						list.add(str);
@@ -226,8 +199,7 @@ public class ConfigLoader {
 					break;
 				}
 				case MAP: {
-					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(),
-							annotation.mapDefaultValue(), annotation.comment()).getStringList();
+					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(), annotation.comment()).getStringList();
 					Map map = Maps.newHashMap();
 					for (String str : strs) {
 						int index = str.lastIndexOf(':');
@@ -299,32 +271,23 @@ public class ConfigLoader {
 				}
 				switch (annotation.valueType()) {
 				case INT:
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.intDefaultValue(),
-							annotation.comment()).setValue(field.getInt(null));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.intDefaultValue(), annotation.comment()).setValue(field.getInt(null));
 					break;
 				case DOUBLE:
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.doubleDefaultValue(),
-							annotation.comment()).setValue(field.getDouble(null));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.doubleDefaultValue(), annotation.comment()).setValue(field.getDouble(null));
 					break;
 				case BOOLEAN:
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.booleanDefaultValue(),
-							annotation.comment()).setValue(field.getBoolean(null));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.booleanDefaultValue(), annotation.comment()).setValue(field.getBoolean(null));
 					break;
 				case STRING:
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.stringDefaultValue(),
-							annotation.comment()).setValue((String) field.get(null));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.stringDefaultValue(), annotation.comment()).setValue((String) field.get(null));
 					break;
 				case LIST: {
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(),
-							annotation.comment()).setValues(((List<String>) field.get(null)).toArray(new String[0]));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(), annotation.comment()).setValues(((List<String>) field.get(null)).toArray(new String[0]));
 					break;
 				}
 				case MAP: {
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(),
-							annotation.comment())
-							.setValues(((Map<?, ?>) field.get(null)).entrySet().stream()
-									.map(entry -> entry.getKey().toString() + ":" + entry.getValue().toString())
-									.toArray(String[]::new));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(), annotation.comment()).setValues(((Map<?, ?>) field.get(null)).entrySet().stream().map(entry -> entry.getKey().toString() + ":" + entry.getValue().toString()).toArray(String[]::new));
 					break;
 				}
 				default:
@@ -345,8 +308,7 @@ public class ConfigLoader {
 
 	public static void addPlayerToReincarnation(String uuid) {
 		loliPickaxeReincarnationPlayerList.add(uuid);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnationPlayerList", new String[0], "伊邪那美玩家列表")
-				.setValues(loliPickaxeReincarnationPlayerList.toArray(new String[0]));
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeReincarnationPlayerList", new String[0], "伊邪那美玩家列表").setValues(loliPickaxeReincarnationPlayerList.toArray(new String[0]));
 		config.save();
 	}
 
@@ -356,8 +318,7 @@ public class ConfigLoader {
 
 	public static void addPlayerToBeyondRedemption(String uuid) {
 		loliPickaxeBeyondRedemptionPlayerList.add(uuid);
-		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBeyondRedemptionPlayerList", new String[0], "万劫不复玩家列表")
-				.setValues(loliPickaxeBeyondRedemptionPlayerList.toArray(new String[0]));
+		config.get(Configuration.CATEGORY_GENERAL, "loliPickaxeBeyondRedemptionPlayerList", new String[0], "万劫不复玩家列表").setValues(loliPickaxeBeyondRedemptionPlayerList.toArray(new String[0]));
 		config.save();
 	}
 
@@ -499,10 +460,21 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.INT) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
-						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
-						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
-					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getInteger(flag);
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli && stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG) && stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+					int result = stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getInteger(flag);
+					int max;
+					if (flags.contains(annotation.intMaxValueField())) {
+						max = getInt(stack, annotation.intMaxValueField());
+					} else {
+						max = annotation.intMaxValue();
+					}
+					int min;
+					if (flags.contains(annotation.intMinValueField())) {
+						min = getInt(stack, annotation.intMinValueField());
+					} else {
+						min = annotation.intMinValue();
+					}
+					return Math.max(Math.min(stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getInteger(flag), max), min);
 				} else {
 					try {
 						return flagFields.get(flag).getInt(null);
@@ -521,11 +493,21 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.DOUBLE) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
-						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
-						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
-					NBTTagCompound stackFlags = stack.getTagCompound().getCompoundTag(ILoli.CONFIG);
-					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getDouble(flag);
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli && stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG) && stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+					double result = stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getDouble(flag);
+					double max;
+					if (flags.contains(annotation.doubleMaxValueField())) {
+						max = getDouble(stack, annotation.doubleMaxValueField());
+					} else {
+						max = annotation.doubleMaxValue();
+					}
+					double min;
+					if (flags.contains(annotation.doubleMinValueField())) {
+						min = getDouble(stack, annotation.doubleMinValueField());
+					} else {
+						min = annotation.doubleMinValue();
+					}
+					return Math.max(Math.min(stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getDouble(flag), max), min);
 				} else {
 					try {
 						return flagFields.get(flag).getDouble(null);
@@ -544,9 +526,7 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.BOOLEAN) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
-						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
-						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli && stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG) && stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
 					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getBoolean(flag);
 				} else {
 					try {
@@ -566,9 +546,7 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.STRING) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli
-						&& stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)
-						&& stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli && stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG) && stack.getTagCompound().getCompoundTag(ILoli.CONFIG).hasKey(flag)) {
 					return stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getString(flag);
 				} else {
 					try {
@@ -584,11 +562,18 @@ public class ConfigLoader {
 		return null;
 	}
 
+	public static NBTTagCompound getItemConfigs(ItemStack stack) {
+		if (!stack.isEmpty() && stack.getItem() instanceof ILoli && stack.hasTagCompound() && stack.getTagCompound().hasKey(ILoli.CONFIG)) {
+			return stack.getTagCompound().getCompoundTag(ILoli.CONFIG);
+		}
+		return null;
+	}
+
 	public static void setInt(ItemStack stack, String flag, int value) {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.INT) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
 					NBTTagCompound nbt;
 					if (!stack.hasTagCompound()) {
 						nbt = new NBTTagCompound();
@@ -603,7 +588,19 @@ public class ConfigLoader {
 						stackFlags = new NBTTagCompound();
 						nbt.setTag(ILoli.CONFIG, stackFlags);
 					}
-					stackFlags.setInteger(flag, value);
+					int max;
+					if (flags.contains(annotation.intMaxValueField())) {
+						max = getInt(stack, annotation.intMaxValueField());
+					} else {
+						max = annotation.intMaxValue();
+					}
+					int min;
+					if (flags.contains(annotation.intMinValueField())) {
+						min = getInt(stack, annotation.intMinValueField());
+					} else {
+						min = annotation.intMinValue();
+					}
+					stackFlags.setInteger(flag, Math.max(Math.min(value, max), min));
 				}
 			}
 		}
@@ -613,7 +610,7 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.DOUBLE) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
 					NBTTagCompound nbt;
 					if (!stack.hasTagCompound()) {
 						nbt = new NBTTagCompound();
@@ -628,7 +625,19 @@ public class ConfigLoader {
 						stackFlags = new NBTTagCompound();
 						nbt.setTag(ILoli.CONFIG, stackFlags);
 					}
-					stackFlags.setDouble(flag, value);
+					double max;
+					if (flags.contains(annotation.doubleMaxValueField())) {
+						max = getDouble(stack, annotation.doubleMaxValueField());
+					} else {
+						max = annotation.doubleMaxValue();
+					}
+					double min;
+					if (flags.contains(annotation.doubleMinValueField())) {
+						min = getDouble(stack, annotation.doubleMinValueField());
+					} else {
+						min = annotation.doubleMinValue();
+					}
+					stackFlags.setDouble(flag, Math.max(Math.min(value, max), min));
 				}
 			}
 		}
@@ -638,7 +647,7 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.BOOLEAN) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
 					NBTTagCompound nbt;
 					if (!stack.hasTagCompound()) {
 						nbt = new NBTTagCompound();
@@ -663,7 +672,7 @@ public class ConfigLoader {
 		if (flags.contains(flag)) {
 			ConfigField annotation = flagAnnotations.get(flag);
 			if (annotation.valueType() == ValurType.STRING) {
-				if (loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				if (guiFlags.contains(flag) && loliPickaxeGuiChangeList.contains(flag) && !stack.isEmpty() && stack.getItem() instanceof ILoli) {
 					NBTTagCompound nbt;
 					if (!stack.hasTagCompound()) {
 						nbt = new NBTTagCompound();
@@ -681,6 +690,15 @@ public class ConfigLoader {
 					stackFlags.setString(flag, value);
 				}
 			}
+		}
+	}
+
+	public static void setItemConfigs(ItemStack stack, NBTTagCompound config) {
+		if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+			if (!stack.hasTagCompound()) {
+				stack.setTagCompound(new NBTTagCompound());
+			}
+			stack.getTagCompound().setTag(ILoli.CONFIG, config);
 		}
 	}
 

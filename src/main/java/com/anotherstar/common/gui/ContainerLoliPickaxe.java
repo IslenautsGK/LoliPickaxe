@@ -1,6 +1,6 @@
 package com.anotherstar.common.gui;
 
-import com.anotherstar.common.item.tool.ILoli;
+import com.anotherstar.common.item.tool.IContainer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -10,15 +10,15 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerLoliPickaxe extends Container {
 
-	public InventoryLoliPickaxe inventory;
+	public ILoliInventory inventory;
 	private EntityPlayer player;
 	private ItemStack stack;
 	private int slotIndex;
 
 	public ContainerLoliPickaxe(EntityPlayer player, ItemStack stack, int slotIndex) {
-		if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+		if (!stack.isEmpty() && stack.getItem() instanceof IContainer) {
 			this.stack = stack;
-			this.inventory = new InventoryLoliPickaxe(stack);
+			this.inventory = ((IContainer) stack.getItem()).getInventory(stack);
 			this.inventory.openInventory(player);
 			this.player = player;
 			this.slotIndex = slotIndex;

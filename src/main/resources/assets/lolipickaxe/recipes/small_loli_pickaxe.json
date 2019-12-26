@@ -1,0 +1,23 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"group" : "lolipickaxe:small_loli_pickaxe",
+	"result" : {
+		"item" : "lolipickaxe:small_loli_pickaxe",
+		"count" : 1
+	},
+	"pattern" : ["ABC", " # ", " # "],
+	"key" : {
+		"A" : {
+			"item" : "minecraft:iron_axe"
+		},
+		"B" : {
+			"item" : "minecraft:iron_pickaxe"
+		},
+		"C" : {
+			"item" : "minecraft:iron_shovel"
+		},
+		"#" : {
+			"item" : "minecraft:iron_ingot"
+		}
+	}
+}

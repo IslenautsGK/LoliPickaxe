@@ -33,26 +33,22 @@ public class ItemLoliCard extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		if (world.isRemote) {
-			player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_CARD, world, 0,
-					hand == EnumHand.MAIN_HAND ? 0 : 1, 0);
+			player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_CARD, world, 0, hand == EnumHand.MAIN_HAND ? 0 : 1, 0);
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		if (world.isRemote && LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0
-				&& (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("picture"))) {
-			NetworkHandler.INSTANCE.sendMessageToServer(new LoliCardPacket(itemSlot,
-					LoliCardUtil.customArtNames[world.rand.nextInt(LoliCardUtil.customArtNames.length)]));
+		if (world.isRemote && LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0 && (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("picture"))) {
+			NetworkHandler.INSTANCE.sendMessageToServer(new LoliCardPacket(itemSlot, LoliCardUtil.customArtNames[world.rand.nextInt(LoliCardUtil.customArtNames.length)]));
 		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (this.isInCreativeTab(tab) && LoliCardUtil.customArtNames != null
-				&& LoliCardUtil.customArtNames.length != 0) {
+		if (isInCreativeTab(tab) && LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0) {
 			for (String name : LoliCardUtil.customArtNames) {
 				ItemStack stack = new ItemStack(this);
 				NBTTagCompound nbt = new NBTTagCompound();
