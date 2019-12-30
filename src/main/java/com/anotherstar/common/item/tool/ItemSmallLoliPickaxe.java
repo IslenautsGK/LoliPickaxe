@@ -62,15 +62,19 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 	public static NonNullList<ItemStack> blacklist = null;
 
 	public static void init() {
+		nbtMap.put(ItemLoader.coalAddon, "LoliDodge");
 		nbtMap.put(ItemLoader.ironAddon, "LoliDiggingSpeed");
 		nbtMap.put(ItemLoader.goldAddon, "LoliAttackDamage");
-		nbtMap.put(ItemLoader.diamondAddon, "LoliDiggingLevel");
-		nbtMap.put(ItemLoader.emeraldAddon, "LoliDiggingRange");
 		nbtMap.put(ItemLoader.redstoneAddon, "LoliAttackSpeed");
 		nbtMap.put(ItemLoader.lapisAddon, "LoliFortuneLevel");
-		nbtMap.put(ItemLoader.netherStarAddon, "LoliBackpackPage");
+		nbtMap.put(ItemLoader.diamondAddon, "LoliDiggingLevel");
+		nbtMap.put(ItemLoader.emeraldAddon, "LoliDiggingRange");
+		nbtMap.put(ItemLoader.obsidianAddon, "LoliAntiInjury");
+		nbtMap.put(ItemLoader.glowAddon, "LoliBuff");
 		nbtMap.put(ItemLoader.quartzAddon, "LoliHitRange");
+		nbtMap.put(ItemLoader.netherStarAddon, "LoliBackpackPage");
 		nbtMap.put(ItemLoader.autoFurnaceAddon, "LoliAutoFurnace");
+		nbtMap.put(ItemLoader.flyAddon, "LoliFly");
 		full = new ItemStack(ItemLoader.smallLoliPickaxe);
 		NBTTagCompound nbt = new NBTTagCompound();
 		for (Entry<ItemLoliPickaxeMaterial, String> entry : ItemSmallLoliPickaxe.nbtMap.entrySet()) {
@@ -154,25 +158,26 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 		if (!world.isRemote && entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;
 			int range = getRange(stack);
-			if (hasInventory(stack)) {
-				isharvesting = true;
-				autoFurnace = stack.getTagCompound().hasKey("LoliAutoFurnace") ? getTransformValue("LoliAutoFurnace", stack.getTagCompound().getInteger("LoliAutoFurnace")) == 0 : false;
-				fortuneLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
-				exp = 0;
-				inventory = getInventory(stack);
-				inventory.openInventory(player);
-				blacklist = NonNullList.create();
-				if (stack.hasTagCompound() && stack.getTagCompound().hasKey("Blacklist")) {
-					NBTTagList blackList = stack.getTagCompound().getTagList("Blacklist", 10);
-					for (int i = 0; i < blackList.tagCount(); i++) {
-						NBTTagCompound black = blackList.getCompoundTagAt(i);
-						if (black.hasKey("Name") && black.hasKey("Damage")) {
-							ItemStack blackStack = new ItemStack(Item.getByNameOrId(black.getString("Name")), 1, black.getInteger("Damage"));
-							blacklist.add(blackStack);
-						}
+			isharvesting = true;
+			autoFurnace = stack.getTagCompound().hasKey("LoliAutoFurnace") ? getTransformValue("LoliAutoFurnace", stack.getTagCompound().getInteger("LoliAutoFurnace")) == 0 : false;
+			fortuneLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
+			exp = 0;
+			blacklist = NonNullList.create();
+			if (stack.hasTagCompound() && stack.getTagCompound().hasKey("Blacklist")) {
+				NBTTagList blackList = stack.getTagCompound().getTagList("Blacklist", 10);
+				for (int i = 0; i < blackList.tagCount(); i++) {
+					NBTTagCompound black = blackList.getCompoundTagAt(i);
+					if (black.hasKey("Name") && black.hasKey("Damage")) {
+						ItemStack blackStack = new ItemStack(Item.getByNameOrId(black.getString("Name")), 1, black.getInteger("Damage"));
+						blacklist.add(blackStack);
 					}
 				}
 			}
+			if (hasInventory(stack)) {
+				inventory = getInventory(stack);
+				inventory.openInventory(player);
+			}
+			int bonusLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, stack);
 			for (int i = -range; i <= range; i++) {
 				for (int j = -range; j <= range; j++) {
 					for (int k = -range; k <= range; k++) {
@@ -186,23 +191,24 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 								if (curBlock.removedByPlayer(curState, world, curPos, player, canHarvest)) {
 									curBlock.onBlockDestroyedByPlayer(world, curPos, curState);
 									curBlock.harvestBlock(world, player, curPos, curState, tile, stack.copy());
+									curBlock.dropXpOnBlockBreak(world, curPos, curBlock.getExpDrop(curState, world, curPos, bonusLevel));
 								}
 							}
 						}
 					}
 				}
 			}
-			if (isharvesting) {
-				blacklist = null;
+			if (inventory != null) {
 				inventory.closeInventory(player);
 				inventory = null;
-				if ((int) exp > 0) {
-					player.world.spawnEntity(new EntityXPOrb(player.world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, (int) exp));
-				}
-				fortuneLevel = 0;
-				autoFurnace = false;
-				isharvesting = false;
 			}
+			blacklist = null;
+			if ((int) exp > 0) {
+				player.world.spawnEntity(new EntityXPOrb(player.world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, (int) exp));
+			}
+			fortuneLevel = 0;
+			autoFurnace = false;
+			isharvesting = false;
 		}
 		return false;
 	}
@@ -299,19 +305,19 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 	public int getTransformValue(String key, int level) {
 		switch (key) {
 		case "LoliDiggingSpeed":
-			return 1 << (level + 1);
+			return 4 << level;
 		case "LoliDiggingLevel":
 			switch (level) {
 			case 0:
-				return 0;
-			case 1:
 				return 1;
-			case 2:
+			case 1:
 				return 3;
-			case 3:
+			case 2:
 				return 7;
+			case 3:
+				return 13;
 			case 4:
-				return 15;
+				return 21;
 			case 5:
 				return 32;
 			default:
@@ -325,9 +331,13 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 			return 1 << level;
 		case "LoliBackpackPage":
 			return 2 << level;
+		case "LoliBuff":
+			return level + 1;
 		case "LoliHitRange":
 			return level * 10 + 6;
 		case "LoliAutoFurnace":
+			return level;
+		case "LoliFly":
 			return level;
 		default:
 			return Integer.MIN_VALUE;
@@ -336,8 +346,12 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 
 	public double getDoubleTransformValue(String key, int level) {
 		switch (key) {
+		case "LoliDodge":
+			return (level + 1) / 10.0;
 		case "LoliAttackDamage":
 			return 4 + Math.pow(2, Math.pow(2, level));
+		case "LoliAntiInjury":
+			return (level + 1) / 10.0;
 		default:
 			return Integer.MIN_VALUE;
 		}
@@ -355,6 +369,22 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 
 	public int getMaxPage(ItemStack stack) {
 		return getTransformValue("LoliBackpackPage", stack.getTagCompound().getInteger("LoliBackpackPage"));
+	}
+
+	public boolean canFly(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliFly") && getTransformValue("LoliFly", stack.getTagCompound().getInteger("LoliFly")) == 0;
+	}
+
+	public double getDodge(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliDodge") ? getDoubleTransformValue("LoliDodge", stack.getTagCompound().getInteger("LoliDodge")) : 0;
+	}
+
+	public double getAntiInjury(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliAntiInjury") ? getDoubleTransformValue("LoliAntiInjury", stack.getTagCompound().getInteger("LoliAntiInjury")) : 0;
+	}
+
+	public int buffLevel(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliBuff") ? getTransformValue("LoliBuff", stack.getTagCompound().getInteger("LoliBuff")) : -1;
 	}
 
 }

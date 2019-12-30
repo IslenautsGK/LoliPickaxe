@@ -1,0 +1,22 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"group" : "lolipickaxe:loli_fly_addon",
+	"result" : {
+		"item" : "lolipickaxe:loli_fly_addon",
+		"data" : 0,
+		"count" : 1
+	},
+	"pattern" : ["XYX", "YZY", "XYX"],
+	"key" : {
+		"X" : {
+			"item" : "minecraft:nether_star"
+		},
+		"Y" : {
+			"item" : "lolipickaxe:loli_entity_soul_addon",
+			"data" : 1
+		},
+		"Z" : {
+			"item" : "minecraft:elytra"
+		}
+	}
+}

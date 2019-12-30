@@ -1,19 +1,18 @@
 {
 	"type" : "minecraft:crafting_shaped",
-	"group" : "lolipickaxe:loli_lapis_addon",
+	"group" : "lolipickaxe:loli_glow_addon",
 	"result" : {
-		"item" : "lolipickaxe:loli_lapis_addon",
+		"item" : "lolipickaxe:loli_glow_addon",
 		"data" : 0,
 		"count" : 1
 	},
 	"pattern" : ["XYX", "YXY", "XYX"],
 	"key" : {
 		"X" : {
-			"item" : "minecraft:dye",
-			"data" : 4
+			"item" : "minecraft:glowstone_dust"
 		},
 		"Y" : {
-			"item" : "minecraft:lapis_block"
+			"item" : "minecraft:glowstone"
 		}
 	}
 }

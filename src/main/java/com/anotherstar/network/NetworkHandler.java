@@ -17,22 +17,17 @@ public enum NetworkHandler {
 
 	private NetworkHandler() {
 		int index = 0;
-		this.channel.registerMessage(LoliKillFacingPacket.MessageHandler.class, LoliKillFacingPacket.class, index++,
-				Side.SERVER);
+		this.channel.registerMessage(LoliKillFacingPacket.MessageHandler.class, LoliKillFacingPacket.class, index++, Side.SERVER);
 		this.channel.registerMessage(LoliDeadPacket.MessageHandler.class, LoliDeadPacket.class, index++, Side.CLIENT);
-		this.channel.registerMessage(LoliConfigPacket.MessageHandler.class, LoliConfigPacket.class, index++,
-				Side.CLIENT);
-		this.channel.registerMessage(LoliItemConfigPacket.MessageHandler.class, LoliItemConfigPacket.class, index++,
-				Side.SERVER);
-		this.channel.registerMessage(LoliKillEntityPacket.MessageHandler.class, LoliKillEntityPacket.class, index++,
-				Side.CLIENT);
+		this.channel.registerMessage(LoliConfigPacket.MessageHandler.class, LoliConfigPacket.class, index++, Side.CLIENT);
+		this.channel.registerMessage(LoliItemConfigPacket.MessageHandler.class, LoliItemConfigPacket.class, index++, Side.SERVER);
+		this.channel.registerMessage(LoliKillEntityPacket.MessageHandler.class, LoliKillEntityPacket.class, index++, Side.CLIENT);
 		this.channel.registerMessage(LoliCardPacket.MessageHandler.class, LoliCardPacket.class, index++, Side.SERVER);
-		this.channel.registerMessage(LoliPickaxeContainerPackte.MessageHandler.class, LoliPickaxeContainerPackte.class,
-				index++, Side.SERVER);
-		this.channel.registerMessage(LoliPickaxeContainerOpenPackte.MessageHandler.class,
-				LoliPickaxeContainerOpenPackte.class, index++, Side.SERVER);
-		this.channel.registerMessage(LoliPickaxeDropAll.MessageHandler.class, LoliPickaxeDropAll.class, index++,
-				Side.SERVER);
+		this.channel.registerMessage(LoliPickaxeContainerPackte.MessageHandler.class, LoliPickaxeContainerPackte.class, index++, Side.SERVER);
+		this.channel.registerMessage(LoliPickaxeContainerOpenPackte.MessageHandler.class, LoliPickaxeContainerOpenPackte.class, index++, Side.SERVER);
+		this.channel.registerMessage(LoliPickaxeDropAll.MessageHandler.class, LoliPickaxeDropAll.class, index++, Side.SERVER);
+		this.channel.registerMessage(LoliSlotChangePacket.MessageHandler.class, LoliSlotChangePacket.class, index++, Side.CLIENT);
+		this.channel.registerMessage(LoliSlotsInitPacket.MessageHandler.class, LoliSlotsInitPacket.class, index++, Side.CLIENT);
 	}
 
 	public void sendMessageToDim(IMessage msg, int dim) {

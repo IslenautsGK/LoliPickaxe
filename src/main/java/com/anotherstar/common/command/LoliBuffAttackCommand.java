@@ -45,16 +45,13 @@ public class LoliBuffAttackCommand extends CommandBase {
 			default:
 				throw new WrongUsageException("commands.loliattack.notfound");
 			}
+		} else {
+			throw new WrongUsageException("commands.loliattack.usage");
 		}
 	}
 
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-			@Nullable BlockPos targetPos) {
-		return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames())
-				: args.length == 2
-						? getListOfStringsMatchingLastWord(args, "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack",
-								"loliPickaxeFailRespondAttack")
-						: Collections.emptyList();
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+		return args.length == 1 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()) : args.length == 2 ? getListOfStringsMatchingLastWord(args, "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack") : Collections.emptyList();
 	}
 
 }

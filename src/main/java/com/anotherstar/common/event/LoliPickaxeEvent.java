@@ -37,8 +37,7 @@ public class LoliPickaxeEvent {
 	@SideOnly(Side.CLIENT)
 	public void onLiftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		EntityPlayer player = event.getEntityPlayer();
-		if (ConfigLoader.getBoolean(player.getHeldItemMainhand(), "loliPickaxeKillFacing")
-				&& !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ILoli) {
+		if (ConfigLoader.getBoolean(player.getHeldItemMainhand(), "loliPickaxeKillFacing") && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ILoli) {
 			if (player.world.isRemote) {
 				NetworkHandler.INSTANCE.sendMessageToServer(new LoliKillFacingPacket());
 			}
@@ -57,33 +56,32 @@ public class LoliPickaxeEvent {
 
 	@SubscribeEvent
 	public void onAttack(LivingAttackEvent event) {
-		if (event.getEntityLiving().world.isRemote) {
-			return;
-		}
 		EntityLivingBase entity = event.getEntityLiving();
-		if (LoliPickaxeUtil.invHaveLoliPickaxe(event.getEntityLiving())) {
-			if (ConfigLoader.getBoolean(LoliPickaxeUtil.getLoliPickaxe(entity), "loliPickaxeThorns")) {
-				Entity source = event.getSource().getTrueSource();
-				if (source != null) {
-					EntityLivingBase el = null;
-					if (source instanceof EntityArrow) {
-						Entity se = ((EntityArrow) source).shootingEntity;
-						if (se instanceof EntityLivingBase) {
-							el = (EntityLivingBase) se;
+		if (!entity.world.isRemote) {
+			if (LoliPickaxeUtil.invHaveLoliPickaxe(event.getEntityLiving())) {
+				if (ConfigLoader.getBoolean(LoliPickaxeUtil.getLoliPickaxe(entity), "loliPickaxeThorns")) {
+					Entity source = event.getSource().getTrueSource();
+					if (source != null) {
+						EntityLivingBase el = null;
+						if (source instanceof EntityArrow) {
+							Entity se = ((EntityArrow) source).shootingEntity;
+							if (se instanceof EntityLivingBase) {
+								el = (EntityLivingBase) se;
+							}
+						} else if (source instanceof EntityLivingBase) {
+							el = (EntityLivingBase) source;
 						}
-					} else if (source instanceof EntityLivingBase) {
-						el = (EntityLivingBase) source;
-					}
-					if (el != null) {
-						if (el instanceof EntityPlayer) {
-							LoliPickaxeUtil.killPlayer((EntityPlayer) el, entity);
-						} else {
-							LoliPickaxeUtil.killEntityLiving(el, entity);
+						if (el != null) {
+							if (el instanceof EntityPlayer) {
+								LoliPickaxeUtil.killPlayer((EntityPlayer) el, entity);
+							} else {
+								LoliPickaxeUtil.killEntityLiving(el, entity);
+							}
 						}
 					}
 				}
+				event.setCanceled(true);
 			}
-			event.setCanceled(true);
 		}
 	}
 
@@ -98,8 +96,8 @@ public class LoliPickaxeEvent {
 			entity.deathTime = 0;
 			if (!entity.world.isRemote) {
 				entity.clearActivePotions();
-				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 400, 0, false, false));
-				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 400, 0, false, false));
+				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 410, 0, false, false));
+				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 410, 0, false, false));
 				entity.extinguish();
 				if (ConfigLoader.getBoolean(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRangeEntity")) {
 					int range = ConfigLoader.getInt(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRange");
@@ -130,13 +128,7 @@ public class LoliPickaxeEvent {
 				}
 			}
 			if (ConfigLoader.loliPickaxeFindOwner && !player.world.isRemote) {
-				List<EntityItem> entityItems = player.world.getEntitiesWithinAABB(EntityItem.class,
-						new AxisAlignedBB(player.posX - ConfigLoader.loliPickaxeFindOwnerRange,
-								player.posY - ConfigLoader.loliPickaxeFindOwnerRange,
-								player.posZ - ConfigLoader.loliPickaxeFindOwnerRange,
-								player.posX + ConfigLoader.loliPickaxeFindOwnerRange,
-								player.posY + ConfigLoader.loliPickaxeFindOwnerRange,
-								player.posZ + ConfigLoader.loliPickaxeFindOwnerRange));
+				List<EntityItem> entityItems = player.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(player.posX - ConfigLoader.loliPickaxeFindOwnerRange, player.posY - ConfigLoader.loliPickaxeFindOwnerRange, player.posZ - ConfigLoader.loliPickaxeFindOwnerRange, player.posX + ConfigLoader.loliPickaxeFindOwnerRange, player.posY + ConfigLoader.loliPickaxeFindOwnerRange, player.posZ + ConfigLoader.loliPickaxeFindOwnerRange));
 				for (EntityItem entityItem : entityItems) {
 					ItemStack estack = entityItem.getItem();
 					if (!estack.isEmpty() && estack.getItem() instanceof ILoli) {

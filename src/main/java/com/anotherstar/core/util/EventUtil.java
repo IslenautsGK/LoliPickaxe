@@ -4,6 +4,10 @@ import javax.annotation.Nullable;
 
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.IEntityLoli;
+import com.anotherstar.common.gui.ContainerLoliPickaxe;
+import com.anotherstar.network.LoliSlotChangePacket;
+import com.anotherstar.network.LoliSlotsInitPacket;
+import com.anotherstar.network.NetworkHandler;
 import com.anotherstar.util.LoliPickaxeUtil;
 
 import net.minecraft.client.multiplayer.WorldClient;
@@ -11,12 +15,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
@@ -67,8 +75,7 @@ public class EventUtil {
 			entity.deathTime = entity.loliDeathTime;
 			return true;
 		}
-		if (ConfigLoader.loliPickaxeForbidOnLivingUpdate && !isLoli
-				&& (entity.loliDead || entity.isDead || entity.getHealth() == 0)) {
+		if (ConfigLoader.loliPickaxeForbidOnLivingUpdate && !isLoli && (entity.loliDead || entity.isDead || entity.getHealth() == 0)) {
 			if (++entity.loliDeathTime >= 20) {
 				entity.isDead = true;
 			}
@@ -110,8 +117,7 @@ public class EventUtil {
 	public static float getHealth(EntityLivingBase entity) {
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
 			return 20;
-		} else if (entity.loliDead
-				|| ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
+		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
 			return 0;
 		}
 		return entity.getHealth2();
@@ -121,8 +127,7 @@ public class EventUtil {
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
 			entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
 			return 20;
-		} else if (entity.loliDead
-				|| ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
+		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
 			return 0;
 		}
 		return entity.getMaxHealth2();
@@ -134,8 +139,7 @@ public class EventUtil {
 		}
 	}
 
-	public static int clearMatchingItems(InventoryPlayer inventory, @Nullable Item item, int meta, int removeCount,
-			@Nullable NBTTagCompound itemNBT) {
+	public static int clearMatchingItems(InventoryPlayer inventory, @Nullable Item item, int meta, int removeCount, @Nullable NBTTagCompound itemNBT) {
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(inventory.player)) {
 			return 0;
 		} else {
@@ -168,6 +172,15 @@ public class EventUtil {
 		Entity entity = client.getEntityByID(entityID);
 		if (entity instanceof IEntityLoli) {
 			((IEntityLoli) entity).setDispersal(true);
+		}
+	}
+
+	public static void sendAllContents(EntityPlayerMP player, Container container, NonNullList<ItemStack> stackList) {
+		if (container instanceof ContainerLoliPickaxe) {
+			NetworkHandler.INSTANCE.sendMessageToPlayer(new LoliSlotsInitPacket(container.windowId, container.getInventory()), player);
+			NetworkHandler.INSTANCE.sendMessageToPlayer(new LoliSlotChangePacket(-1, -1, player.inventory.getItemStack()), player);
+		} else {
+			player.sendAllContents2(container, stackList);
 		}
 	}
 

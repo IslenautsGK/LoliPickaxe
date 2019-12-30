@@ -86,11 +86,6 @@ public abstract class InventoryLoliBase implements ILoliInventory {
 	}
 
 	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
 	public void markDirty() {
 	}
 
@@ -135,8 +130,21 @@ public abstract class InventoryLoliBase implements ILoliInventory {
 			for (int i = 0; i < pageList.tagCount(); i++) {
 				NBTTagCompound page = pageList.getCompoundTagAt(i);
 				NonNullList<ItemStack> stacks = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-				ItemStackHelper.loadAllItems(page, stacks);
+				loadAllItems(page, stacks);
 				pages.add(stacks);
+			}
+		}
+	}
+
+	public void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> list) {
+		NBTTagList nbttaglist = tag.getTagList("Items", 10);
+		for (int i = 0; i < nbttaglist.tagCount(); ++i) {
+			NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+			int j = nbttagcompound.getByte("Slot") & 255;
+			if (j >= 0 && j < list.size()) {
+				ItemStack stack = new ItemStack(nbttagcompound);
+				stack.setCount(nbttagcompound.getInteger("Count"));
+				list.set(j, stack);
 			}
 		}
 	}
@@ -162,11 +170,30 @@ public abstract class InventoryLoliBase implements ILoliInventory {
 			NBTTagList pageList = new NBTTagList();
 			for (NonNullList<ItemStack> stacks : pages) {
 				NBTTagCompound page = new NBTTagCompound();
-				ItemStackHelper.saveAllItems(page, stacks, false);
+				saveAllItems(page, stacks, false);
 				pageList.appendTag(page);
 			}
 			nbtPages.setTag("PageList", pageList);
 		}
+	}
+
+	public NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> list, boolean saveEmpty) {
+		NBTTagList nbttaglist = new NBTTagList();
+		for (int i = 0; i < list.size(); ++i) {
+			ItemStack itemstack = list.get(i);
+			if (!itemstack.isEmpty()) {
+				NBTTagCompound nbttagcompound = new NBTTagCompound();
+				nbttagcompound.setByte("Slot", (byte) i);
+				itemstack.writeToNBT(nbttagcompound);
+				nbttagcompound.removeTag("Count");
+				nbttagcompound.setInteger("Count", itemstack.getCount());
+				nbttaglist.appendTag(nbttagcompound);
+			}
+		}
+		if (!nbttaglist.hasNoTags() || saveEmpty) {
+			tag.setTag("Items", nbttaglist);
+		}
+		return tag;
 	}
 
 	@Override

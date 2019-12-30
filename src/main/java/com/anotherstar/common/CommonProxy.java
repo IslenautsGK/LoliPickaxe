@@ -10,6 +10,7 @@ import com.anotherstar.common.event.LoliPickaxeEvent;
 import com.anotherstar.common.event.LoliTickEvent;
 import com.anotherstar.common.event.PlayerJoinEvent;
 import com.anotherstar.common.event.SmallLoliBlockDropEvent;
+import com.anotherstar.common.event.SmallLoliFlyEvent;
 import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.common.recipe.RecipeLoader;
@@ -37,6 +38,7 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new PlayerJoinEvent());
 		MinecraftForge.EVENT_BUS.register(new LoliDropEvent());
 		MinecraftForge.EVENT_BUS.register(new SmallLoliBlockDropEvent());
+		MinecraftForge.EVENT_BUS.register(new SmallLoliFlyEvent());
 		NetworkHandler.INSTANCE.name();
 		LoliGUIHandler.INSTANCE.name();
 	}

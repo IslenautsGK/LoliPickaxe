@@ -7,7 +7,9 @@ import net.minecraft.util.NonNullList;
 public interface ILoliInventory extends IInventory {
 
 	int getMaxPage();
-	
+
 	NonNullList<ItemStack> getPage(int index);
+
+	boolean cancelStackLimit();
 
 }

@@ -31,6 +31,11 @@ public class ItemLoliCard extends Item {
 	}
 
 	@Override
+	public int getItemStackLimit(ItemStack stack) {
+		return stack.hasTagCompound() ? 64 : 1;
+	}
+
+	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		if (world.isRemote) {
 			player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_CARD, world, 0, hand == EnumHand.MAIN_HAND ? 0 : 1, 0);

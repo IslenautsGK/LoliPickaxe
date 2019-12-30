@@ -465,6 +465,61 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.client.Minecraft")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+					if (name.equals("aS")) {
+						access = Opcodes.ACC_PUBLIC;
+					}
+					return cv.visitField(access, name, desc, signature, value);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.entity.player.EntityPlayerMP")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+					super.visit(version, access, name, signature, superName, interfaces);
+					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "sendAllContents" : "a", LoliPickaxeCore.debug ? "(Lnet/minecraft/inventory/Container;Lnet/minecraft/util/NonNullList;)V" : "(Lafr;Lfi;)V", null, null);
+					mv.visitCode();
+					Label start = new Label();
+					mv.visitLabel(start);
+					mv.visitVarInsn(Opcodes.ALOAD, 0);
+					mv.visitVarInsn(Opcodes.ALOAD, 1);
+					mv.visitVarInsn(Opcodes.ALOAD, 2);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "sendAllContents", "(Lnet/minecraft/entity/player/EntityPlayerMP;Lnet/minecraft/inventory/Container;Lnet/minecraft/util/NonNullList;)V", false);
+					mv.visitInsn(Opcodes.RETURN);
+					Label end = new Label();
+					mv.visitLabel(end);
+					mv.visitLocalVariable("this", "Lnet/minecraft/entity/player/EntityPlayerMP;", null, start, end, 0);
+					mv.visitLocalVariable("container", "Lnet/minecraft/inventory/Container;", null, start, end, 1);
+					mv.visitLocalVariable("stackList", "Lnet/minecraft/util/NonNullList;", null, start, end, 2);
+					mv.visitMaxs(3, 3);
+					mv.visitEnd();
+				}
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+					if (name.equals("a") && desc.equals("(Lafr;Lfi;)V") || name.equals("sendAllContents")) {
+						return cv.visitMethod(access, "sendAllContents2", desc, signature, exceptions);
+					} else if (name.equals("sendAllContents2")) {
+						return null;
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
 		}
 		return basicClass;
 	}

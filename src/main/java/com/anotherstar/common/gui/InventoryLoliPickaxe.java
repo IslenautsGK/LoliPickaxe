@@ -16,8 +16,18 @@ public class InventoryLoliPickaxe extends InventoryLoliBase {
 	}
 
 	@Override
+	public int getInventoryStackLimit() {
+		return ConfigLoader.loliPickaxeSlotStackLimit;
+	}
+
+	@Override
 	public int getMaxPage() {
 		return ConfigLoader.loliPickaxeMaxPage;
+	}
+
+	@Override
+	public boolean cancelStackLimit() {
+		return ConfigLoader.loliPickaxeCancelStackLimit;
 	}
 
 }

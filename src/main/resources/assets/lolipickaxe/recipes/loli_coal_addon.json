@@ -1,19 +1,19 @@
 {
 	"type" : "minecraft:crafting_shaped",
-	"group" : "lolipickaxe:loli_lapis_addon",
+	"group" : "lolipickaxe:loli_coal_addon",
 	"result" : {
-		"item" : "lolipickaxe:loli_lapis_addon",
+		"item" : "lolipickaxe:loli_coal_addon",
 		"data" : 0,
 		"count" : 1
 	},
 	"pattern" : ["XYX", "YXY", "XYX"],
 	"key" : {
 		"X" : {
-			"item" : "minecraft:dye",
-			"data" : 4
+			"item" : "minecraft:coal",
+			"data" : 0
 		},
 		"Y" : {
-			"item" : "minecraft:lapis_block"
+			"item" : "minecraft:coal_block"
 		}
 	}
 }

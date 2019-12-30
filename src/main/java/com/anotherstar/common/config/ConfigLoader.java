@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -37,14 +38,18 @@ public class ConfigLoader {
 	public static boolean loliPickaxeMandatoryDrop;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "时运等级", valueType = ValurType.INT, intDefaultValue = 5, intMinValue = 0, intMaxValueField = "loliPickaxeMaxFortuneLevel")
 	public static int loliPickaxeFortuneLevel;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "最大时运等级", valueType = ValurType.INT, intDefaultValue = 10)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "最大时运等级", valueType = ValurType.INT, intDefaultValue = 32)
 	public static int loliPickaxeMaxFortuneLevel;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "精准采集", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeSilkTouch;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动熔炼", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeAutoFurnace;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 50)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 100)
 	public static int loliPickaxeMaxPage;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室取消物品堆叠限制", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeCancelStackLimit;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室最大堆叠数", valueType = ValurType.INT, intDefaultValue = 2000000000)
+	public static int loliPickaxeSlotStackLimit;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动收纳进储藏室", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeAutoAccept;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "反伤", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
@@ -474,7 +479,7 @@ public class ConfigLoader {
 					} else {
 						min = annotation.intMinValue();
 					}
-					return Math.max(Math.min(stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getInteger(flag), max), min);
+					return MathHelper.clamp(stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getInteger(flag), min, max);
 				} else {
 					try {
 						return flagFields.get(flag).getInt(null);
@@ -507,7 +512,7 @@ public class ConfigLoader {
 					} else {
 						min = annotation.doubleMinValue();
 					}
-					return Math.max(Math.min(stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getDouble(flag), max), min);
+					return MathHelper.clamp(stack.getTagCompound().getCompoundTag(ILoli.CONFIG).getDouble(flag), min, max);
 				} else {
 					try {
 						return flagFields.get(flag).getDouble(null);
@@ -600,7 +605,7 @@ public class ConfigLoader {
 					} else {
 						min = annotation.intMinValue();
 					}
-					stackFlags.setInteger(flag, Math.max(Math.min(value, max), min));
+					stackFlags.setInteger(flag, MathHelper.clamp(value, min, max));
 				}
 			}
 		}
@@ -637,7 +642,8 @@ public class ConfigLoader {
 					} else {
 						min = annotation.doubleMinValue();
 					}
-					stackFlags.setDouble(flag, Math.max(Math.min(value, max), min));
+
+					stackFlags.setDouble(flag, MathHelper.clamp(value, min, max));
 				}
 			}
 		}

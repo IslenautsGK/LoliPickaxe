@@ -4,6 +4,7 @@ import com.anotherstar.client.event.LoliKeyEvent;
 import com.anotherstar.client.event.LoliPickaxeTooltipEvent;
 import com.anotherstar.client.event.ResourcePackReloadEvent;
 import com.anotherstar.client.key.KeyLoader;
+import com.anotherstar.client.render.RenderLoliItem;
 import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.CommonProxy;
 
@@ -28,6 +29,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ResourcePackReloadEvent());
 		MinecraftForge.EVENT_BUS.register(new LoliPickaxeTooltipEvent());
 		LoliCardUtil.updateCustomArtDatas();
+		RenderLoliItem.init();
 	}
 
 	@Override

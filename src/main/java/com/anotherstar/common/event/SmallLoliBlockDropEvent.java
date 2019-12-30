@@ -58,34 +58,37 @@ public class SmallLoliBlockDropEvent {
 					return false;
 				});
 			}
-			for (ItemStack drop : drops) {
-				if (world.rand.nextFloat() <= chance) {
-					for (int i = 0; i < ItemSmallLoliPickaxe.inventory.getMaxPage(); i++) {
-						NonNullList<ItemStack> stacks = ItemSmallLoliPickaxe.inventory.getPage(i);
-						for (int j = 0; j < stacks.size(); j++) {
-							ItemStack slotStack = stacks.get(j);
-							if (slotStack.isEmpty()) {
-								stacks.set(j, drop.copy());
-								drop.setCount(0);
-								break;
-							} else {
-								int count = Math.min(slotStack.getMaxStackSize() - slotStack.getCount(), drop.getCount());
-								if (count > 0 && slotStack.isItemEqual(drop) && ItemStack.areItemStackTagsEqual(slotStack, drop)) {
-									slotStack.grow(count);
-									drop.shrink(count);
-									if (drop.isEmpty()) {
-										break;
+			if (ItemSmallLoliPickaxe.inventory != null) {
+				for (ItemStack drop : drops) {
+					if (world.rand.nextFloat() <= chance) {
+						for (int i = 0; i < ItemSmallLoliPickaxe.inventory.getMaxPage(); i++) {
+							NonNullList<ItemStack> stacks = ItemSmallLoliPickaxe.inventory.getPage(i);
+							for (int j = 0; j < stacks.size(); j++) {
+								ItemStack slotStack = stacks.get(j);
+								if (slotStack.isEmpty()) {
+									stacks.set(j, drop.copy());
+									drop.setCount(0);
+									break;
+								} else {
+									int maxCount = ItemSmallLoliPickaxe.inventory.cancelStackLimit() ? ItemSmallLoliPickaxe.inventory.getInventoryStackLimit() : Math.min(ItemSmallLoliPickaxe.inventory.getInventoryStackLimit(), slotStack.getMaxStackSize());
+									int count = Math.min(maxCount - slotStack.getCount(), drop.getCount());
+									if (count > 0 && slotStack.isItemEqual(drop) && ItemStack.areItemStackTagsEqual(slotStack, drop)) {
+										slotStack.grow(count);
+										drop.shrink(count);
+										if (drop.isEmpty()) {
+											break;
+										}
 									}
 								}
 							}
-						}
-						if (drop.isEmpty()) {
-							break;
+							if (drop.isEmpty()) {
+								break;
+							}
 						}
 					}
 				}
+				drops.removeIf(stack -> stack.isEmpty());
 			}
-			drops.removeIf(stack -> stack.isEmpty());
 		}
 	}
 

@@ -1,5 +1,7 @@
 package com.anotherstar.common;
 
+import org.apache.logging.log4j.Logger;
+
 import com.anotherstar.common.item.ItemLoader;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,6 +22,12 @@ public class LoliPickaxe {
 	public static final String NAME = "LoliPickaxe Mod";
 	public static final String VERSION = "@VERSION@";
 
+	@SidedProxy(clientSide = "com.anotherstar.client.ClientProxy", serverSide = "com.anotherstar.common.CommonProxy")
+	public static CommonProxy proxy;
+
+	@Instance(LoliPickaxe.MODID)
+	public static LoliPickaxe instance;
+
 	public CreativeTabs loliTabs = new CreativeTabs("loli") {
 
 		@Override
@@ -38,14 +46,11 @@ public class LoliPickaxe {
 
 	};
 
-	@SidedProxy(clientSide = "com.anotherstar.client.ClientProxy", serverSide = "com.anotherstar.common.CommonProxy")
-	public static CommonProxy proxy;
-
-	@Instance(LoliPickaxe.MODID)
-	public static LoliPickaxe instance;
+	public Logger log;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		log = event.getModLog();
 		proxy.preInit(event);
 	}
 

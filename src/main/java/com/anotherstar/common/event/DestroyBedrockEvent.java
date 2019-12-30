@@ -21,6 +21,7 @@ import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -35,7 +36,7 @@ public class DestroyBedrockEvent {
 
 	private void breakBlock(ItemStack loli, BlockPos pos, EntityPlayer player) {
 		if (!player.world.isRemote && !player.capabilities.isCreativeMode && loli.getItem() instanceof ILoli) {
-			int range = Math.max(Math.min(((ILoli) loli.getItem()).getRange(loli), ConfigLoader.loliPickaxeMaxRange), 0);
+			int range = MathHelper.clamp(((ILoli) loli.getItem()).getRange(loli), 0, ConfigLoader.loliPickaxeMaxRange);
 			boolean mandatoryDrop = ConfigLoader.getBoolean(loli, "loliPickaxeMandatoryDrop");
 			int fortuneLevel = ConfigLoader.getInt(loli, "loliPickaxeFortuneLevel");
 			boolean silkTouch = ConfigLoader.getBoolean(loli, "loliPickaxeSilkTouch");
@@ -136,7 +137,8 @@ public class DestroyBedrockEvent {
 								dropStack.setCount(0);
 								break;
 							} else {
-								int count = Math.min(slotStack.getMaxStackSize() - slotStack.getCount(), dropStack.getCount());
+								int maxCount = inventory.cancelStackLimit() ? inventory.getInventoryStackLimit() : Math.min(inventory.getInventoryStackLimit(), slotStack.getMaxStackSize());
+								int count = Math.min(maxCount - slotStack.getCount(), dropStack.getCount());
 								if (count > 0 && slotStack.isItemEqual(dropStack) && ItemStack.areItemStackTagsEqual(slotStack, dropStack)) {
 									slotStack.grow(count);
 									dropStack.shrink(count);

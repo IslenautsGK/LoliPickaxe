@@ -6,15 +6,19 @@ item.loliPickaxe.name=§c氪金萝莉
 item.smallLoliPickaxe.name=§c普通萝莉
 item.loliDispersal.name=§c萝莉退散!
 item.bugEntityClear.name=§c清除只在客户端存在的生物(擦屁股)
+item.loliCoalAddon.name=回到过去升级
 item.loliIronAddon.name=采集速度升级
 item.loliGoldAddon.name=攻击伤害升级
-item.loliDiamondAddon.name=采集等级升级
-item.loliEmeraldAddon.name=采集范围升级
 item.loliRedstoneAddon.name=攻击速度升级
 item.loliLapisAddon.name=时运掠夺升级
+item.loliDiamondAddon.name=采集等级升级
+item.loliEmeraldAddon.name=采集范围升级
+item.loliObsidianAddon.name=勇气之霎升级
+item.loliGlowAddon.name=状态效果升级
 item.loliQuartzAddon.name=攻击范围升级
 item.loliNetherStarAddon.name=储存容量升级
 item.loliAutoFurnaceAddon.name=自动熔炼升级
+item.loliFlyAddon.name=飞行升级
 item.loliEntitySoulAddon.name=生物灵魂
 
 item.loliMaterialFormat=%2$s%1$s
@@ -33,17 +37,22 @@ item.loliMaterial.end=终极
 enchantment.level.16=XVI
 enchantment.level.32=XXXII
 
+smallLoliPickaxe.LoliDodge=%1$f 回到过去
 smallLoliPickaxe.LoliDiggingSpeed=%1$d 采集速度
 smallLoliPickaxe.LoliAttackDamage=%1$f 攻击伤害
-smallLoliPickaxe.LoliDiggingLevel=%1$d 采集等级
-smallLoliPickaxe.LoliDiggingRange=%1$d*%1$d*%1$d 采集范围
 smallLoliPickaxe.LoliAttackSpeed=%1$d 攻击速度
 smallLoliPickaxe.LoliFortuneLevel=%1$d 时运掠夺
-smallLoliPickaxe.LoliBackpackPage=%1$d 背包容量
+smallLoliPickaxe.LoliDiggingLevel=%1$d 采集等级
+smallLoliPickaxe.LoliDiggingRange=%1$d*%1$d*%1$d 采集范围
+smallLoliPickaxe.LoliAntiInjury=%1$f 勇气之霎
+smallLoliPickaxe.LoliBuff=%1$d 状态效果
 smallLoliPickaxe.LoliHitRange=%1$d*%1$d*%1$d 范围攻击
+smallLoliPickaxe.LoliBackpackPage=%1$d 背包容量
 smallLoliPickaxe.LoliAutoFurnace=自动熔炼
+smallLoliPickaxe.LoliFly=飞行
 
 container.loliPickaxe=§c氪金萝莉储藏室
+container.loliPickaxe.stackCount=§a物品数量§b %1$d
 container.smallLoliPickaxe=普通萝莉储藏室
 
 item.loliRecord.name=萝莉唱片
