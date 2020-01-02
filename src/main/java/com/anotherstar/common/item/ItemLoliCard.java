@@ -6,6 +6,7 @@ import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.network.LoliCardPacket;
+import com.anotherstar.network.LoliCardPacket.ItemType;
 import com.anotherstar.network.NetworkHandler;
 
 import net.minecraft.client.util.ITooltipFlag;
@@ -46,7 +47,7 @@ public class ItemLoliCard extends Item {
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
 		if (world.isRemote && LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0 && (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("picture"))) {
-			NetworkHandler.INSTANCE.sendMessageToServer(new LoliCardPacket(itemSlot, LoliCardUtil.customArtNames[world.rand.nextInt(LoliCardUtil.customArtNames.length)]));
+			NetworkHandler.INSTANCE.sendMessageToServer(new LoliCardPacket(itemSlot, ItemType.LOLICARD, LoliCardUtil.customArtNames[world.rand.nextInt(LoliCardUtil.customArtNames.length)]));
 		}
 	}
 
@@ -55,11 +56,13 @@ public class ItemLoliCard extends Item {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (isInCreativeTab(tab) && LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0) {
 			for (String name : LoliCardUtil.customArtNames) {
-				ItemStack stack = new ItemStack(this);
-				NBTTagCompound nbt = new NBTTagCompound();
-				nbt.setString("picture", name);
-				stack.setTagCompound(nbt);
-				items.add(stack);
+				if (!name.contains("''")) {
+					ItemStack stack = new ItemStack(this);
+					NBTTagCompound nbt = new NBTTagCompound();
+					nbt.setString("picture", name);
+					stack.setTagCompound(nbt);
+					items.add(stack);
+				}
 			}
 		}
 	}

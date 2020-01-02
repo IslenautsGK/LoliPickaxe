@@ -55,10 +55,14 @@ container.loliPickaxe=§c氪金萝莉储藏室
 container.loliPickaxe.stackCount=§a物品数量§b %1$d
 container.smallLoliPickaxe=普通萝莉储藏室
 
+gui.loliCardOnline=图片URL
+
 item.loliRecord.name=萝莉唱片
 item.record.lolirecord.desc=ばか変態煩い(av6752335)
 
 item.loliCard.name=萝莉卡片
+item.loliCardAlbum.name=萝莉卡片册
+item.loliCardOnline.name=萝莉网络卡片
 
 death.attack.loli=%1$s被%2$s用氪金萝莉抹杀了
 
@@ -97,6 +101,8 @@ commands.loli.list=%1$s(§d%2$s)
 commands.loli.reload=已重新加载配置文件
 commands.loliattack.usage=/loliattack <玩家> <攻击特效>
 commands.loliattack.notfound=未知的攻击特效
+commands.page.button.pre=上一页
+commands.page.button.next=下一页
 
 entity.Loli.name=萝莉
 

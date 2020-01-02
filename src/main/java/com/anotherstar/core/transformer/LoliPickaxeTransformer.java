@@ -14,6 +14,8 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class LoliPickaxeTransformer implements IClassTransformer {
 
+	private boolean inTransform = false;
+
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 		if (transformedName.equals("net.minecraftforge.common.ForgeHooks")) {
@@ -419,7 +421,6 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 					if (name.equals("e") && desc.equals("(I)Lvg;") || name.equals("removeEntityFromWorld")) {
-
 						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
 
 							public void visitCode() {
@@ -513,6 +514,38 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						return cv.visitMethod(access, "sendAllContents2", desc, signature, exceptions);
 					} else if (name.equals("sendAllContents2")) {
 						return null;
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.client.renderer.entity.RenderManager")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+					if (name.equals("<init>")) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitTypeInsn(int opcode, String type) {
+								if (opcode == Opcodes.NEW && (type.equals("net/minecraft/client/renderer/entity/RenderItemFrame") || type.equals("bzv"))) {
+									type = "com/anotherstar/client/render/RenderLoliCardFrame";
+								}
+								super.visitTypeInsn(opcode, type);
+							}
+
+							public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+								if ((owner.equals("net/minecraft/client/renderer/entity/RenderItemFrame") || owner.equals("bzv")) && name.equals("<init>")) {
+									owner = "com/anotherstar/client/render/RenderLoliCardFrame";
+								}
+								super.visitMethodInsn(opcode, owner, name, desc, itf);
+							};
+
+						};
 					}
 					return cv.visitMethod(access, name, desc, signature, exceptions);
 				}

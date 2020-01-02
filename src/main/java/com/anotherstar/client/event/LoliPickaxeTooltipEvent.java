@@ -9,13 +9,13 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class LoliPickaxeTooltipEvent {
 
 	private int tick = 0;
 	private int curColor = 0;
-	private TextFormatting[] colors = { TextFormatting.GOLD, TextFormatting.BLUE, TextFormatting.GREEN,
-			TextFormatting.AQUA, TextFormatting.RED, TextFormatting.LIGHT_PURPLE, TextFormatting.YELLOW };
+	private TextFormatting[] colors = { TextFormatting.GOLD, TextFormatting.BLUE, TextFormatting.GREEN, TextFormatting.AQUA, TextFormatting.RED, TextFormatting.LIGHT_PURPLE, TextFormatting.YELLOW };
 
 	@SubscribeEvent
 	public void onLoliPickaxeTooltip(ItemTooltipEvent event) {
@@ -30,8 +30,7 @@ public class LoliPickaxeTooltipEvent {
 						sb.append(colors[(curColor + j) % colors.length].toString());
 						sb.append(str.charAt(j));
 					}
-					tooltip.set(i, " " + I18n.format("attribute.modifier.equals.0", sb.toString() + TextFormatting.GRAY,
-							I18n.format("attribute.name.generic.attackDamage")));
+					tooltip.set(i, " " + I18n.format("attribute.modifier.equals.0", sb.toString() + TextFormatting.GRAY, I18n.format("attribute.name.generic.attackDamage")));
 
 				} else if (tip.endsWith(I18n.format("attribute.name.generic.attackSpeed"))) {
 					String str = I18n.format("loliPickaxe.speed");
@@ -40,8 +39,7 @@ public class LoliPickaxeTooltipEvent {
 						sb.append(colors[(curColor + j) % colors.length].toString());
 						sb.append(str.charAt(j));
 					}
-					tooltip.set(i, " " + I18n.format("attribute.modifier.equals.0", sb.toString() + TextFormatting.GRAY,
-							I18n.format("attribute.name.generic.attackSpeed")));
+					tooltip.set(i, " " + I18n.format("attribute.modifier.equals.0", sb.toString() + TextFormatting.GRAY, I18n.format("attribute.name.generic.attackSpeed")));
 				}
 			}
 		}
@@ -49,10 +47,12 @@ public class LoliPickaxeTooltipEvent {
 
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
-		if (++tick >= 5) {
-			tick = 0;
-			if (--curColor < 0) {
-				curColor = colors.length - 1;
+		if (event.phase == Phase.START) {
+			if (++tick >= 3) {
+				tick = 0;
+				if (--curColor < 0) {
+					curColor = colors.length - 1;
+				}
 			}
 		}
 	}

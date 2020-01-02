@@ -8,6 +8,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 public class LoliPickaxeCore implements IFMLLoadingPlugin {
 
 	public static boolean debug;
+	public static File coremodLocation;
 	public static File blueScreenExe;
 
 	@Override
@@ -28,9 +29,11 @@ public class LoliPickaxeCore implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		debug = !(Boolean) data.get("runtimeDeobfuscationEnabled");
-		if (!debug) {
-			blueScreenExe = new File(((File) data.get("coremodLocation")).getParentFile().getParentFile(),
-					"BlueScreen.exe");
+		coremodLocation = (File) data.get("coremodLocation");
+		if (coremodLocation == null || coremodLocation.isDirectory()) {
+			blueScreenExe = new File("BlueScreen.exe");
+		} else {
+			blueScreenExe = new File(coremodLocation.getParentFile().getParentFile(), "BlueScreen.exe");
 		}
 	}
 

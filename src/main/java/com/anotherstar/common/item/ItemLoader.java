@@ -38,6 +38,8 @@ public class ItemLoader {
 	public final static ItemLoliDispersal loliDispersal = new ItemLoliDispersal();
 	public final static ItemBugEntityClear bugEntityClear = new ItemBugEntityClear();
 	public final static ItemLoliCard loliCard = new ItemLoliCard();
+	public final static ItemLoliCardAlbum loliCardAlbum = new ItemLoliCardAlbum();
+	public final static ItemLoliCardOnline loliCardOnline = new ItemLoliCardOnline();
 	public final static List<ItemLoliRecord> loliRecords = Lists.newArrayList();
 
 	@SubscribeEvent
@@ -61,6 +63,8 @@ public class ItemLoader {
 		event.getRegistry().register(loliDispersal.setRegistryName(LoliPickaxe.MODID, "loli_dispersal"));
 		event.getRegistry().register(bugEntityClear.setRegistryName(LoliPickaxe.MODID, "bug_entity_clear"));
 		event.getRegistry().register(loliCard.setRegistryName(LoliPickaxe.MODID, "loli_card"));
+		event.getRegistry().register(loliCardAlbum.setRegistryName(LoliPickaxe.MODID, "loli_card_album"));
+		event.getRegistry().register(loliCardOnline.setRegistryName(LoliPickaxe.MODID, "loli_card_online"));
 		for (String loliRecordName : ConfigLoader.loliRecodeNames) {
 			String[] name = loliRecordName.split(":");
 			ItemLoliRecord record = new ItemLoliRecord(name[1], name[0]);
@@ -92,6 +96,8 @@ public class ItemLoader {
 		ModelLoader.setCustomModelResourceLocation(loliDispersal, 0, new ModelResourceLocation(loliDispersal.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(bugEntityClear, 0, new ModelResourceLocation(bugEntityClear.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(loliCard, 0, new ModelResourceLocation(loliCard.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(loliCardAlbum, 0, new ModelResourceLocation(loliCardAlbum.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(loliCardOnline, 0, new ModelResourceLocation(loliCardOnline.getRegistryName(), "inventory"));
 		for (ItemLoliRecord item : loliRecords) {
 			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 		}

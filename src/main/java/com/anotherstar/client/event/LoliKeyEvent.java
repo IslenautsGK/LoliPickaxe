@@ -8,7 +8,7 @@ import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.common.item.tool.ILoli;
 import com.anotherstar.network.LoliPickaxeContainerOpenPackte;
-import com.anotherstar.network.LoliPickaxeDropAll;
+import com.anotherstar.network.LoliPickaxeDropAllPacket;
 import com.anotherstar.network.NetworkHandler;
 
 import net.minecraft.client.Minecraft;
@@ -31,7 +31,7 @@ public class LoliKeyEvent {
 		}
 		if (KeyLoader.LOLI_PICKAXE_CONTAINER.isPressed()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-				NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeDropAll());
+				NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeDropAllPacket());
 			} else {
 				NetworkHandler.INSTANCE.sendMessageToServer(
 						new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER));

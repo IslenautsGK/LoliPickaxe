@@ -144,12 +144,16 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 	}
 
 	public void updateEnchantment(ItemStack stack) {
-		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliFortuneLevel")) {
-			int level = getTransformValue("LoliFortuneLevel", stack.getTagCompound().getInteger("LoliFortuneLevel"));
-			Map<Enchantment, Integer> enchMap = Maps.newHashMap();
-			enchMap.put(Enchantments.FORTUNE, level);
-			enchMap.put(Enchantments.LOOTING, level);
-			EnchantmentHelper.setEnchantments(enchMap, stack);
+		if (stack.hasTagCompound()) {
+			if (stack.getTagCompound().hasKey("LoliFortuneLevel")) {
+				int level = getTransformValue("LoliFortuneLevel", stack.getTagCompound().getInteger("LoliFortuneLevel"));
+				Map<Enchantment, Integer> enchMap = Maps.newHashMap();
+				enchMap.put(Enchantments.FORTUNE, level);
+				enchMap.put(Enchantments.LOOTING, level);
+				EnchantmentHelper.setEnchantments(enchMap, stack);
+			}
+		} else {
+			stack.setTagCompound(new NBTTagCompound());
 		}
 	}
 
