@@ -1,8 +1,10 @@
 package com.anotherstar.common;
 
+import com.anotherstar.common.block.BlockLoader;
 import com.anotherstar.common.command.ConfigCommand;
 import com.anotherstar.common.command.LoliBuffAttackCommand;
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.enchantment.EnchantmentLoader;
 import com.anotherstar.common.entity.EntityLoader;
 import com.anotherstar.common.event.DestroyBedrockEvent;
 import com.anotherstar.common.event.LoliDropEvent;
@@ -27,8 +29,10 @@ public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigLoader.init(event);
 		MinecraftForge.EVENT_BUS.register(new ItemLoader());
+		MinecraftForge.EVENT_BUS.register(new BlockLoader());
 		MinecraftForge.EVENT_BUS.register(new EntityLoader());
 		MinecraftForge.EVENT_BUS.register(new RecipeLoader());
+		MinecraftForge.EVENT_BUS.register(new EnchantmentLoader());
 	}
 
 	public void init(FMLInitializationEvent event) {

@@ -9,22 +9,27 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class RecipeLoader {
 
+	public final static SuperpositionRecipe superpositionRecipe = new SuperpositionRecipe();
+	public final static SmallLoliPickaxeRecipe smallLoliPickaxeRecipe = new SmallLoliPickaxeRecipe();
+	public final static LoliPickaxeRecipe loliPickaxeRecipe = new LoliPickaxeRecipe();
+
 	@SubscribeEvent
 	public void registerItem(RegistryEvent.Register<IRecipe> event) {
-		event.getRegistry().register(new SuperpositionRecipe().setRegistryName(LoliPickaxe.MODID, "loli_superposition"));
-		SuperpositionRecipe.registItem(ItemLoader.coalAddon);
-		SuperpositionRecipe.registItem(ItemLoader.ironAddon);
-		SuperpositionRecipe.registItem(ItemLoader.goldAddon);
-		SuperpositionRecipe.registItem(ItemLoader.redstoneAddon);
-		SuperpositionRecipe.registItem(ItemLoader.lapisAddon);
-		SuperpositionRecipe.registItem(ItemLoader.diamondAddon);
-		SuperpositionRecipe.registItem(ItemLoader.emeraldAddon);
-		SuperpositionRecipe.registItem(ItemLoader.glowAddon);
-		SuperpositionRecipe.registItem(ItemLoader.quartzAddon);
-		SuperpositionRecipe.registItem(ItemLoader.netherStarAddon);
-		SuperpositionRecipe.registItem(ItemLoader.entitySoul);
-		event.getRegistry().register(new SmallLoliPickaxeRecipe().setRegistryName(LoliPickaxe.MODID, "small_loli_pickaxe_up"));
-		event.getRegistry().register(new LoliPickaxeRecipe().setRegistryName(LoliPickaxe.MODID, "loli_pickaxe"));
+		event.getRegistry().register(superpositionRecipe.setRegistryName(LoliPickaxe.MODID, "loli_superposition"));
+		superpositionRecipe.registItem(ItemLoader.coalAddon);
+		superpositionRecipe.registItem(ItemLoader.ironAddon);
+		superpositionRecipe.registItem(ItemLoader.goldAddon);
+		superpositionRecipe.registItem(ItemLoader.redstoneAddon);
+		superpositionRecipe.registItem(ItemLoader.lapisAddon);
+		superpositionRecipe.registItem(ItemLoader.diamondAddon);
+		superpositionRecipe.registItem(ItemLoader.emeraldAddon);
+		superpositionRecipe.registItem(ItemLoader.obsidianAddon);
+		superpositionRecipe.registItem(ItemLoader.glowAddon);
+		superpositionRecipe.registItem(ItemLoader.quartzAddon);
+		superpositionRecipe.registItem(ItemLoader.netherStarAddon);
+		superpositionRecipe.registItem(ItemLoader.entitySoul);
+		event.getRegistry().register(smallLoliPickaxeRecipe.setRegistryName(LoliPickaxe.MODID, "small_loli_pickaxe_up"));
+		event.getRegistry().register(loliPickaxeRecipe.setRegistryName(LoliPickaxe.MODID, "loli_pickaxe"));
 	}
 
 }

@@ -157,17 +157,6 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 		if (ConfigLoader.getBoolean(stack, "loliPickaxeAutoAccept")) {
 			tooltip.add(I18n.format("loliPickaxe.autoAccept"));
 		}
-		if (ConfigLoader.getBoolean(stack, "loliPickaxeSilkTouch")) {
-			tooltip.add(I18n.format("loliPickaxe.silkTouch"));
-		} else {
-			if (ConfigLoader.getBoolean(stack, "loliPickaxeAutoFurnace")) {
-				tooltip.add(I18n.format("loliPickaxe.autoFurnace"));
-			}
-			int level = ConfigLoader.getInt(stack, "loliPickaxeFortuneLevel");
-			if (level > 0) {
-				tooltip.add(I18n.format("loliPickaxe.fortuneLevel", level));
-			}
-		}
 		if (ConfigLoader.getBoolean(stack, "loliPickaxeThorns")) {
 			tooltip.add(I18n.format("loliPickaxe.thorns"));
 		}

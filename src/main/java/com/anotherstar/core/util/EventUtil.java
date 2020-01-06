@@ -25,6 +25,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
@@ -182,6 +184,19 @@ public class EventUtil {
 		} else {
 			player.sendAllContents2(container, stackList);
 		}
+	}
+
+	public static RayTraceResult rayTrace(Entity entity, double blockReachDistance, float partialTicks) {
+		Vec3d vec3d = entity.getPositionEyes(partialTicks);
+		Vec3d vec3d1 = entity.getLook(partialTicks);
+		Vec3d vec3d2 = vec3d.addVector(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+		if (entity instanceof EntityPlayer) {
+			ItemStack loli = LoliPickaxeUtil.getLoliPickaxe((EntityPlayer) entity);
+			if (!loli.isEmpty() && ConfigLoader.getBoolean(loli, "loliPickaxeStopOnLiquid")) {
+				return entity.world.rayTraceBlocks(vec3d, vec3d2, true, false, true);
+			}
+		}
+		return entity.world.rayTraceBlocks(vec3d, vec3d2, false, false, true);
 	}
 
 }

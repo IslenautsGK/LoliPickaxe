@@ -47,6 +47,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 		this.itemRenderer = itemRendererIn;
 	}
 
+	@Override
 	public void doRender(EntityItemFrame entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		GlStateManager.pushMatrix();
 		BlockPos blockpos = entity.getHangingPosition();
@@ -59,7 +60,8 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 		BlockRendererDispatcher blockrendererdispatcher = this.mc.getBlockRendererDispatcher();
 		ModelManager modelmanager = blockrendererdispatcher.getBlockModelShapes().getModelManager();
 		IBakedModel ibakedmodel;
-		if (entity.getDisplayedItem().getItem() instanceof ItemMap || LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0 && entity.getDisplayedItem().hasTagCompound() && (entity.getDisplayedItem().getItem() instanceof ItemLoliCard || entity.getDisplayedItem().getItem() instanceof ItemLoliCardAlbum) || entity.getDisplayedItem().getItem() instanceof ItemLoliCardOnline) {
+		boolean isLoliCard = entity.getDisplayedItem().hasTagCompound() && ((LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0 && (entity.getDisplayedItem().getItem() instanceof ItemLoliCard || entity.getDisplayedItem().getItem() instanceof ItemLoliCardAlbum)) || entity.getDisplayedItem().getItem() instanceof ItemLoliCardOnline);
+		if (entity.getDisplayedItem().getItem() instanceof ItemMap || isLoliCard) {
 			ibakedmodel = modelmanager.getModel(this.mapModel);
 		} else {
 			ibakedmodel = modelmanager.getModel(this.itemFrameModel);
@@ -70,7 +72,9 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 			GlStateManager.enableColorMaterial();
 			GlStateManager.enableOutlineMode(this.getTeamColor(entity));
 		}
-		blockrendererdispatcher.getBlockModelRenderer().renderModelBrightnessColor(ibakedmodel, 1.0F, 1.0F, 1.0F, 1.0F);
+		if (!isLoliCard || ConfigLoader.loliCardRenderFrame) {
+			blockrendererdispatcher.getBlockModelRenderer().renderModelBrightnessColor(ibakedmodel, 1.0F, 1.0F, 1.0F, 1.0F);
+		}
 		if (this.renderOutlines) {
 			GlStateManager.disableOutlineMode();
 			GlStateManager.disableColorMaterial();
@@ -129,6 +133,9 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 						this.renderManager.renderEngine.bindTexture(MAP_BACKGROUND_TEXTURES);
 					}
 					double ratio = (double) width / (double) height;
+					if (!ConfigLoader.loliCardRenderFrame) {
+						GlStateManager.translate(0.0F, 0.0F, 0.0625);
+					}
 					GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 					Tessellator tessellator = Tessellator.getInstance();
 					BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -142,6 +149,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					}
 					double dx;
 					double dy;
+					double dz = 0.0078125;
 					if (ratio < 1) {
 						dy = 0.5;
 						dx = dy * ratio;
@@ -152,14 +160,14 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					dx *= scale;
 					dy *= scale;
 					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-					bufferbuilder.pos(-dx, -dy, -0.0078125).tex(0, 0).endVertex();
-					bufferbuilder.pos(-dx, dy, -0.0078125).tex(0, 1).endVertex();
-					bufferbuilder.pos(dx, dy, -0.0078125).tex(1, 1).endVertex();
-					bufferbuilder.pos(dx, -dy, -0.0078125).tex(1, 0).endVertex();
-					bufferbuilder.pos(dx, -dy, -0.0078125).tex(1, 0).endVertex();
-					bufferbuilder.pos(dx, dy, -0.0078125).tex(1, 1).endVertex();
-					bufferbuilder.pos(-dx, dy, -0.0078125).tex(0, 1).endVertex();
-					bufferbuilder.pos(-dx, -dy, -0.0078125).tex(0, 0).endVertex();
+					bufferbuilder.pos(-dx, -dy, -dz).tex(0, 0).endVertex();
+					bufferbuilder.pos(-dx, dy, -dz).tex(0, 1).endVertex();
+					bufferbuilder.pos(dx, dy, -dz).tex(1, 1).endVertex();
+					bufferbuilder.pos(dx, -dy, -dz).tex(1, 0).endVertex();
+					bufferbuilder.pos(dx, -dy, dz).tex(1, 0).endVertex();
+					bufferbuilder.pos(dx, dy, dz).tex(1, 1).endVertex();
+					bufferbuilder.pos(-dx, dy, dz).tex(0, 1).endVertex();
+					bufferbuilder.pos(-dx, -dy, dz).tex(0, 0).endVertex();
 					tessellator.draw();
 				} else if (isLoliCardAlbum) {
 					String group = itemstack.getTagCompound().getString("PictureGroup") + "'";
@@ -184,6 +192,9 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 						height = heights.get(index);
 					}
 					double ratio = (double) width / (double) height;
+					if (!ConfigLoader.loliCardRenderFrame) {
+						GlStateManager.translate(0.0F, 0.0F, 0.0625);
+					}
 					GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 					Tessellator tessellator = Tessellator.getInstance();
 					BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -197,6 +208,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					}
 					double dx;
 					double dy;
+					double dz = 0.0078125;
 					if (ratio < 1) {
 						dy = 0.5;
 						dx = dy * ratio;
@@ -207,14 +219,14 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					dx *= scale;
 					dy *= scale;
 					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-					bufferbuilder.pos(-dx, -dy, -0.0078125).tex(0, 0).endVertex();
-					bufferbuilder.pos(-dx, dy, -0.0078125).tex(0, 1).endVertex();
-					bufferbuilder.pos(dx, dy, -0.0078125).tex(1, 1).endVertex();
-					bufferbuilder.pos(dx, -dy, -0.0078125).tex(1, 0).endVertex();
-					bufferbuilder.pos(dx, -dy, -0.0078125).tex(1, 0).endVertex();
-					bufferbuilder.pos(dx, dy, -0.0078125).tex(1, 1).endVertex();
-					bufferbuilder.pos(-dx, dy, -0.0078125).tex(0, 1).endVertex();
-					bufferbuilder.pos(-dx, -dy, -0.0078125).tex(0, 0).endVertex();
+					bufferbuilder.pos(-dx, -dy, -dz).tex(0, 0).endVertex();
+					bufferbuilder.pos(-dx, dy, -dz).tex(0, 1).endVertex();
+					bufferbuilder.pos(dx, dy, -dz).tex(1, 1).endVertex();
+					bufferbuilder.pos(dx, -dy, -dz).tex(1, 0).endVertex();
+					bufferbuilder.pos(dx, -dy, dz).tex(1, 0).endVertex();
+					bufferbuilder.pos(dx, dy, dz).tex(1, 1).endVertex();
+					bufferbuilder.pos(-dx, dy, dz).tex(0, 1).endVertex();
+					bufferbuilder.pos(-dx, -dy, dz).tex(0, 0).endVertex();
 					tessellator.draw();
 				} else if (isLoliCardOnline) {
 					String url = itemstack.getTagCompound().getString("ImageUrl");
@@ -235,6 +247,9 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 						this.renderManager.renderEngine.bindTexture(MAP_BACKGROUND_TEXTURES);
 					}
 					double ratio = (double) width / (double) height;
+					if (!ConfigLoader.loliCardRenderFrame) {
+						GlStateManager.translate(0.0F, 0.0F, 0.0625);
+					}
 					GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 					Tessellator tessellator = Tessellator.getInstance();
 					BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -248,6 +263,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					}
 					double dx;
 					double dy;
+					double dz = 0.0078125;
 					if (ratio < 1) {
 						dy = 0.5;
 						dx = dy * ratio;
@@ -258,14 +274,14 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					dx *= scale;
 					dy *= scale;
 					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-					bufferbuilder.pos(-dx, -dy, -0.0078125).tex(0, 0).endVertex();
-					bufferbuilder.pos(-dx, dy, -0.0078125).tex(0, 1).endVertex();
-					bufferbuilder.pos(dx, dy, -0.0078125).tex(1, 1).endVertex();
-					bufferbuilder.pos(dx, -dy, -0.0078125).tex(1, 0).endVertex();
-					bufferbuilder.pos(dx, -dy, -0.0078125).tex(1, 0).endVertex();
-					bufferbuilder.pos(dx, dy, -0.0078125).tex(1, 1).endVertex();
-					bufferbuilder.pos(-dx, dy, -0.0078125).tex(0, 1).endVertex();
-					bufferbuilder.pos(-dx, -dy, -0.0078125).tex(0, 0).endVertex();
+					bufferbuilder.pos(-dx, -dy, -dz).tex(0, 0).endVertex();
+					bufferbuilder.pos(-dx, dy, -dz).tex(0, 1).endVertex();
+					bufferbuilder.pos(dx, dy, -dz).tex(1, 1).endVertex();
+					bufferbuilder.pos(dx, -dy, -dz).tex(1, 0).endVertex();
+					bufferbuilder.pos(dx, -dy, dz).tex(1, 0).endVertex();
+					bufferbuilder.pos(dx, dy, dz).tex(1, 1).endVertex();
+					bufferbuilder.pos(-dx, dy, dz).tex(0, 1).endVertex();
+					bufferbuilder.pos(-dx, -dy, dz).tex(0, 0).endVertex();
 					tessellator.draw();
 				} else {
 					GlStateManager.scale(0.5F, 0.5F, 0.5F);

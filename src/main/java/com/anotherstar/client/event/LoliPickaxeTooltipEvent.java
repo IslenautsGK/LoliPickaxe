@@ -1,8 +1,11 @@
 package com.anotherstar.client.event;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.anotherstar.common.item.tool.ILoli;
+import com.anotherstar.util.LoliRomeDigitalUtil;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
@@ -12,6 +15,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class LoliPickaxeTooltipEvent {
+
+	private static final Pattern STRING_ENCHANTMENT_PATTERN = Pattern.compile("enchantment\\.level\\.(\\d+)$");
 
 	private int tick = 0;
 	private int curColor = 0;
@@ -40,6 +45,14 @@ public class LoliPickaxeTooltipEvent {
 						sb.append(str.charAt(j));
 					}
 					tooltip.set(i, " " + I18n.format("attribute.modifier.equals.0", sb.toString() + TextFormatting.GRAY, I18n.format("attribute.name.generic.attackSpeed")));
+				} else {
+					Matcher matcher = STRING_ENCHANTMENT_PATTERN.matcher(tip);
+					if (matcher.find()) {
+						try {
+							tooltip.set(i, tip.substring(0, matcher.start()) + LoliRomeDigitalUtil.intToRoman(Integer.parseInt(matcher.group(1))));
+						} catch (NumberFormatException e) {
+						}
+					}
 				}
 			}
 		}

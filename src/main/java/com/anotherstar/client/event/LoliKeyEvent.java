@@ -24,22 +24,26 @@ public class LoliKeyEvent {
 		if (KeyLoader.LOLI_CONFIG.isPressed()) {
 			EntityPlayer player = Minecraft.getMinecraft().player;
 			ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
-			if (!stack.isEmpty() && stack.getItem() instanceof ILoli
-					&& !ConfigLoader.loliPickaxeGuiChangeList.isEmpty()) {
+			if (!stack.isEmpty() && stack.getItem() instanceof ILoli && !ConfigLoader.loliPickaxeGuiChangeList.isEmpty()) {
 				player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_CONFIG, player.world, 0, 0, 0);
+			}
+		}
+		if (KeyLoader.LOLI_ENCHANTMENT.isPressed()) {
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
+			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_ENCHANTMENT, player.world, 0, 0, 0);
 			}
 		}
 		if (KeyLoader.LOLI_PICKAXE_CONTAINER.isPressed()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 				NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeDropAllPacket());
 			} else {
-				NetworkHandler.INSTANCE.sendMessageToServer(
-						new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER));
+				NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER));
 			}
 		}
 		if (KeyLoader.LOLI_PICKAXE_CONTAINER_BLACKLIST.isPressed()) {
-			NetworkHandler.INSTANCE.sendMessageToServer(
-					new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST));
+			NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeContainerOpenPackte(LoliGUIHandler.GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST));
 		}
 	}
 

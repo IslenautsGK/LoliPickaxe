@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.config.annotation.ConfigField;
 import com.anotherstar.common.config.annotation.ConfigField.ValurType;
@@ -15,8 +16,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class GUILoliConfig extends GuiScreen {
+
+	private static final ResourceLocation LOLI_PICKAXE_CONFIG_GUI_TEXTURE = new ResourceLocation(LoliPickaxe.MODID, "textures/gui/loli_pickaxe_config.png");
 
 	private ItemStack stack;
 	private GuiButton done;
@@ -32,13 +36,12 @@ public class GUILoliConfig extends GuiScreen {
 	}
 
 	public void initGui() {
-		buttonList.clear();
 		Keyboard.enableRepeatEvents(true);
-		done = addButton(new GuiButton(0, width / 2 - 100, height / 2 + 60, I18n.format("gui.done")));
-		pre = addButton(new GuiButton(1, width / 2 - 100, height / 2 - 80, 20, 20, "<"));
-		next = addButton(new GuiButton(2, width / 2 + 80, height / 2 - 80, 20, 20, ">"));
-		booleanValue = addButton(new GuiButton(3, width / 2 - 40, height / 2 + 20, 80, 20, "false"));
-		otherValue = new GuiTextField(4, this.fontRenderer, width / 2 - 80, height / 2 + 20, 160, 20);
+		done = addButton(new GuiButton(0, width / 2 - 100, height / 2 + 20, I18n.format("gui.done")));
+		pre = addButton(new GuiButton(1, width / 2 - 100, height / 2 - 40, 20, 20, "<"));
+		next = addButton(new GuiButton(2, width / 2 + 80, height / 2 - 40, 20, 20, ">"));
+		booleanValue = addButton(new GuiButton(3, width / 2 - 40, height / 2 - 10, 80, 20, "false"));
+		otherValue = new GuiTextField(4, this.fontRenderer, width / 2 - 80, height / 2 - 10, 160, 20);
 		otherValue.setMaxStringLength(100);
 		changePage();
 	}
@@ -56,8 +59,7 @@ public class GUILoliConfig extends GuiScreen {
 			switch (button.id) {
 			case 0:
 				if (stack.hasTagCompound()) {
-					NetworkHandler.INSTANCE
-							.sendMessageToServer(new LoliItemConfigPacket(ConfigLoader.getItemConfigs(stack)));
+					NetworkHandler.INSTANCE.sendMessageToServer(new LoliItemConfigPacket(ConfigLoader.getItemConfigs(stack)));
 				}
 				mc.displayGuiScreen((GuiScreen) null);
 				break;
@@ -118,10 +120,12 @@ public class GUILoliConfig extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		mc.getTextureManager().bindTexture(LOLI_PICKAXE_CONFIG_GUI_TEXTURE);
+		drawTexturedModalRect((width - 220) / 2, (height - 140) / 2, 0, 0, 220, 120);
 		if (curPage >= 0 && curPage < ConfigLoader.loliPickaxeGuiChangeList.size()) {
 			String flag = ConfigLoader.loliPickaxeGuiChangeList.get(curPage);
 			String comment = ConfigLoader.flagAnnotations.get(flag).comment();
-			drawCenteredString(this.fontRenderer, comment, this.width / 2, 20, 16777215);
+			drawCenteredString(this.fontRenderer, comment, this.width / 2, this.height / 2 - 60, 16777215);
 		}
 		otherValue.drawTextBox();
 		super.drawScreen(mouseX, mouseY, partialTicks);
@@ -130,6 +134,10 @@ public class GUILoliConfig extends GuiScreen {
 	private void changePage() {
 		if (curPage >= 0 && curPage < ConfigLoader.loliPickaxeGuiChangeList.size()) {
 			String flag = ConfigLoader.loliPickaxeGuiChangeList.get(curPage);
+			while (!ConfigLoader.flagAnnotations.containsKey(flag)) {
+				ConfigLoader.loliPickaxeGuiChangeList.remove(curPage);
+				flag = ConfigLoader.loliPickaxeGuiChangeList.get(curPage);
+			}
 			ConfigField annotations = ConfigLoader.flagAnnotations.get(flag);
 			if (annotations.valueType() == ValurType.BOOLEAN) {
 				booleanValue.enabled = true;

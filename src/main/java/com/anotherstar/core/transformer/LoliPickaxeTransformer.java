@@ -152,6 +152,30 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					return cv.visitField(access, name, desc, signature, value);
 				}
 
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+					if (name.equals("a") && desc.equals("(DF)Lbhc;") || name.equals("rayTrace")) {
+						MethodVisitor mv = cv.visitMethod(access, name, desc, signature, exceptions);
+						mv.visitCode();
+						Label start = new Label();
+						mv.visitLabel(start);
+						mv.visitVarInsn(Opcodes.ALOAD, 0);
+						mv.visitVarInsn(Opcodes.DLOAD, 1);
+						mv.visitVarInsn(Opcodes.FLOAD, 3);
+						mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "rayTrace", "(Lnet/minecraft/entity/Entity;DF)Lnet/minecraft/util/math/RayTraceResult;", false);
+						mv.visitInsn(Opcodes.ARETURN);
+						Label end = new Label();
+						mv.visitLabel(end);
+						mv.visitLocalVariable("this", "Lnet/minecraft/entity/Entity;", null, start, end, 0);
+						mv.visitLocalVariable("blockReachDistance", "D", null, start, end, 1);
+						mv.visitLocalVariable("partialTicks", "F", null, start, end, 3);
+						mv.visitMaxs(4, 4);
+						mv.visitEnd();
+						return null;
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();

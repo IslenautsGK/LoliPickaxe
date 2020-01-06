@@ -9,6 +9,7 @@ import com.anotherstar.client.gui.GUILoliCardAlbum;
 import com.anotherstar.client.gui.GUILoliCardOnline;
 import com.anotherstar.client.gui.GUILoliCardOnlineConfig;
 import com.anotherstar.client.gui.GUILoliConfig;
+import com.anotherstar.client.gui.GUILoliEnchantment;
 import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.item.ItemLoliCardOnline;
@@ -34,6 +35,7 @@ public enum LoliGUIHandler implements IGuiHandler {
 	public static final int GUI_LOLI_CARD_ALBUM = 5;
 	public static final int GUI_LOLI_CARD_ONLINE = 6;
 	public static final int GUI_LOLI_CARD_ONLINE_CONFIG = 7;
+	public static final int GUI_LOLI_ENCHANTMENT = 8;
 
 	private LoliGUIHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(LoliPickaxe.instance, this);
@@ -46,8 +48,6 @@ public enum LoliGUIHandler implements IGuiHandler {
 			return new ContainerLoliPickaxe(player, player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x);
 		case GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST:
 			return new ContainerBlaceListLoliPickaxe(player, player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x);
-		default:
-			break;
 		}
 		return null;
 	}
@@ -114,8 +114,13 @@ public enum LoliGUIHandler implements IGuiHandler {
 			}
 			break;
 		}
-		default:
+		case GUI_LOLI_ENCHANTMENT: {
+			ItemStack stack = player.getHeldItemMainhand();
+			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				return new GUILoliEnchantment(stack);
+			}
 			break;
+		}
 		}
 		return null;
 	}

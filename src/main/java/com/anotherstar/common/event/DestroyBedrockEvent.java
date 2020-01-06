@@ -1,17 +1,20 @@
 package com.anotherstar.common.event;
 
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.enchantment.EnchantmentLoader;
 import com.anotherstar.common.gui.ILoliInventory;
 import com.anotherstar.common.item.tool.IContainer;
 import com.anotherstar.common.item.tool.ILoli;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -38,9 +41,9 @@ public class DestroyBedrockEvent {
 		if (!player.world.isRemote && !player.capabilities.isCreativeMode && loli.getItem() instanceof ILoli) {
 			int range = MathHelper.clamp(((ILoli) loli.getItem()).getRange(loli), 0, ConfigLoader.loliPickaxeMaxRange);
 			boolean mandatoryDrop = ConfigLoader.getBoolean(loli, "loliPickaxeMandatoryDrop");
-			int fortuneLevel = ConfigLoader.getInt(loli, "loliPickaxeFortuneLevel");
-			boolean silkTouch = ConfigLoader.getBoolean(loli, "loliPickaxeSilkTouch");
-			boolean autoFurnace = ConfigLoader.getBoolean(loli, "loliPickaxeAutoFurnace");
+			int fortuneLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, loli);
+			boolean silkTouch = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, loli) > 0;
+			boolean autoFurnace = EnchantmentHelper.getEnchantmentLevel(EnchantmentLoader.loliAutoFurnace, loli) > 0;
 			boolean auto = ConfigLoader.getBoolean(loli, "loliPickaxeAutoAccept") && ((IContainer) loli.getItem()).hasInventory(loli);
 			ILoliInventory inventory = null;
 			if (auto) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 
+import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.network.LoliCardOnlinePacket;
 import com.anotherstar.network.NetworkHandler;
 
@@ -11,8 +12,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 
 public class GUILoliCardOnlineConfig extends GuiScreen {
+
+	private static final ResourceLocation LOLI_CARD_ONLINE_CONFIG_GUI_TEXTURE = new ResourceLocation(LoliPickaxe.MODID, "textures/gui/loli_card_online_config.png");
 
 	private String url;
 	private GuiTextField urlField;
@@ -24,12 +28,14 @@ public class GUILoliCardOnlineConfig extends GuiScreen {
 
 	public void initGui() {
 		Keyboard.enableRepeatEvents(true);
-		urlField = new GuiTextField(1, this.fontRenderer, width / 2 - 80, height / 2 + 20, 160, 20);
+		urlField = new GuiTextField(1, this.fontRenderer, width / 2 - 80, height / 2 - 20, 160, 20);
 		urlField.setMaxStringLength(500);
 		if (this.url != null) {
 			urlField.setText(url);
 		}
-		done = addButton(new GuiButton(0, width / 2 - 100, height / 2 + 60, I18n.format("gui.done")));
+		urlField.setFocused(true);
+		urlField.setCursorPositionEnd();
+		done = addButton(new GuiButton(0, width / 2 - 100, height / 2 + 10, I18n.format("gui.done")));
 	}
 
 	public void onGuiClosed() {
@@ -59,8 +65,10 @@ public class GUILoliCardOnlineConfig extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		mc.getTextureManager().bindTexture(LOLI_CARD_ONLINE_CONFIG_GUI_TEXTURE);
+		drawTexturedModalRect((width - 220) / 2, (height - 100) / 2, 0, 0, 220, 90);
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		drawCenteredString(this.fontRenderer, I18n.format("gui.loliCardOnline"), this.width / 2, 20, 16777215);
+		drawCenteredString(this.fontRenderer, I18n.format("gui.loliCardOnline"), this.width / 2, height / 2 - 40, 16777215);
 		urlField.drawTextBox();
 	}
 

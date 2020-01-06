@@ -33,7 +33,7 @@ item.loliMaterial.7=八级
 item.loliMaterial.8=九级
 item.loliMaterial.9=十级
 item.loliMaterial.end=终极
-item.loliMaterial.recipe=九个%1$s升级合成一个%2$s升级
+item.loliMaterial.recipe=9个低级升级合成一个高级升级
 
 enchantment.level.16=XVI
 enchantment.level.32=XXXII
@@ -57,9 +57,6 @@ container.loliPickaxe.stackCount=§a物品数量§b %1$d
 container.smallLoliPickaxe=普通萝莉储藏室
 
 gui.loliCardOnline=图片URL
-gui.loliAdd=添加
-gui.loliRemove=移除
-gui.loliEnch=附魔
 
 item.loliRecord.name=萝莉唱片
 item.record.lolirecord.desc=ばか変態煩い(av6752335)
@@ -68,10 +65,6 @@ item.loliCard.name=萝莉卡片
 item.loliCardAlbum.name=萝莉卡片册
 item.loliCardOnline.name=萝莉网络卡片
 
-tile.LoliBlueScreenTNT.name=§c蓝屏炸弹
-tile.LoliExitTNT.name=§c蹦溃炸弹
-tile.LoliFailRespondTNT.name=§c未响应炸弹
-
 death.attack.loli=%1$s被%2$s用氪金萝莉抹杀了
 
 loliPickaxe.range=采掘范围更改为%1$d*%1$d*%1$d
@@ -79,6 +72,9 @@ loliPickaxe.killrangeentity=攻击了周围%1$d*%1$d范围内的%2$d个生物
 loliPickaxe.curRange=采掘范围 %1$d*%1$d*%1$d
 loliPickaxe.mandatoryDrop=强制掉落
 loliPickaxe.autoAccept=自动收纳
+loliPickaxe.silkTouch=精准采集
+loliPickaxe.autoFurnace=自动熔炼
+loliPickaxe.fortuneLevel=时运 %1$d
 loliPickaxe.thorns=反伤
 loliPickaxe.killRange=潜行右键范围攻击 %1$d*%1$d*%1$d
 loliPickaxe.autoKillRange=自动范围攻击 %1$d*%1$d*%1$d
@@ -97,8 +93,6 @@ loliPickaxe.killFacing=范围攻击 %1$d,%2$f
 loliPickaxe.speed=TREE(3)
 loliPickaxe.damage=TREE(3)
 
-enchantment.LoliAutoFurnace=自动熔炼
-
 commands.loli.usage=/loli <flag> [value]
 commands.loli.notfound=未知的配置
 commands.loli.errortype=类型错误
@@ -112,10 +106,8 @@ commands.page.button.pre=上一页
 commands.page.button.next=下一页
 
 entity.Loli.name=萝莉
-entity.LoliBuffAttackTNT.name=§c特效炸弹
 
 key.category.lolipickaxe=§c氪金萝莉
 key.lolipickaxe.loli_config=配置§c氪金萝莉
-key.lolipickaxe.loli_enchantment=附魔§c氪金萝莉
 key.lolipickaxe.loli_pickaxe_container=打开§c氪金萝莉储藏室
 key.lolipickaxe.loli_pickaxe_container_blacklist=打开§c氪金萝莉黑名单

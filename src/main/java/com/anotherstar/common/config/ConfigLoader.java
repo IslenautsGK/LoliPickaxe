@@ -36,14 +36,8 @@ public class ConfigLoader {
 	public static int loliPickaxeMaxRange;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "强制掉落方块", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeMandatoryDrop;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "时运等级", valueType = ValurType.INT, intDefaultValue = 5, intMinValue = 0, intMaxValueField = "loliPickaxeMaxFortuneLevel")
-	public static int loliPickaxeFortuneLevel;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "最大时运等级", valueType = ValurType.INT, intDefaultValue = 32)
-	public static int loliPickaxeMaxFortuneLevel;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "精准采集", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
-	public static boolean loliPickaxeSilkTouch;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "自动熔炼", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
-	public static boolean loliPickaxeAutoFurnace;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "显示流体边框", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliPickaxeStopOnLiquid;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 100)
 	public static int loliPickaxeMaxPage;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室取消物品堆叠限制", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
@@ -116,7 +110,7 @@ public class ConfigLoader {
 	public static double loliPickaxeKillFacingSlope;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "范围攻击最大斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
 	public static double loliPickaxeMaxKillFacingSlope;
-	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeFortuneLevel", "loliPickaxeSilkTouch", "loliPickaxeAutoFurnace", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
 	public static List<String> loliPickaxeGuiChangeList;
 	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = { "lolirecord:loliRecord:loli_record" })
 	public static List<String> loliRecodeNames;
@@ -134,6 +128,14 @@ public class ConfigLoader {
 	public static double loliCardScale;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉卡片册切换速度", valueType = ValurType.INT, intDefaultValue = 100)
 	public static int loliCardAlbumSwitchSpeed;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉卡片渲染展示框", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliCardRenderFrame;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "附魔最大等级列表", valueType = ValurType.MAP, mapDefaultValue = {}, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
+	public static Map<String, Integer> loliPickaxeEnchantmentLimit;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "默认附魔最大等级", valueType = ValurType.INT, intDefaultValue = 32)
+	public static int loliPickaxeEnchantmentDefaultLimit;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "启用特效攻击炸弹", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliEnableBuffAttackTNT;
 
 	static {
 		try {
@@ -710,7 +712,11 @@ public class ConfigLoader {
 			if (!stack.hasTagCompound()) {
 				stack.setTagCompound(new NBTTagCompound());
 			}
-			stack.getTagCompound().setTag(ILoli.CONFIG, config);
+			if (config == null) {
+				stack.getTagCompound().removeTag(ILoli.CONFIG);
+			} else {
+				stack.getTagCompound().setTag(ILoli.CONFIG, config);
+			}
 		}
 	}
 

@@ -35,7 +35,7 @@ public class LoliPickaxeRecipe extends IForgeRegistryEntry.Impl<IRecipe> impleme
 				}
 			}
 		}
-		if (loli.isEmpty() || !loli.hasTagCompound()) {
+		if (loli.isEmpty() || !loli.hasTagCompound() || soul.isEmpty() || soul.getItemDamage() != ItemLoader.entitySoul.getSubCount() - 1) {
 			return false;
 		}
 		NBTTagCompound nbt = loli.getTagCompound();

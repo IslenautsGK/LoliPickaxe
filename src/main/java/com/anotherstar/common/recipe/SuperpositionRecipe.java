@@ -15,7 +15,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class SuperpositionRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
-	private static Map<Item, Integer> superpositionAble = Maps.newHashMap();
+	private Map<Item, Integer> superpositionAble = Maps.newHashMap();
 
 	private ItemStack resultItem = ItemStack.EMPTY;
 
@@ -73,14 +73,18 @@ public class SuperpositionRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		return LoliPickaxe.MODID + ":loli_pickaxe_core";
 	}
 
-	public static void registItem(Item item, int maxDamage) {
+	public void registItem(Item item, int maxDamage) {
 		if (maxDamage > 0) {
 			superpositionAble.put(item, maxDamage);
 		}
 	}
 
-	public static void registItem(ItemLoliPickaxeMaterial item) {
+	public void registItem(ItemLoliPickaxeMaterial item) {
 		superpositionAble.put(item, item.getSubCount() - 1);
+	}
+
+	public Map<Item, Integer> getSuperpositionAble() {
+		return superpositionAble;
 	}
 
 }
