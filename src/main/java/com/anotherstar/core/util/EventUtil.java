@@ -187,16 +187,21 @@ public class EventUtil {
 	}
 
 	public static RayTraceResult rayTrace(Entity entity, double blockReachDistance, float partialTicks) {
+		boolean stopOnLiquid = false;
+		if (entity instanceof EntityPlayer) {
+			ItemStack loli = LoliPickaxeUtil.getLoliPickaxe((EntityPlayer) entity);
+			if (!loli.isEmpty()) {
+				stopOnLiquid = ConfigLoader.getBoolean(loli, "loliPickaxeStopOnLiquid");
+				double distance = ConfigLoader.getDouble(loli, "loliPickaxeBlockReachDistance");
+				if (distance > blockReachDistance) {
+					blockReachDistance = distance;
+				}
+			}
+		}
 		Vec3d vec3d = entity.getPositionEyes(partialTicks);
 		Vec3d vec3d1 = entity.getLook(partialTicks);
 		Vec3d vec3d2 = vec3d.addVector(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
-		if (entity instanceof EntityPlayer) {
-			ItemStack loli = LoliPickaxeUtil.getLoliPickaxe((EntityPlayer) entity);
-			if (!loli.isEmpty() && ConfigLoader.getBoolean(loli, "loliPickaxeStopOnLiquid")) {
-				return entity.world.rayTraceBlocks(vec3d, vec3d2, true, false, true);
-			}
-		}
-		return entity.world.rayTraceBlocks(vec3d, vec3d2, false, false, true);
+		return entity.world.rayTraceBlocks(vec3d, vec3d2, stopOnLiquid, false, true);
 	}
 
 }

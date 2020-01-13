@@ -9,8 +9,15 @@ import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.IEntityLoli;
 import com.anotherstar.common.gui.ILoliInventory;
 import com.anotherstar.common.gui.InventoryLoliPickaxe;
+import com.anotherstar.util.IC2Util;
 import com.anotherstar.util.LoliPickaxeUtil;
 
+import cofh.redstoneflux.RedstoneFluxProps;
+import cofh.redstoneflux.api.IEnergyContainerItem;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+import ic2.core.IC2;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -32,10 +39,15 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
+@Optional.InterfaceList({ @Optional.Interface(modid = RedstoneFluxProps.MOD_ID, iface = "cofh.redstoneflux.api.IEnergyContainerItem", striprefs = true), @Optional.Interface(modid = IC2.MODID, iface = "ic2.api.item.ISpecialElectricItem", striprefs = true) })
+public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContainerItem, ISpecialElectricItem {
 
 	public static final Item.ToolMaterial LOLI = EnumHelper.addToolMaterial("LOLI", 32, 0, 0, 0, 0);
 
@@ -244,6 +256,50 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 				nbt.setString("Owner", ((EntityPlayer) entity).getName());
 			}
 		}
+		if (ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery")) {
+			if (Loader.isModLoaded(IC2.MODID)) {
+				ic2charge(stack, world, entity, itemSlot, isSelected);
+			}
+			if (Loader.isModLoaded(RedstoneFluxProps.MOD_ID)) {
+				rfReceive(stack, world, entity, itemSlot, isSelected);
+			}
+		}
+	}
+
+	@Optional.Method(modid = IC2.MODID)
+	private void ic2charge(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+		if (!entity.world.isRemote && entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) entity;
+			for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+				ItemStack toCharge = player.inventory.getStackInSlot(i);
+				if (!toCharge.isEmpty()) {
+					ElectricItem.manager.charge(toCharge, ElectricItem.manager.getMaxCharge(toCharge) - ElectricItem.manager.getCharge(toCharge), Integer.MAX_VALUE, true, false);
+
+				}
+			}
+		}
+	}
+
+	@Optional.Method(modid = RedstoneFluxProps.MOD_ID)
+	private void rfReceive(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+		if (!entity.world.isRemote && entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) entity;
+			for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+				ItemStack receive = player.inventory.getStackInSlot(i);
+				if (!receive.isEmpty()) {
+					if (receive.getItem() instanceof IEnergyContainerItem) {
+						IEnergyContainerItem energy = (IEnergyContainerItem) receive.getItem();
+						energy.receiveEnergy(receive, energy.getMaxEnergyStored(receive) - energy.getEnergyStored(receive), false);
+					}
+					if (receive.hasCapability(CapabilityEnergy.ENERGY, null)) {
+						IEnergyStorage cap = (IEnergyStorage) stack.getCapability(CapabilityEnergy.ENERGY, null);
+						if ((cap != null) && (cap.canReceive())) {
+							cap.receiveEnergy(cap.getMaxEnergyStored() - cap.getEnergyStored(), false);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -275,6 +331,36 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli {
 	@Override
 	public ILoliInventory getInventory(ItemStack stack) {
 		return new InventoryLoliPickaxe(stack);
+	}
+
+	@Override
+	@Optional.Method(modid = RedstoneFluxProps.MOD_ID)
+	public int receiveEnergy(ItemStack stack, int energy, boolean simulate) {
+		return ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery") ? energy : 0;
+	}
+
+	@Override
+	@Optional.Method(modid = RedstoneFluxProps.MOD_ID)
+	public int extractEnergy(ItemStack stack, int energy, boolean simulate) {
+		return ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery") ? energy : 0;
+	}
+
+	@Override
+	@Optional.Method(modid = RedstoneFluxProps.MOD_ID)
+	public int getEnergyStored(ItemStack stack) {
+		return ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery") ? Integer.MAX_VALUE / 2 : 0;
+	}
+
+	@Override
+	@Optional.Method(modid = RedstoneFluxProps.MOD_ID)
+	public int getMaxEnergyStored(ItemStack stack) {
+		return ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery") ? Integer.MAX_VALUE : 0;
+	}
+
+	@Override
+	@Optional.Method(modid = IC2.MODID)
+	public IElectricItemManager getManager(ItemStack stack) {
+		return ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery") ? IC2Util.infinite : null;
 	}
 
 }

@@ -1,6 +1,10 @@
 package com.anotherstar.client.gui;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -18,6 +22,14 @@ public class GUILoliCardAlbum extends GuiScreen {
 	private final int[] imageHeights;
 	private final double[] ratios;
 
+	private int dcx;
+	private int dcy;
+	private double ds;
+	private boolean clicked;
+	private int clickX;
+	private int clickY;
+	private int odcx;
+	private int odcy;
 	private int page;
 
 	public GUILoliCardAlbum(List<ResourceLocation> resourceList, List<Integer> imageWidthList, List<Integer> imageHeightList) {
@@ -32,7 +44,13 @@ public class GUILoliCardAlbum extends GuiScreen {
 			this.imageHeights[i] = imageHeightList.get(i);
 			this.ratios[i] = (double) this.imageWidths[i] / (double) this.imageHeights[i];
 		}
-		page = 0;
+		this.dcx = 0;
+		this.dcy = 0;
+		this.ds = 1;
+		this.clicked = false;
+		this.clickX = 0;
+		this.clickY = 0;
+		this.page = 0;
 	}
 
 	@Override
@@ -65,22 +83,62 @@ public class GUILoliCardAlbum extends GuiScreen {
 		}
 	}
 
+	public void handleMouseInput() throws IOException {
+		int d = Mouse.getEventDWheel();
+		if (d == 0) {
+			super.handleMouseInput();
+		} else {
+			int x = Mouse.getEventX() * width / mc.displayWidth;
+			int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
+			if (ds > 0.1 || d > 0) {
+				ds *= d > 0 ? 1.28 : 0.78125;
+				dcx += d > 0 ? (width / 2 + dcx - x) * 0.28 : (x - width / 2 - dcx) * 0.21875;
+				dcy += d > 0 ? (height / 2 + dcy - y) * 0.28 : (y - height / 2 - dcy) * 0.21875;
+			}
+		}
+	}
+
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+		super.mouseClicked(mouseX, mouseY, mouseButton);
+		clicked = true;
+		clickX = mouseX;
+		clickY = mouseY;
+		odcx = dcx;
+		odcy = dcy;
+	}
+
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		super.mouseReleased(mouseX, mouseY, state);
+		clicked = false;
+	}
+
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+		if (clicked) {
+			dcx = odcx + mouseX - clickX;
+			dcy = odcy + mouseY - clickY;
+		}
+	}
+
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		mc.getTextureManager().bindTexture(resources[page]);
-		int cx = width / 2;
-		int cy = height / 2;
+		int cx = width / 2 + dcx;
+		int cy = height / 2 + dcy;
 		double proportion;
 		if (ratios[page] < (double) width / (double) height) {
 			proportion = (double) height / (double) imageHeights[page];
 		} else {
 			proportion = (double) width / (double) imageWidths[page];
 		}
-		int x = (int) (imageWidths[page] * proportion / 2);
-		int y = (int) (imageHeights[page] * proportion / 2);
+		int x = (int) (imageWidths[page] * proportion / 2 * ds);
+		int y = (int) (imageHeights[page] * proportion / 2 * ds);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		bufferbuilder.pos(cx - x, cy + y, zLevel).tex(0, 1).endVertex();
 		bufferbuilder.pos(cx + x, cy + y, zLevel).tex(1, 1).endVertex();
 		bufferbuilder.pos(cx + x, cy - y, zLevel).tex(1, 0).endVertex();

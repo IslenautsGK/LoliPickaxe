@@ -16,6 +16,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -96,8 +98,6 @@ public class LoliPickaxeEvent {
 			entity.deathTime = 0;
 			if (!entity.world.isRemote) {
 				entity.clearActivePotions();
-				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(13), 410, 0, false, false));
-				entity.addPotionEffect(new PotionEffect(Potion.getPotionById(16), 410, 0, false, false));
 				entity.extinguish();
 				if (ConfigLoader.getBoolean(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRangeEntity")) {
 					int range = ConfigLoader.getInt(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRange");
@@ -117,7 +117,20 @@ public class LoliPickaxeEvent {
 				}
 				player.capabilities.flySpeed = 0.05F;
 				player.capabilities.walkSpeed = 0.1F;
+				double distance = ConfigLoader.getDouble(stack, "loliPickaxeBlockReachDistance");
+				if (distance > 0) {
+					player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).setBaseValue(distance);
+				} else {
+					player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).setBaseValue(5.0);
+				}
 				if (!player.world.isRemote) {
+					if (stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliPotion")) {
+						NBTTagList list = stack.getTagCompound().getTagList("LoliPotion", 10);
+						for (int i = 0; i < list.tagCount(); i++) {
+							NBTTagCompound element = list.getCompoundTagAt(i);
+							player.addPotionEffect(new PotionEffect(Potion.getPotionById(element.getShort("id")), 410, element.getByte("lvl"), false, false));
+						}
+					}
 					player.getFoodStats().addStats(20, 1);
 				}
 			} else {

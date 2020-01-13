@@ -3,6 +3,7 @@ package com.anotherstar.common.entity.ai;
 import java.util.Collections;
 import java.util.List;
 
+import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.EntityLoli;
 
 import net.minecraft.entity.EntityCreature;
@@ -16,17 +17,19 @@ public class EntityAILoliNearestAttackableEntity extends EntityAINearestAttackab
 	}
 
 	public boolean shouldExecute() {
-		List<EntityLivingBase> list = taskOwner.world.getEntitiesWithinAABB(this.targetClass,
-				getTargetableArea(getTargetDistance()), targetEntitySelector);
-		list.removeIf(entity -> entity instanceof EntityLoli);
-		if (list.isEmpty()) {
-			return false;
+		if (ConfigLoader.loliAttack) {
+			List<EntityLivingBase> list = taskOwner.world.getEntitiesWithinAABB(this.targetClass, getTargetableArea(getTargetDistance()), targetEntitySelector);
+			list.removeIf(entity -> entity instanceof EntityLoli);
+			if (list.isEmpty()) {
+				return false;
+			} else {
+				Collections.sort(list, this.sorter);
+				targetEntity = list.get(0);
+				return true;
+			}
 		} else {
-			Collections.sort(list, this.sorter);
-			targetEntity = list.get(0);
-			return true;
+			return false;
 		}
-
 	}
 
 }

@@ -2,6 +2,8 @@ package com.anotherstar.client.render;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.anotherstar.client.util.LoliCardOnlineUtil;
 import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.config.ConfigLoader;
@@ -159,7 +161,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					}
 					dx *= scale;
 					dy *= scale;
-					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+					bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 					bufferbuilder.pos(-dx, -dy, -dz).tex(0, 0).endVertex();
 					bufferbuilder.pos(-dx, dy, -dz).tex(0, 1).endVertex();
 					bufferbuilder.pos(dx, dy, -dz).tex(1, 1).endVertex();
@@ -218,7 +220,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					}
 					dx *= scale;
 					dy *= scale;
-					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+					bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 					bufferbuilder.pos(-dx, -dy, -dz).tex(0, 0).endVertex();
 					bufferbuilder.pos(-dx, dy, -dz).tex(0, 1).endVertex();
 					bufferbuilder.pos(dx, dy, -dz).tex(1, 1).endVertex();
@@ -273,7 +275,7 @@ public class RenderLoliCardFrame extends RenderItemFrame {
 					}
 					dx *= scale;
 					dy *= scale;
-					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+					bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 					bufferbuilder.pos(-dx, -dy, -dz).tex(0, 0).endVertex();
 					bufferbuilder.pos(-dx, dy, -dz).tex(0, 1).endVertex();
 					bufferbuilder.pos(dx, dy, -dz).tex(1, 1).endVertex();

@@ -3,16 +3,12 @@ package com.anotherstar.common.entity;
 import com.anotherstar.client.model.ModelLoli;
 import com.anotherstar.client.render.RenderLoli;
 import com.anotherstar.client.render.RenderLoliBuffAttackTNT;
-import com.anotherstar.client.render.RenderRemiliaLoli;
 import com.anotherstar.common.LoliPickaxe;
-import com.github.tartaricacid.touhoulittlemaid.TouhouLittleMaid;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
@@ -32,17 +28,8 @@ public class EntityLoader {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void registerModel(ModelRegistryEvent event) {
-		if (Loader.isModLoaded(TouhouLittleMaid.MOD_ID)) {
-			registerRemiliaModel();
-		} else {
-			RenderingRegistry.registerEntityRenderingHandler(EntityLoli.class, manager -> new RenderLoli(manager, new ModelLoli(), 0.2f));
-		}
+		RenderingRegistry.registerEntityRenderingHandler(EntityLoli.class, manager -> new RenderLoli(manager, new ModelLoli(), 0.2f));
 		RenderingRegistry.registerEntityRenderingHandler(EntityLoliBuffAttackTNT.class, manager -> new RenderLoliBuffAttackTNT(manager));
-	}
-
-	@Optional.Method(modid = TouhouLittleMaid.MOD_ID)
-	private void registerRemiliaModel() {
-		RenderingRegistry.registerEntityRenderingHandler(EntityLoli.class, RenderRemiliaLoli.FACTORY);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.anotherstar.common.entity.ai;
 
+import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.util.LoliPickaxeUtil;
 
 import net.minecraft.entity.EntityCreature;
@@ -22,10 +23,13 @@ public class EntityAILoliAttack extends EntityAIAttackMelee {
 			attacker.setAttackTarget(null);
 			return false;
 		} else {
-			attacker.dismountRidingEntity();
-			attacker.setLocationAndAngles(target.posX, target.posY, target.posZ, target.rotationYaw,
-					target.rotationPitch);
-			return true;
+			if (ConfigLoader.loliTeleport) {
+				attacker.dismountRidingEntity();
+				attacker.setLocationAndAngles(target.posX, target.posY, target.posZ, target.rotationYaw, target.rotationPitch);
+				return true;
+			} else {
+				return super.shouldExecute();
+			}
 		}
 	}
 
@@ -35,8 +39,7 @@ public class EntityAILoliAttack extends EntityAIAttackMelee {
 			return false;
 		} else if (!entitylivingbase.isEntityAlive()) {
 			return false;
-		} else if (entitylivingbase instanceof EntityPlayer && ((EntityPlayer) entitylivingbase).isSpectator()
-				|| LoliPickaxeUtil.invHaveLoliPickaxe(entitylivingbase)) {
+		} else if (entitylivingbase instanceof EntityPlayer && ((EntityPlayer) entitylivingbase).isSpectator() || LoliPickaxeUtil.invHaveLoliPickaxe(entitylivingbase)) {
 			return false;
 		} else {
 			return !this.attacker.getNavigator().noPath();
@@ -46,8 +49,7 @@ public class EntityAILoliAttack extends EntityAIAttackMelee {
 	@Override
 	public void resetTask() {
 		EntityLivingBase entity = this.attacker.getAttackTarget();
-		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isSpectator()
-				|| LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
+		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isSpectator() || LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
 			this.attacker.setAttackTarget((EntityLivingBase) null);
 		}
 		this.attacker.getNavigator().clearPath();

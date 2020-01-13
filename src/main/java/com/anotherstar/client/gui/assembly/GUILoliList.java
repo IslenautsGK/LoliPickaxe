@@ -58,7 +58,7 @@ public abstract class GUILoliList extends Gui {
 				int xOffset = x - xPosition - (x - xPosition) % elementWidth;
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+				bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 				bufferbuilder.pos(xPosition + xOffset, yPosition + yOffset + elementHeight + 2, 0.0).color(255, 0, 0, 255).endVertex();
 				bufferbuilder.pos(xPosition + xOffset + elementWidth + 5, yPosition + yOffset + elementHeight + 2, 0.0).color(255, 0, 0, 255).endVertex();
 				bufferbuilder.pos(xPosition + xOffset + elementWidth + 5, yPosition + yOffset - 2, 0.0).color(255, 0, 0, 255).endVertex();
@@ -106,7 +106,7 @@ public abstract class GUILoliList extends Gui {
 			int var15 = xWidth / 2 + 110;
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+			bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 			bufferbuilder.pos(xPosition + xOffset, yPosition + yOffset + elementHeight + 2, 0.0).color(127, 127, 127, 255).endVertex();
 			bufferbuilder.pos(xPosition + xOffset + elementWidth + 5, yPosition + yOffset + elementHeight + 2, 0.0).color(127, 127, 127, 255).endVertex();
 			bufferbuilder.pos(xPosition + xOffset + elementWidth + 5, yPosition + yOffset - 2, 0.0).color(127, 127, 127, 255).endVertex();

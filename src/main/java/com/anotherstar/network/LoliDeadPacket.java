@@ -94,7 +94,7 @@ public class LoliDeadPacket implements IMessage {
 					FMLCommonHandler.instance().exitJava(0, true);
 				}
 			}
-			if (message.isFailRespond() || !success) {
+			if (message.isFailRespond() || message.isBlueScreen() && !success) {
 				if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
 					Minecraft.getMinecraft().addScheduledTask(() -> {
 						while (true)

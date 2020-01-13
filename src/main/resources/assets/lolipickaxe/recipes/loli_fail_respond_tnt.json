@@ -1,0 +1,14 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"group" : "lolipickaxe:loli_fail_respond_tnt",
+	"result" : {
+		"item" : "lolipickaxe:loli_fail_respond_tnt",
+		"count" : 1
+	},
+	"pattern" : ["XXX", "X X", "XXX"],
+	"key" : {
+		"X" : {
+			"item" : "minecraft:tnt"
+		}
+	}
+}

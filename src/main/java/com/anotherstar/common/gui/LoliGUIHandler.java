@@ -10,6 +10,7 @@ import com.anotherstar.client.gui.GUILoliCardOnline;
 import com.anotherstar.client.gui.GUILoliCardOnlineConfig;
 import com.anotherstar.client.gui.GUILoliConfig;
 import com.anotherstar.client.gui.GUILoliEnchantment;
+import com.anotherstar.client.gui.GUILoliPotion;
 import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.item.ItemLoliCardOnline;
@@ -36,6 +37,7 @@ public enum LoliGUIHandler implements IGuiHandler {
 	public static final int GUI_LOLI_CARD_ONLINE = 6;
 	public static final int GUI_LOLI_CARD_ONLINE_CONFIG = 7;
 	public static final int GUI_LOLI_ENCHANTMENT = 8;
+	public static final int GUI_LOLI_POTION = 9;
 
 	private LoliGUIHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(LoliPickaxe.instance, this);
@@ -118,6 +120,13 @@ public enum LoliGUIHandler implements IGuiHandler {
 			ItemStack stack = player.getHeldItemMainhand();
 			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
 				return new GUILoliEnchantment(stack);
+			}
+			break;
+		}
+		case GUI_LOLI_POTION: {
+			ItemStack stack = player.getHeldItemMainhand();
+			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				return new GUILoliPotion(stack);
 			}
 			break;
 		}

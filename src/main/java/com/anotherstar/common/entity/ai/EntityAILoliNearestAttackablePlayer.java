@@ -1,5 +1,6 @@
 package com.anotherstar.common.entity.ai;
 
+import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.util.LoliPickaxeUtil;
 
 import net.minecraft.entity.EntityCreature;
@@ -13,18 +14,22 @@ public class EntityAILoliNearestAttackablePlayer extends EntityAINearestAttackab
 	}
 
 	public boolean shouldExecute() {
-		targetEntity = null;
-		double min = Double.MAX_VALUE;
-		for (EntityPlayer player : taskOwner.world.playerEntities) {
-			if (!player.isSpectator() && !LoliPickaxeUtil.invHaveLoliPickaxe(player)) {
-				double d = player.getDistanceSq(taskOwner);
-				if (d < min && d < getTargetDistance()) {
-					min = d;
-					targetEntity = player;
+		if (ConfigLoader.loliAttack) {
+			targetEntity = null;
+			double min = Double.MAX_VALUE;
+			for (EntityPlayer player : taskOwner.world.playerEntities) {
+				if (!player.isSpectator() && !LoliPickaxeUtil.invHaveLoliPickaxe(player)) {
+					double d = player.getDistanceSq(taskOwner);
+					if (d < min && d < getTargetDistance()) {
+						min = d;
+						targetEntity = player;
+					}
 				}
 			}
+			return targetEntity != null;
+		} else {
+			return false;
 		}
-		return targetEntity != null;
 	}
 
 }

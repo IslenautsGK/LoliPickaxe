@@ -38,6 +38,10 @@ public class ConfigLoader {
 	public static boolean loliPickaxeMandatoryDrop;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "显示流体边框", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeStopOnLiquid;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "挖掘距离", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.0, doubleMinValue = 0, doubleMaxValueField = "loliPickaxeBlockReachMaxDistance")
+	public static double loliPickaxeBlockReachDistance;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "最大挖掘距离", valueType = ValurType.DOUBLE, doubleDefaultValue = 20.0)
+	public static double loliPickaxeBlockReachMaxDistance;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室最大页数", valueType = ValurType.INT, intDefaultValue = 100)
 	public static int loliPickaxeMaxPage;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "储藏室取消物品堆叠限制", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
@@ -110,7 +114,7 @@ public class ConfigLoader {
 	public static double loliPickaxeKillFacingSlope;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "范围攻击最大斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
 	public static double loliPickaxeMaxKillFacingSlope;
-	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope" })
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeBlockReachDistance", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope", "loliPickaxeInfiniteBattery" })
 	public static List<String> loliPickaxeGuiChangeList;
 	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = { "lolirecord:loliRecord:loli_record" })
 	public static List<String> loliRecodeNames;
@@ -122,6 +126,14 @@ public class ConfigLoader {
 	public static double loliRecordDropProbability;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "生物灵魂掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.01)
 	public static double entitySoulDropProbability;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉行走速度", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
+	public static double loliSpeed;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉主动攻击", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliAttack;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉瞬移", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliTeleport;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉模型(0:萝莉,1:纳文摩尔,2:纸片人,3:车万女仆)", valueType = ValurType.INT, intDefaultValue = 0)
+	public static int loliModelType;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉模型ID", valueType = ValurType.STRING, stringDefaultValue = "touhou_little_maid:remilia_scarlet")
 	public static String loliModelId;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉卡片展示框缩放比例", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
@@ -134,8 +146,14 @@ public class ConfigLoader {
 	public static Map<String, Integer> loliPickaxeEnchantmentLimit;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "默认附魔最大等级", valueType = ValurType.INT, intDefaultValue = 32)
 	public static int loliPickaxeEnchantmentDefaultLimit;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "药水最大等级列表", valueType = ValurType.MAP, mapDefaultValue = {}, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
+	public static Map<String, Integer> loliPickaxePotionLimit;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "默认药水最大等级", valueType = ValurType.INT, intDefaultValue = 32)
+	public static int loliPickaxePotionDefaultLimit;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "启用特效攻击炸弹", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliEnableBuffAttackTNT;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "超级电池", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeInfiniteBattery;
 
 	static {
 		try {

@@ -8,6 +8,7 @@ import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.network.LoliCardPacket;
 import com.anotherstar.network.LoliCardPacket.ItemType;
 import com.anotherstar.network.NetworkHandler;
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -47,7 +48,15 @@ public class ItemLoliCard extends Item {
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
 		if (world.isRemote && LoliCardUtil.customArtNames != null && LoliCardUtil.customArtNames.length != 0 && (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("picture"))) {
-			NetworkHandler.INSTANCE.sendMessageToServer(new LoliCardPacket(itemSlot, ItemType.LOLICARD, LoliCardUtil.customArtNames[world.rand.nextInt(LoliCardUtil.customArtNames.length)]));
+			List<String> accessName = Lists.newArrayList();
+			for (String name : LoliCardUtil.customArtNames) {
+				if (!name.contains("''")) {
+					accessName.add(name);
+				}
+			}
+			if (!accessName.isEmpty()) {
+				NetworkHandler.INSTANCE.sendMessageToServer(new LoliCardPacket(itemSlot, ItemType.LOLICARD, accessName.get(world.rand.nextInt(accessName.size()))));
+			}
 		}
 	}
 

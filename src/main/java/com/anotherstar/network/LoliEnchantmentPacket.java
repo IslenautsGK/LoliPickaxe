@@ -34,13 +34,17 @@ public class LoliEnchantmentPacket implements IMessage {
 		ByteBufUtils.writeTag(buf, ench);
 	}
 
+	public NBTTagCompound getEnch() {
+		return ench;
+	}
+
 	public static class MessageHandler implements IMessageHandler<LoliEnchantmentPacket, IMessage> {
 
 		@Override
 		public IMessage onMessage(LoliEnchantmentPacket message, MessageContext ctx) {
 			ItemStack stack = ctx.getServerHandler().player.getHeldItemMainhand();
 			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-				if (message.ench.hasKey("ench")) {
+				if (message.getEnch().hasKey("ench")) {
 					NBTTagCompound nbt;
 					if (stack.hasTagCompound()) {
 						nbt = stack.getTagCompound();
@@ -48,7 +52,7 @@ public class LoliEnchantmentPacket implements IMessage {
 						nbt = new NBTTagCompound();
 						stack.setTagCompound(nbt);
 					}
-					NBTTagList list = message.ench.getTagList("ench", 10);
+					NBTTagList list = message.getEnch().getTagList("ench", 10);
 					for (int i = 0; i < list.tagCount(); i++) {
 						NBTTagCompound element = list.getCompoundTagAt(i);
 						short lvl = element.getShort("lvl");
@@ -61,7 +65,7 @@ public class LoliEnchantmentPacket implements IMessage {
 							element.setShort("lvl", (short) ConfigLoader.loliPickaxeEnchantmentDefaultLimit);
 						}
 					}
-					nbt.setTag("ench", message.ench.getTagList("ench", 10));
+					nbt.setTag("ench", message.getEnch().getTagList("ench", 10));
 				} else if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ench")) {
 					stack.getTagCompound().removeTag("ench");
 				}

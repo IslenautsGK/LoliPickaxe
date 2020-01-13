@@ -60,6 +60,7 @@ gui.loliCardOnline=图片URL
 gui.loliAdd=添加
 gui.loliRemove=移除
 gui.loliEnch=附魔
+gui.loliPotion=药水
 
 item.loliRecord.name=萝莉唱片
 item.record.lolirecord.desc=ばか変態煩い(av6752335)
@@ -117,5 +118,6 @@ entity.LoliBuffAttackTNT.name=§c特效炸弹
 key.category.lolipickaxe=§c氪金萝莉
 key.lolipickaxe.loli_config=配置§c氪金萝莉
 key.lolipickaxe.loli_enchantment=附魔§c氪金萝莉
+key.lolipickaxe.loli_potion=药水§c氪金萝莉
 key.lolipickaxe.loli_pickaxe_container=打开§c氪金萝莉储藏室
 key.lolipickaxe.loli_pickaxe_container_blacklist=打开§c氪金萝莉黑名单

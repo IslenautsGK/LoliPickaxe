@@ -38,6 +38,10 @@ public class LoliRomeDigitalUtil {
 
 	public static String intToRoman(int num) {
 		StringBuilder sb = new StringBuilder();
+		if (num < 0) {
+			num = -num;
+			sb.append('-');
+		}
 		for (Integer key : lookup.keySet()) {
 			int n = num / key;
 			if (n == 0) {

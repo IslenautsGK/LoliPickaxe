@@ -1,5 +1,6 @@
 package com.anotherstar.common.entity;
 
+import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.ai.EntityAILoliAttack;
 import com.anotherstar.common.entity.ai.EntityAILoliNearestAttackableEntity;
 import com.anotherstar.common.entity.ai.EntityAILoliNearestAttackablePlayer;
@@ -26,7 +27,7 @@ public class EntityLoli extends EntityCreature implements IEntityLoli {
 
 	public EntityLoli(World worldIn) {
 		super(worldIn);
-		setSize(0.5F, 0.9F);
+		setSize(0.6F, 1.5F);
 		moveHelper = new EntityLoliMoveHelper(this);
 		setPathPriority(PathNodeType.WATER, 0);
 		dispersal = false;
@@ -47,8 +48,8 @@ public class EntityLoli extends EntityCreature implements IEntityLoli {
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
-		getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1);
-		getEntityAttribute(SWIM_SPEED).setBaseValue(15);
+		getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(ConfigLoader.loliSpeed);
+		getEntityAttribute(SWIM_SPEED).setBaseValue(ConfigLoader.loliSpeed * 15);
 		getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64);
 	}
@@ -57,6 +58,13 @@ public class EntityLoli extends EntityCreature implements IEntityLoli {
 	public boolean attackEntityAsMob(Entity entity) {
 		ItemLoader.loliPickaxe.leftClickEntity(this, entity);
 		return true;
+	}
+
+	@Override
+	public void onEntityUpdate() {
+		getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(ConfigLoader.loliSpeed);
+		getEntityAttribute(SWIM_SPEED).setBaseValue(ConfigLoader.loliSpeed * 15);
+		super.onEntityUpdate();
 	}
 
 	@Override
