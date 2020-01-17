@@ -1,5 +1,6 @@
 package com.anotherstar.common.item;
 
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.gui.LoliGUIHandler;
 
@@ -15,12 +16,7 @@ public class ItemLoliCardOnline extends Item {
 
 	public ItemLoliCardOnline() {
 		this.setUnlocalizedName("loliCardOnline");
-		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
-	}
-
-	@Override
-	public int getItemStackLimit(ItemStack stack) {
-		return stack.hasTagCompound() ? 64 : 1;
+		this.setCreativeTab(CreativeTabLoader.loliTabs);
 	}
 
 	@Override

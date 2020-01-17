@@ -102,7 +102,7 @@ public class ConfigLoader {
 	public static boolean loliPickaxeExitAttack;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "未响应打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeFailRespondAttack;
-	@ConfigField(type = { ConfigType.CONFIG }, comment = "强制死亡延迟特化列表(实体ID:Tick)", valueType = ValurType.MAP, mapDefaultValue = { "ender_dragon:201" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "强制死亡延迟特化列表(实体ID:Tick)", valueType = ValurType.MAP, mapDefaultValue = { "ender_dragon:::201" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
 	public static Map<String, Integer> loliPickaxeDelayRemoveList;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "左键范围攻击", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeKillFacing;
@@ -154,6 +154,8 @@ public class ConfigLoader {
 	public static boolean loliEnableBuffAttackTNT;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "超级电池", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeInfiniteBattery;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "萝莉卡片URL", valueType = ValurType.MAP, mapDefaultValue = { "gk_head_portrait.png:::https://www.pixiv.net/artworks/61282195", "小莫女儿:::https://www.pixiv.net/users/5776001" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.STRING)
+	public static Map<String, String> loliCardURL;
 
 	static {
 		try {
@@ -233,7 +235,7 @@ public class ConfigLoader {
 					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(), annotation.comment()).getStringList();
 					Map map = Maps.newHashMap();
 					for (String str : strs) {
-						int index = str.lastIndexOf(':');
+						int index = str.lastIndexOf(":::");
 						Object key;
 						switch (annotation.mapKeyType()) {
 						case INT:
@@ -254,16 +256,16 @@ public class ConfigLoader {
 						Object value;
 						switch (annotation.mapValueType()) {
 						case INT:
-							value = Integer.parseInt(str.substring(index + 1, str.length()));
+							value = Integer.parseInt(str.substring(index + 3, str.length()));
 							break;
 						case DOUBLE:
-							value = Double.parseDouble(str.substring(index + 1, str.length()));
+							value = Double.parseDouble(str.substring(index + 3, str.length()));
 							break;
 						case BOOLEAN:
-							value = Boolean.parseBoolean(str.substring(index + 1, str.length()));
+							value = Boolean.parseBoolean(str.substring(index + 3, str.length()));
 							break;
 						case STRING:
-							value = str.substring(index + 1, str.length());
+							value = str.substring(index + 3, str.length());
 							break;
 						default:
 							continue;
@@ -318,7 +320,7 @@ public class ConfigLoader {
 					break;
 				}
 				case MAP: {
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(), annotation.comment()).setValues(((Map<?, ?>) field.get(null)).entrySet().stream().map(entry -> entry.getKey().toString() + ":" + entry.getValue().toString()).toArray(String[]::new));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.mapDefaultValue(), annotation.comment()).setValues(((Map<?, ?>) field.get(null)).entrySet().stream().map(entry -> entry.getKey().toString() + ":::" + entry.getValue().toString()).toArray(String[]::new));
 					break;
 				}
 				default:
@@ -383,7 +385,7 @@ public class ConfigLoader {
 				case MAP: {
 					NBTTagList list = new NBTTagList();
 					for (Map.Entry entry : ((Map<?, ?>) field.get(null)).entrySet()) {
-						list.appendTag(new NBTTagString(entry.getKey().toString() + ":" + entry.getValue().toString()));
+						list.appendTag(new NBTTagString(entry.getKey().toString() + ":::" + entry.getValue().toString()));
 					}
 					data.setTag(field.getName(), list);
 					break;
@@ -436,7 +438,7 @@ public class ConfigLoader {
 					Map map = Maps.newHashMap();
 					for (NBTBase nbt : list) {
 						String str = ((NBTTagString) nbt).getString();
-						int index = str.lastIndexOf(':');
+						int index = str.lastIndexOf(":::");
 						Object key;
 						switch (annotation.mapKeyType()) {
 						case INT:
@@ -457,16 +459,16 @@ public class ConfigLoader {
 						Object value;
 						switch (annotation.mapValueType()) {
 						case INT:
-							value = Integer.parseInt(str.substring(index + 1, str.length()));
+							value = Integer.parseInt(str.substring(index + 3, str.length()));
 							break;
 						case DOUBLE:
-							value = Double.parseDouble(str.substring(index + 1, str.length()));
+							value = Double.parseDouble(str.substring(index + 3, str.length()));
 							break;
 						case BOOLEAN:
-							value = Boolean.parseBoolean(str.substring(index + 1, str.length()));
+							value = Boolean.parseBoolean(str.substring(index + 3, str.length()));
 							break;
 						case STRING:
-							value = str.substring(index + 1, str.length());
+							value = str.substring(index + 3, str.length());
 							break;
 						default:
 							continue;

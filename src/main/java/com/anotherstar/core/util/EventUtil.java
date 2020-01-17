@@ -14,6 +14,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -118,6 +119,7 @@ public class EventUtil {
 
 	public static float getHealth(EntityLivingBase entity) {
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
+			entity.setHealth(20);
 			return 20;
 		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
 			return 0;
@@ -127,7 +129,10 @@ public class EventUtil {
 
 	public static float getMaxHealth(EntityLivingBase entity) {
 		if (LoliPickaxeUtil.invHaveLoliPickaxe(entity)) {
-			entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+			IAttributeInstance attribute = entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH);
+			if (attribute != null) {
+				entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+			}
 			return 20;
 		} else if (entity.loliDead || ConfigLoader.loliPickaxeBeyondRedemptionPlayerList.contains(entity.getUniqueID().toString())) {
 			return 0;
@@ -146,6 +151,12 @@ public class EventUtil {
 			return 0;
 		} else {
 			return inventory.clearMatchingItems2(item, meta, removeCount, itemNBT);
+		}
+	}
+
+	public static void clear(InventoryPlayer inventory) {
+		if (!LoliPickaxeUtil.invHaveLoliPickaxe(inventory.player)) {
+			inventory.clear2();
 		}
 	}
 

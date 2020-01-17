@@ -71,6 +71,9 @@ public class GUILoliPotion extends GuiScreen {
 		for (Entry<Potion, Integer> entry : potionMap.entrySet()) {
 			selectPotions.add(new LoliEntry(entry.getKey().getRegistryName(), entry.getValue()));
 		}
+		if (selectPotions.isEmpty()) {
+			remove.enabled = false;
+		}
 		selectPotionList = new GUILoliList(width / 2 - 50, height / 2 - 115, 100, 200, selectPotions.size(), 75, 15) {
 
 			@Override

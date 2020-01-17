@@ -1,5 +1,6 @@
 package com.anotherstar.common;
 
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.block.BlockLoader;
 import com.anotherstar.common.command.ConfigCommand;
 import com.anotherstar.common.command.LoliBuffAttackCommand;
@@ -28,6 +29,7 @@ public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigLoader.init(event);
+		CreativeTabLoader.init();
 		MinecraftForge.EVENT_BUS.register(new ItemLoader());
 		MinecraftForge.EVENT_BUS.register(new BlockLoader());
 		MinecraftForge.EVENT_BUS.register(new EntityLoader());

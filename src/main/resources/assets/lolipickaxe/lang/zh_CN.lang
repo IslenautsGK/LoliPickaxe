@@ -72,6 +72,9 @@ item.loliCardOnline.name=萝莉网络卡片
 tile.LoliBlueScreenTNT.name=§c蓝屏炸弹
 tile.LoliExitTNT.name=§c蹦溃炸弹
 tile.LoliFailRespondTNT.name=§c未响应炸弹
+tile.LoliAltar.name=萝莉祭坛
+
+loliAltar.use=按指定格式摆放祭坛后使用普通萝莉或氪金萝莉右键位于中心的祭坛即可召唤萝莉
 
 death.attack.loli=%1$s被%2$s用氪金萝莉抹杀了
 
@@ -79,6 +82,8 @@ loliPickaxe.range=采掘范围更改为%1$d*%1$d*%1$d
 loliPickaxe.killrangeentity=攻击了周围%1$d*%1$d范围内的%2$d个生物
 loliPickaxe.curRange=采掘范围 %1$d*%1$d*%1$d
 loliPickaxe.mandatoryDrop=强制掉落
+loliPickaxe.stopOnLiquid=显示流体边框
+loliPickaxe.blockReachDistance=采掘距离 %1$f
 loliPickaxe.autoAccept=自动收纳
 loliPickaxe.thorns=反伤
 loliPickaxe.killRange=潜行右键范围攻击 %1$d*%1$d*%1$d
@@ -95,8 +100,12 @@ loliPickaxe.blueScreenAttack=蓝屏打击
 loliPickaxe.exitAttack=蹦溃打击
 loliPickaxe.failRespondAttack=未响应打击
 loliPickaxe.killFacing=范围攻击 %1$d,%2$f
+loliPickaxe.infiniteBattery=超级电池
 loliPickaxe.speed=TREE(3)
 loliPickaxe.damage=TREE(3)
+
+buffAttackTNT.enable=已启用特效攻击
+buffAttackTNT.disable=未启用特效攻击
 
 enchantment.LoliAutoFurnace=自动熔炼
 

@@ -236,6 +236,18 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					mv.visitLocalVariable("itemNBT", "Lnet/minecraft/nbt/NBTTagCompound;", null, start, end, 4);
 					mv.visitMaxs(5, 5);
 					mv.visitEnd();
+					mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "clear" : "m", "()V", null, null);
+					mv.visitCode();
+					start = new Label();
+					mv.visitLabel(start);
+					mv.visitVarInsn(Opcodes.ALOAD, 0);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "clear", "(Lnet/minecraft/entity/player/InventoryPlayer;)V", false);
+					mv.visitInsn(Opcodes.RETURN);
+					end = new Label();
+					mv.visitLabel(end);
+					mv.visitLocalVariable("this", "Lnet/minecraft/entity/player/InventoryPlayer;", null, start, end, 0);
+					mv.visitMaxs(1, 1);
+					mv.visitEnd();
 				}
 
 				@Override
@@ -244,7 +256,9 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						return cv.visitMethod(access, "dropAllItems2", desc, signature, exceptions);
 					} else if (name.equals("a") && desc.equals("(Lain;IILfy;)I") || name.equals("clearMatchingItems")) {
 						return cv.visitMethod(access, "clearMatchingItems2", desc, signature, exceptions);
-					} else if (name.equals("dropAllItems2") || name.equals("clearMatchingItems2")) {
+					} else if (name.equals("m") && desc.equals("()V") || name.equals("clear")) {
+						return cv.visitMethod(access, "clear2", desc, signature, exceptions);
+					} else if (name.equals("dropAllItems2") || name.equals("clearMatchingItems2") || name.equals("clear2")) {
 						return null;
 					}
 					return cv.visitMethod(access, name, desc, signature, exceptions);

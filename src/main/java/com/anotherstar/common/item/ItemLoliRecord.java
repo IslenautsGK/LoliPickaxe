@@ -1,5 +1,6 @@
 package com.anotherstar.common.item;
 
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.LoliPickaxe;
 
 import net.minecraft.item.ItemRecord;
@@ -11,7 +12,7 @@ public class ItemLoliRecord extends ItemRecord {
 	public ItemLoliRecord(String name, String record) {
 		super(record, new SoundEvent(new ResourceLocation(LoliPickaxe.MODID, record)));
 		setUnlocalizedName(name);
-		setCreativeTab(LoliPickaxe.instance.loliTabs);
+		setCreativeTab(CreativeTabLoader.loliTabs);
 	}
 
 }

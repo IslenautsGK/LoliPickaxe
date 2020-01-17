@@ -2,6 +2,7 @@ package com.anotherstar.common.item;
 
 import java.util.List;
 
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.gui.LoliGUIHandler;
@@ -29,7 +30,7 @@ public class ItemLoliCard extends Item {
 
 	public ItemLoliCard() {
 		this.setUnlocalizedName("loliCard");
-		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
+		this.setCreativeTab(CreativeTabLoader.loliTabs);
 	}
 
 	@Override

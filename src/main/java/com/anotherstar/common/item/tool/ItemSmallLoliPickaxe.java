@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.anotherstar.common.LoliPickaxe;
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.gui.ILoliInventory;
 import com.anotherstar.common.gui.InventorySmallLoliPickaxe;
 import com.anotherstar.common.item.ItemLoader;
@@ -87,7 +87,7 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 	public ItemSmallLoliPickaxe() {
 		super(ItemLoliPickaxe.LOLI, Sets.newHashSet());
 		this.setUnlocalizedName("smallLoliPickaxe");
-		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
+		this.setCreativeTab(CreativeTabLoader.loliTabs);
 	}
 
 	@Override

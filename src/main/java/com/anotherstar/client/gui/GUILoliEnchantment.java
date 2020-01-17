@@ -73,6 +73,9 @@ public class GUILoliEnchantment extends GuiScreen {
 		for (Entry<Enchantment, Integer> entry : enchMap.entrySet()) {
 			selectEnchantments.add(new LoliEntry(entry.getKey().getRegistryName(), entry.getValue()));
 		}
+		if (selectEnchantments.isEmpty()) {
+			remove.enabled = false;
+		}
 		selectEnchantmentList = new GUILoliList(width / 2 - 50, height / 2 - 115, 100, 200, selectEnchantments.size(), 75, 15) {
 
 			@Override

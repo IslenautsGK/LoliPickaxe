@@ -2,7 +2,7 @@ package com.anotherstar.common.item;
 
 import java.util.List;
 
-import com.anotherstar.common.LoliPickaxe;
+import com.anotherstar.client.creative.CreativeTabLoader;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,7 +16,7 @@ public class ItemBugEntityClear extends Item {
 
 	public ItemBugEntityClear() {
 		this.setUnlocalizedName("bugEntityClear");
-		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
+		this.setCreativeTab(CreativeTabLoader.loliTabs);
 		this.setMaxStackSize(1);
 	}
 

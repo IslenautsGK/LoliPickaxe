@@ -1,6 +1,8 @@
 package com.anotherstar.client.gui;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -8,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import com.anotherstar.client.util.LoliCardOnlineUtil;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -22,10 +25,12 @@ public class GUILoliCardOnline extends GuiScreen {
 	private int dcy;
 	private double ds;
 	private boolean clicked;
+	private boolean moved;
 	private int clickX;
 	private int clickY;
 	private int odcx;
 	private int odcy;
+	private URI clickedLinkURI;
 
 	public GUILoliCardOnline(String url) {
 		this.url = url;
@@ -69,17 +74,34 @@ public class GUILoliCardOnline extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
-		clicked = true;
-		clickX = mouseX;
-		clickY = mouseY;
-		odcx = dcx;
-		odcy = dcy;
+		if (mouseButton == 0) {
+			clicked = true;
+			clickX = mouseX;
+			clickY = mouseY;
+			odcx = dcx;
+			odcy = dcy;
+		}
 	}
 
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
-		clicked = false;
+		if (clicked) {
+			clicked = false;
+			if (!moved) {
+				try {
+					URI uri = new URI(url);
+					if (mc.gameSettings.chatLinksPrompt) {
+						clickedLinkURI = uri;
+						mc.displayGuiScreen(new GuiConfirmOpenLink(this, url, 75395975, false));
+					} else {
+						openWebLink(uri);
+					}
+				} catch (URISyntaxException e) {
+				}
+			}
+			moved = false;
+		}
 	}
 
 	@Override
@@ -88,6 +110,26 @@ public class GUILoliCardOnline extends GuiScreen {
 		if (clicked) {
 			dcx = odcx + mouseX - clickX;
 			dcy = odcy + mouseY - clickY;
+			moved = true;
+		}
+	}
+
+	public void confirmClicked(boolean result, int id) {
+		if (id == 75395975) {
+			if (result) {
+				openWebLink(clickedLinkURI);
+			}
+			clickedLinkURI = null;
+			mc.displayGuiScreen(this);
+		}
+	}
+
+	private void openWebLink(URI url) {
+		try {
+			Class<?> oclass = Class.forName("java.awt.Desktop");
+			Object object = oclass.getMethod("getDesktop").invoke((Object) null);
+			oclass.getMethod("browse", URI.class).invoke(object, url);
+		} catch (Throwable e) {
 		}
 	}
 

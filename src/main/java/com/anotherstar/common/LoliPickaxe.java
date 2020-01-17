@@ -2,10 +2,6 @@ package com.anotherstar.common;
 
 import org.apache.logging.log4j.Logger;
 
-import com.anotherstar.common.item.ItemLoader;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -27,24 +23,6 @@ public class LoliPickaxe {
 
 	@Instance(LoliPickaxe.MODID)
 	public static LoliPickaxe instance;
-
-	public CreativeTabs loliTabs = new CreativeTabs("loli") {
-
-		@Override
-		public ItemStack getTabIconItem() {
-			return new ItemStack(ItemLoader.entitySoul, 1, ItemLoader.entitySoul.getSubCount() - 1);
-		}
-
-	};
-
-	public CreativeTabs loliRecipeTabs = new CreativeTabs("loliRecipe") {
-
-		@Override
-		public ItemStack getTabIconItem() {
-			return new ItemStack(ItemLoader.loliPickaxe);
-		}
-
-	};
 
 	public Logger log;
 

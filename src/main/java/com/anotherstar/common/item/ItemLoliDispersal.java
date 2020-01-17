@@ -1,6 +1,6 @@
 package com.anotherstar.common.item;
 
-import com.anotherstar.common.LoliPickaxe;
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.entity.IEntityLoli;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -13,7 +13,7 @@ public class ItemLoliDispersal extends Item {
 
 	public ItemLoliDispersal() {
 		this.setUnlocalizedName("loliDispersal");
-		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
+		this.setCreativeTab(CreativeTabLoader.loliTabs);
 		this.setMaxStackSize(1);
 	}
 

@@ -27,13 +27,19 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class LoliPickaxeEvent {
 
 	public static Set<Class<? extends Entity>> antiEntity = Sets.newHashSet();
+
+	private Set<String> flyingPlayer = Sets.newHashSet();
+	private Set<EntityPlayer> loliPlayer = Sets.newHashSet();
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
@@ -87,9 +93,7 @@ public class LoliPickaxeEvent {
 		}
 	}
 
-	private Set<String> flyingPlayer = Sets.newHashSet();
-
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onPlayerUpdate(LivingEvent.LivingUpdateEvent event) {
 		EntityLivingBase entity = event.getEntityLiving();
 		boolean isLoli = LoliPickaxeUtil.invHaveLoliPickaxe(entity);
@@ -115,6 +119,9 @@ public class LoliPickaxeEvent {
 				if (!flyingPlayer.contains(player.getName())) {
 					flyingPlayer.add(player.getName());
 				}
+				if (!loliPlayer.contains(player)) {
+					loliPlayer.add(player);
+				}
 				player.capabilities.flySpeed = 0.05F;
 				player.capabilities.walkSpeed = 0.1F;
 				double distance = ConfigLoader.getDouble(stack, "loliPickaxeBlockReachDistance");
@@ -138,6 +145,9 @@ public class LoliPickaxeEvent {
 					flyingPlayer.remove(player.getName());
 					player.capabilities.allowFlying = false;
 					player.capabilities.isFlying = false;
+				}
+				if (loliPlayer.contains(player)) {
+					loliPlayer.remove(player);
 				}
 			}
 			if (ConfigLoader.loliPickaxeFindOwner && !player.world.isRemote) {
@@ -184,6 +194,21 @@ public class LoliPickaxeEvent {
 			String owner = loli.getOwner(stack);
 			if (!(owner.isEmpty() || owner.equals(event.getEntityPlayer().getName()))) {
 				event.setCanceled(true);
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onServerTick(ServerTickEvent event) {
+		if (event.phase == Phase.END) {
+			for (EntityPlayer player : loliPlayer) {
+				if (player.isDead) {
+					player.isDead = false;
+				}
+				if (!player.world.playerEntities.contains(player)) {
+					player.world.playerEntities.add(player);
+					player.world.onEntityAdded(player);
+				}
 			}
 		}
 	}

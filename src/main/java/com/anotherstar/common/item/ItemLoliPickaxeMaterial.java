@@ -2,6 +2,7 @@ package com.anotherstar.common.item;
 
 import java.util.List;
 
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.LoliPickaxe;
 
 import net.minecraft.client.resources.I18n;
@@ -22,7 +23,7 @@ public class ItemLoliPickaxeMaterial extends Item {
 	public ItemLoliPickaxeMaterial(String name, int subCount, boolean differentEnd) {
 		this.setUnlocalizedName(name);
 		this.subCount = subCount;
-		this.setCreativeTab(LoliPickaxe.instance.loliRecipeTabs);
+		this.setCreativeTab(CreativeTabLoader.loliRecipeTabs);
 		this.setHasSubtypes(subCount != 1);
 		if (differentEnd) {
 			this.addPropertyOverride(new ResourceLocation(LoliPickaxe.MODID, "end"), (stack, world, entity) -> stack.getItemDamage() == this.subCount - 1 ? 1 : 0);

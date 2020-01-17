@@ -1,16 +1,19 @@
 package com.anotherstar.common.item.tool;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import com.anotherstar.common.LoliPickaxe;
+import com.anotherstar.client.creative.CreativeTabLoader;
 import com.anotherstar.common.config.ConfigLoader;
+import com.anotherstar.common.enchantment.EnchantmentLoader;
 import com.anotherstar.common.entity.IEntityLoli;
 import com.anotherstar.common.gui.ILoliInventory;
 import com.anotherstar.common.gui.InventoryLoliPickaxe;
 import com.anotherstar.util.IC2Util;
 import com.anotherstar.util.LoliPickaxeUtil;
+import com.google.common.collect.Maps;
 
 import cofh.redstoneflux.RedstoneFluxProps;
 import cofh.redstoneflux.api.IEnergyContainerItem;
@@ -21,18 +24,24 @@ import ic2.core.IC2;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -46,7 +55,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Optional.InterfaceList({ @Optional.Interface(modid = RedstoneFluxProps.MOD_ID, iface = "cofh.redstoneflux.api.IEnergyContainerItem", striprefs = true), @Optional.Interface(modid = IC2.MODID, iface = "ic2.api.item.ISpecialElectricItem", striprefs = true) })
+@Optional.InterfaceList({ @Optional.Interface(modid = RedstoneFluxProps.MOD_ID, iface = "cofh.redstoneflux.api.IEnergyContainerItem"), @Optional.Interface(modid = IC2.MODID, iface = "ic2.api.item.ISpecialElectricItem") })
 public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContainerItem, ISpecialElectricItem {
 
 	public static final Item.ToolMaterial LOLI = EnumHelper.addToolMaterial("LOLI", 32, 0, 0, 0, 0);
@@ -54,7 +63,7 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 	public ItemLoliPickaxe() {
 		super(LOLI);
 		this.setUnlocalizedName("loliPickaxe");
-		this.setCreativeTab(LoliPickaxe.instance.loliTabs);
+		this.setCreativeTab(CreativeTabLoader.loliTabs);
 	}
 
 	@Override
@@ -166,6 +175,13 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 		if (ConfigLoader.getBoolean(stack, "loliPickaxeMandatoryDrop")) {
 			tooltip.add(I18n.format("loliPickaxe.mandatoryDrop"));
 		}
+		if (ConfigLoader.getBoolean(stack, "loliPickaxeStopOnLiquid")) {
+			tooltip.add(I18n.format("loliPickaxe.stopOnLiquid"));
+		}
+		double distance = ConfigLoader.getDouble(stack, "loliPickaxeBlockReachDistance");
+		if (distance > 0) {
+			tooltip.add(I18n.format("loliPickaxe.blockReachDistance", distance));
+		}
 		if (ConfigLoader.getBoolean(stack, "loliPickaxeAutoAccept")) {
 			tooltip.add(I18n.format("loliPickaxe.autoAccept"));
 		}
@@ -213,6 +229,9 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 		}
 		if (ConfigLoader.getBoolean(stack, "loliPickaxeKillFacing")) {
 			tooltip.add(I18n.format("loliPickaxe.killFacing", ConfigLoader.getInt(stack, "loliPickaxeKillFacingRange"), ConfigLoader.getDouble(stack, "loliPickaxeKillFacingSlope")));
+		}
+		if (ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery")) {
+			tooltip.add(I18n.format("loliPickaxe.infiniteBattery"));
 		}
 	}
 
@@ -263,6 +282,28 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 			if (Loader.isModLoaded(RedstoneFluxProps.MOD_ID)) {
 				rfReceive(stack, world, entity, itemSlot, isSelected);
 			}
+		}
+	}
+
+	@Override
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+		if (isInCreativeTab(tab)) {
+			ItemStack stack = new ItemStack(this);
+			Map<Enchantment, Integer> enchMap = Maps.newHashMap();
+			enchMap.put(Enchantments.FORTUNE, 32);
+			enchMap.put(EnchantmentLoader.loliAutoFurnace, 1);
+			EnchantmentHelper.setEnchantments(enchMap, stack);
+			NBTTagList list = new NBTTagList();
+			NBTTagCompound element = new NBTTagCompound();
+			element.setShort("id", (short) 16);
+			element.setByte("lvl", (byte) 0);
+			list.appendTag(element);
+			element = new NBTTagCompound();
+			element.setShort("id", (short) 13);
+			element.setByte("lvl", (byte) 0);
+			list.appendTag(element);
+			stack.setTagInfo("LoliPotion", list);
+			items.add(stack);
 		}
 	}
 

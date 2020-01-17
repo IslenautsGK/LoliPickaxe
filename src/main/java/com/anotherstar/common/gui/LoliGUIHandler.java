@@ -70,7 +70,7 @@ public enum LoliGUIHandler implements IGuiHandler {
 			if (!name.isEmpty() && LoliCardUtil.customArtNames != null) {
 				for (int i = 0; i < LoliCardUtil.customArtNames.length; i++) {
 					if (LoliCardUtil.customArtNames[i].equals(name)) {
-						return new GUILoliCard(LoliCardUtil.customArtResources[i], LoliCardUtil.customArtWidths[i], LoliCardUtil.customArtHeights[i]);
+						return new GUILoliCard(name, LoliCardUtil.customArtResources[i], LoliCardUtil.customArtWidths[i], LoliCardUtil.customArtHeights[i]);
 					}
 				}
 			}
@@ -82,8 +82,9 @@ public enum LoliGUIHandler implements IGuiHandler {
 			return new GUIContainerBlaceListLoliPickaxe(new ContainerBlaceListLoliPickaxe(player, player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x));
 		case GUI_LOLI_CARD_ALBUM: {
 			ItemStack stack = player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND);
-			String name = stack.hasTagCompound() ? stack.getTagCompound().getString("PictureGroup") + "'" : "";
-			if (!name.isEmpty() && LoliCardUtil.customArtNames != null) {
+			String groupName = stack.hasTagCompound() ? stack.getTagCompound().getString("PictureGroup") : "";
+			if (!groupName.isEmpty() && LoliCardUtil.customArtNames != null) {
+				String name = groupName + "'";
 				List<ResourceLocation> resources = Lists.newArrayList();
 				List<Integer> widths = Lists.newArrayList();
 				List<Integer> heights = Lists.newArrayList();
@@ -95,7 +96,7 @@ public enum LoliGUIHandler implements IGuiHandler {
 					}
 				}
 				if (!resources.isEmpty()) {
-					return new GUILoliCardAlbum(resources, widths, heights);
+					return new GUILoliCardAlbum(groupName, resources, widths, heights);
 				}
 			}
 			break;

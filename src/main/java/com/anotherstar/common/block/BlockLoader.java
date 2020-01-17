@@ -21,12 +21,15 @@ public class BlockLoader {
 	public static final ItemBlock itemLoliExitTNT = new ItemBlock(loliExitTNT);
 	public static final BlockBuffAttackTNT loliFailRespondTNT = new BlockBuffAttackTNT("LoliFailRespondTNT", false, false, true);
 	public static final ItemBlock itemLoliFailRespondTNT = new ItemBlock(loliFailRespondTNT);
+	public static final BlockLoliAltar loliAltar = new BlockLoliAltar();
+	public static final ItemBlock itemLoliAltar = new ItemBlock(loliAltar);
 
 	@SubscribeEvent
 	public void registerBlock(RegistryEvent.Register<Block> event) {
 		event.getRegistry().register(loliBlueScreenTNT.setRegistryName(LoliPickaxe.MODID, "loli_blue_screen_tnt"));
 		event.getRegistry().register(loliExitTNT.setRegistryName(LoliPickaxe.MODID, "loli_exit_tnt"));
 		event.getRegistry().register(loliFailRespondTNT.setRegistryName(LoliPickaxe.MODID, "loli_fail_respond_tnt"));
+		event.getRegistry().register(loliAltar.setRegistryName(LoliPickaxe.MODID, "loli_altar"));
 	}
 
 	@SubscribeEvent
@@ -34,6 +37,7 @@ public class BlockLoader {
 		event.getRegistry().register(itemLoliBlueScreenTNT.setRegistryName(loliBlueScreenTNT.getRegistryName()));
 		event.getRegistry().register(itemLoliExitTNT.setRegistryName(loliExitTNT.getRegistryName()));
 		event.getRegistry().register(itemLoliFailRespondTNT.setRegistryName(loliFailRespondTNT.getRegistryName()));
+		event.getRegistry().register(itemLoliAltar.setRegistryName(loliAltar.getRegistryName()));
 	}
 
 	@SubscribeEvent
@@ -42,6 +46,7 @@ public class BlockLoader {
 		ModelLoader.setCustomModelResourceLocation(itemLoliBlueScreenTNT, 0, new ModelResourceLocation(itemLoliBlueScreenTNT.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(itemLoliExitTNT, 0, new ModelResourceLocation(itemLoliExitTNT.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(itemLoliFailRespondTNT, 0, new ModelResourceLocation(itemLoliFailRespondTNT.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(itemLoliAltar, 0, new ModelResourceLocation(itemLoliAltar.getRegistryName(), "inventory"));
 	}
 
 }

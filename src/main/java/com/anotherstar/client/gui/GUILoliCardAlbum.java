@@ -1,12 +1,17 @@
 package com.anotherstar.client.gui;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.anotherstar.common.config.ConfigLoader;
+
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GUILoliCardAlbum extends GuiScreen {
 
+	private final String groupName;
 	private final int count;
 	private final ResourceLocation[] resources;
 	private final int[] imageWidths;
@@ -26,13 +32,16 @@ public class GUILoliCardAlbum extends GuiScreen {
 	private int dcy;
 	private double ds;
 	private boolean clicked;
+	private boolean moved;
 	private int clickX;
 	private int clickY;
 	private int odcx;
 	private int odcy;
 	private int page;
+	private URI clickedLinkURI;
 
-	public GUILoliCardAlbum(List<ResourceLocation> resourceList, List<Integer> imageWidthList, List<Integer> imageHeightList) {
+	public GUILoliCardAlbum(String groupName, List<ResourceLocation> resourceList, List<Integer> imageWidthList, List<Integer> imageHeightList) {
+		this.groupName = groupName;
 		this.count = resourceList.size();
 		this.resources = new ResourceLocation[this.count];
 		this.imageWidths = new int[this.count];
@@ -101,17 +110,37 @@ public class GUILoliCardAlbum extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
-		clicked = true;
-		clickX = mouseX;
-		clickY = mouseY;
-		odcx = dcx;
-		odcy = dcy;
+		if (mouseButton == 0) {
+			clicked = true;
+			clickX = mouseX;
+			clickY = mouseY;
+			odcx = dcx;
+			odcy = dcy;
+		}
 	}
 
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
-		clicked = false;
+		if (clicked) {
+			clicked = false;
+			if (!moved) {
+				if (ConfigLoader.loliCardURL.containsKey(groupName)) {
+					try {
+						String url = ConfigLoader.loliCardURL.get(groupName);
+						URI uri = new URI(url);
+						if (mc.gameSettings.chatLinksPrompt) {
+							clickedLinkURI = uri;
+							mc.displayGuiScreen(new GuiConfirmOpenLink(this, url, 75395975, false));
+						} else {
+							openWebLink(uri);
+						}
+					} catch (URISyntaxException e) {
+					}
+				}
+			}
+			moved = false;
+		}
 	}
 
 	@Override
@@ -120,6 +149,26 @@ public class GUILoliCardAlbum extends GuiScreen {
 		if (clicked) {
 			dcx = odcx + mouseX - clickX;
 			dcy = odcy + mouseY - clickY;
+			moved = true;
+		}
+	}
+
+	public void confirmClicked(boolean result, int id) {
+		if (id == 75395975) {
+			if (result) {
+				openWebLink(clickedLinkURI);
+			}
+			clickedLinkURI = null;
+			mc.displayGuiScreen(this);
+		}
+	}
+
+	private void openWebLink(URI url) {
+		try {
+			Class<?> oclass = Class.forName("java.awt.Desktop");
+			Object object = oclass.getMethod("getDesktop").invoke((Object) null);
+			oclass.getMethod("browse", URI.class).invoke(object, url);
+		} catch (Throwable e) {
 		}
 	}
 

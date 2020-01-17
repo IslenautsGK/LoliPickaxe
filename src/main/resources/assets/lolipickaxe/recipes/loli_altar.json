@@ -1,0 +1,39 @@
+{
+	"type" : "minecraft:crafting_shapeless",
+	"group" : "lolipickaxe:loli_altar",
+	"result" : {
+		"item" : "lolipickaxe:loli_altar",
+		"count" : 1
+	},
+	"ingredients" : [
+		{
+            "item": "minecraft:coal",
+            "data": 0
+        },
+        {
+            "item": "minecraft:iron_ingot"
+        },
+        {
+            "item": "minecraft:gold_ingot"
+        },
+        {
+            "item": "minecraft:redstone"
+        },
+        {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        {
+            "item": "minecraft:diamond"
+        },
+        {
+            "item": "minecraft:emerald"
+        },
+        {
+            "item": "minecraft:quartz"
+        },
+        {
+            "item": "minecraft:glowstone_dust"
+        }
+	]
+}
