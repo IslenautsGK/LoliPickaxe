@@ -17,7 +17,6 @@ public class ObjModelManager {
 
 	static {
 		defaultModel = new WavefrontObject(resourceDefaultModel);
-
 		cache = CacheBuilder.newBuilder().build(CacheLoader.asyncReloading(new CacheLoader<ResourceLocationRaw, WavefrontObject>() {
 
 			@Override
@@ -28,6 +27,7 @@ public class ObjModelManager {
 					return defaultModel;
 				}
 			}
+
 		}, Executors.newCachedThreadPool()));
 	}
 

@@ -42,6 +42,13 @@ public class LoliKeyEvent {
 				player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_POTION, player.world, 0, 0, 0);
 			}
 		}
+		if (KeyLoader.LOLI_SPACE_FOLDING.isPressed() && ConfigLoader.loliPickaxeSpaceFolding) {
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			ItemStack stack = Minecraft.getMinecraft().player.getHeldItemMainhand();
+			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
+				player.openGui(LoliPickaxe.instance, LoliGUIHandler.GUI_LOLI_SPACEF_OLDING, player.world, 0, 0, 0);
+			}
+		}
 		if (KeyLoader.LOLI_PICKAXE_CONTAINER.isPressed()) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 				NetworkHandler.INSTANCE.sendMessageToServer(new LoliPickaxeDropAllPacket());

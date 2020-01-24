@@ -121,6 +121,18 @@ commands.loliattack.notfound=未知的攻击特效
 commands.page.button.pre=上一页
 commands.page.button.next=下一页
 
+config.worning.int=§e警告§f: %1$s 的值为 %2$d
+config.worning.double=§e警告§f: %1$s 的值为 %2$f
+config.worning.boolean.enable=§e警告§f: §a已开启§f %1$s 功能
+config.worning.boolean.disable=§e警告§f: §c已关闭§f %1$s 功能
+config.worning.string=§e警告§f: %1$s 的值为 %2$s
+config.worning.list=§e警告§f: %1$s 的值为
+config.worning.list.element=  %1$s
+config.worning.map=§e警告§f: %1$s 的值为
+config.worning.map.element=  %1$s
+config.worning.guiChangeList=§e警告§f: 以下功能可由持有氪金萝莉的玩家自由配置
+config.worning.guiChangeList.element=  %1$s
+
 entity.Loli.name=萝莉
 entity.LoliBuffAttackTNT.name=§c特效炸弹
 
@@ -128,5 +140,6 @@ key.category.lolipickaxe=§c氪金萝莉
 key.lolipickaxe.loli_config=配置§c氪金萝莉
 key.lolipickaxe.loli_enchantment=附魔§c氪金萝莉
 key.lolipickaxe.loli_potion=药水§c氪金萝莉
-key.lolipickaxe.loli_pickaxe_container=打开§c氪金萝莉储藏室
-key.lolipickaxe.loli_pickaxe_container_blacklist=打开§c氪金萝莉黑名单
+key.lolipickaxe.loli_space_folding=跨世界§c氪金萝莉
+key.lolipickaxe.loli_container=打开§c氪金萝莉储藏室
+key.lolipickaxe.loli_container_blacklist=打开§c氪金萝莉黑名单

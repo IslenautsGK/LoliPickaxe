@@ -31,6 +31,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class LoliPickaxeUtil {
@@ -71,15 +72,13 @@ public class LoliPickaxeUtil {
 		}
 		entitys.remove(source);
 		if (!ConfigLoader.getBoolean(stack, "loliPickaxeValidToAmityEntity")) {
-			entitys.removeIf(en -> en instanceof EntityPlayer || en instanceof EntityArmorStand
-					|| en instanceof EntityAmbientCreature
-					|| (en instanceof EntityCreature && !(en instanceof EntityMob)));
+			entitys.removeIf(en -> en instanceof EntityPlayer || en instanceof EntityArmorStand || en instanceof EntityAmbientCreature || (en instanceof EntityCreature && !(en instanceof EntityMob)));
 		}
 		LoliPickaxeUtil.kill(entitys, source);
 	}
 
 	public static void killPlayer(EntityPlayer player, EntityLivingBase source) {
-		if (invHaveLoliPickaxe(player) || player.loliDead) {
+		if (invHaveLoliPickaxe(player) || player.loliDead || player instanceof FakePlayer) {
 			return;
 		}
 		ItemStack stack = getLoliPickaxe(source);
@@ -104,17 +103,12 @@ public class LoliPickaxeUtil {
 		}
 		if (player instanceof EntityPlayerMP) {
 			EntityPlayerMP playerMP = (EntityPlayerMP) player;
-			NetworkHandler.INSTANCE.sendMessageToPlayer(
-					new LoliDeadPacket(remove, ConfigLoader.getBoolean(stack, "loliPickaxeBlueScreenAttack"),
-							ConfigLoader.getBoolean(stack, "loliPickaxeExitAttack"),
-							ConfigLoader.getBoolean(stack, "loliPickaxeFailRespondAttack")),
-					playerMP);
+			NetworkHandler.INSTANCE.sendMessageToPlayer(new LoliDeadPacket(remove, ConfigLoader.getBoolean(stack, "loliPickaxeBlueScreenAttack"), ConfigLoader.getBoolean(stack, "loliPickaxeExitAttack"), ConfigLoader.getBoolean(stack, "loliPickaxeFailRespondAttack")), playerMP);
 			if (ConfigLoader.getBoolean(stack, "loliPickaxeBeyondRedemption")) {
 				ConfigLoader.addPlayerToBeyondRedemption(playerMP);
 			}
 			if (ConfigLoader.getBoolean(stack, "loliPickaxeKickPlayer")) {
-				playerMP.connection
-						.disconnect(new TextComponentString(ConfigLoader.getString(stack, "loliPickaxeKickMessage")));
+				playerMP.connection.disconnect(new TextComponentString(ConfigLoader.getString(stack, "loliPickaxeKickMessage")));
 			}
 			if (ConfigLoader.getBoolean(stack, "loliPickaxeReincarnation")) {
 				ConfigLoader.addPlayerToReincarnation(playerMP);
@@ -151,14 +145,9 @@ public class LoliPickaxeUtil {
 		if (stack.isEmpty() || !(stack.getItem() instanceof ILoli)) {
 			stack = getLoliPickaxe(entity);
 		}
-		List<Entity> list = world.getEntitiesWithinAABB(
-				ConfigLoader.getBoolean(stack, "loliPickaxeValidToAllEntity") ? Entity.class : EntityLivingBase.class,
-				new AxisAlignedBB(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range,
-						entity.posY + range, entity.posZ + range));
+		List<Entity> list = world.getEntitiesWithinAABB(ConfigLoader.getBoolean(stack, "loliPickaxeValidToAllEntity") ? Entity.class : EntityLivingBase.class, new AxisAlignedBB(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range));
 		if (!ConfigLoader.getBoolean(stack, "loliPickaxeValidToAmityEntity")) {
-			list.removeIf(en -> en instanceof EntityPlayer || en instanceof EntityArmorStand
-					|| en instanceof EntityAmbientCreature
-					|| (en instanceof EntityCreature && !(en instanceof EntityMob)));
+			list.removeIf(en -> en instanceof EntityPlayer || en instanceof EntityArmorStand || en instanceof EntityAmbientCreature || (en instanceof EntityCreature && !(en instanceof EntityMob)));
 		}
 		list.remove(entity);
 		for (Entity en : list) {

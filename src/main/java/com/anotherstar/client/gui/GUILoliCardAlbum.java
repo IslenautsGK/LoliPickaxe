@@ -110,7 +110,7 @@ public class GUILoliCardAlbum extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
-		if (mouseButton == 0) {
+		if (selectedButton == null && mouseButton == 0) {
 			clicked = true;
 			clickX = mouseX;
 			clickY = mouseY;

@@ -33,9 +33,9 @@ public class Face {
 
 	@SideOnly(Side.CLIENT)
 	public void render(Tessellator tessellator) {
-		if (faceNormal == null)
+		if (faceNormal == null) {
 			faceNormal = this.calculateFaceNormal();
-
+		}
 		render(tessellator, 0.0005F);
 	}
 

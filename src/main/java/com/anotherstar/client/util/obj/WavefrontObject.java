@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,8 +42,8 @@ public class WavefrontObject {
 	public ArrayList<Vertex> vertexNormals = new ArrayList<Vertex>();
 	public ArrayList<TextureCoordinate> textureCoordinates = new ArrayList<TextureCoordinate>();
 	public ArrayList<GroupObject> groupObjects = new ArrayList<GroupObject>();
+	public Map<String, Texture> mtl = Maps.newHashMap();
 	private GroupObject currentGroupObject;
-	private Map<String, ResourceLocation> mtl = Maps.newHashMap();
 	private String fileName;
 	private String pathName;
 
@@ -141,66 +142,61 @@ public class WavefrontObject {
 	@SideOnly(Side.CLIENT)
 	public void renderAll(RenderManager manager) {
 		Tessellator tessellator = Tessellator.getInstance();
-		/*
-		 * int mode = tessellator.getBuffer().getDrawMode(); VertexFormat format =
-		 * tessellator.getBuffer().getVertexFormat(); tessellator.draw();
-		 */
 		tessellateAll(manager, tessellator);
-		// tessellator.getBuffer().begin(mode, format);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void tessellateAll(RenderManager manager, Tessellator tessellator) {
 		for (GroupObject groupObject : groupObjects) {
-			if (mtl.containsKey(groupObject.name)) {
-				manager.renderEngine.bindTexture(mtl.get(groupObject.name));
-			}
 			groupObject.render(manager, tessellator, mtl);
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderOnly(String... groupNames) {
+	public void renderOnly(RenderManager manager, String... groupNames) {
+		Tessellator tessellator = Tessellator.getInstance();
 		for (GroupObject groupObject : groupObjects) {
 			for (String groupName : groupNames) {
 				if (groupName.equalsIgnoreCase(groupObject.name)) {
-					groupObject.render();
+					groupObject.render(manager, tessellator, mtl);
 				}
 			}
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void tessellateOnly(Tessellator tessellator, String... groupNames) {
+	public void tessellateOnly(RenderManager manager, Tessellator tessellator, String... groupNames) {
 		for (GroupObject groupObject : groupObjects) {
 			for (String groupName : groupNames) {
 				if (groupName.equalsIgnoreCase(groupObject.name)) {
-					groupObject.render(tessellator);
+					groupObject.render(manager, tessellator, mtl);
 				}
 			}
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderPart(String partName) {
+	public void renderPart(RenderManager manager, String partName) {
+		Tessellator tessellator = Tessellator.getInstance();
 		for (GroupObject groupObject : groupObjects) {
 			if (partName.equalsIgnoreCase(groupObject.name)) {
-				groupObject.render();
+				groupObject.render(manager, tessellator, mtl);
 			}
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void tessellatePart(Tessellator tessellator, String partName) {
+	public void tessellatePart(RenderManager manager, Tessellator tessellator, String partName) {
 		for (GroupObject groupObject : groupObjects) {
 			if (partName.equalsIgnoreCase(groupObject.name)) {
-				groupObject.render(tessellator);
+				groupObject.render(manager, tessellator, mtl);
 			}
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void renderAllExcept(String... excludedGroupNames) {
+	public void renderAllExcept(RenderManager manager, String... excludedGroupNames) {
+		Tessellator tessellator = Tessellator.getInstance();
 		for (GroupObject groupObject : groupObjects) {
 			boolean skipPart = false;
 			for (String excludedGroupName : excludedGroupNames) {
@@ -209,13 +205,13 @@ public class WavefrontObject {
 				}
 			}
 			if (!skipPart) {
-				groupObject.render();
+				groupObject.render(manager, tessellator, mtl);
 			}
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void tessellateAllExcept(Tessellator tessellator, String... excludedGroupNames) {
+	public void tessellateAllExcept(RenderManager manager, Tessellator tessellator, String... excludedGroupNames) {
 		boolean exclude;
 		for (GroupObject groupObject : groupObjects) {
 			exclude = false;
@@ -225,7 +221,7 @@ public class WavefrontObject {
 				}
 			}
 			if (!exclude) {
-				groupObject.render(tessellator);
+				groupObject.render(manager, tessellator, mtl);
 			}
 		}
 	}
@@ -237,21 +233,73 @@ public class WavefrontObject {
 				IResource res = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocationRaw(LoliPickaxe.MODID, pathName == null ? line : pathName + line));
 				try (BufferedReader reader = new BufferedReader(new InputStreamReader(res.getInputStream()))) {
 					String currentLine = null;
-					String currentGroup = null;
+					Texture currentTexture = null;
 					while ((currentLine = reader.readLine()) != null) {
 						currentLine = currentLine.replaceAll("\\s+", " ").trim();
 						if (currentLine.startsWith("#") || currentLine.length() == 0) {
 							continue;
 						} else if (currentLine.startsWith("newmtl ")) {
-							if (currentGroup == null) {
-								currentGroup = currentLine.substring(7);
+							if (currentTexture == null) {
+								currentTexture = new Texture(currentLine.substring(7));
+							} else {
+								throw new ModelFormatException("File Format Error: " + currentLine);
+							}
+						} else if (currentLine.startsWith("ka ")) {
+							if (currentTexture != null) {
+								String[] texargs = currentLine.substring(3).split(" ");
+								if (texargs.length != 3 && texargs.length != 4) {
+									throw new ModelFormatException("File Format Error: " + currentLine);
+								}
+								float[] ka = new float[4];
+								ka[3] = 1.0F;
+								for (int i = 0; i < texargs.length; i++) {
+									ka[i] = Float.parseFloat(texargs[i]);
+								}
+								currentTexture.ka = FloatBuffer.wrap(ka);
+							} else {
+								throw new ModelFormatException("File Format Error: " + currentLine);
+							}
+						} else if (currentLine.startsWith("kd ")) {
+							if (currentTexture != null) {
+								String[] texargs = currentLine.substring(3).split(" ");
+								if (texargs.length != 3 && texargs.length != 4) {
+									throw new ModelFormatException("File Format Error: " + currentLine);
+								}
+								float[] kd = new float[4];
+								kd[3] = 1.0F;
+								for (int i = 0; i < texargs.length; i++) {
+									kd[i] = Float.parseFloat(texargs[i]);
+								}
+								currentTexture.kd = FloatBuffer.wrap(kd);
+							} else {
+								throw new ModelFormatException("File Format Error: " + currentLine);
+							}
+						} else if (currentLine.startsWith("ks ")) {
+							if (currentTexture != null) {
+								String[] texargs = currentLine.substring(3).split(" ");
+								if (texargs.length != 3 && texargs.length != 4) {
+									throw new ModelFormatException("File Format Error: " + currentLine);
+								}
+								float[] ks = new float[4];
+								ks[3] = 1.0F;
+								for (int i = 0; i < texargs.length; i++) {
+									ks[i] = Float.parseFloat(texargs[i]);
+								}
+								currentTexture.ks = FloatBuffer.wrap(ks);
+							} else {
+								throw new ModelFormatException("File Format Error: " + currentLine);
+							}
+						} else if (currentLine.startsWith("ns ")) {
+							if (currentTexture != null) {
+								currentTexture.ka = FloatBuffer.wrap(new float[] { Float.parseFloat(currentLine.substring(3)) * 128 / 1000 });
 							} else {
 								throw new ModelFormatException("File Format Error: " + currentLine);
 							}
 						} else if (currentLine.startsWith("map_Kd ")) {
-							if (currentGroup != null) {
-								mtl.put(currentGroup, new ResourceLocation(LoliPickaxe.MODID, pathName == null ? currentLine.substring(7) : pathName + currentLine.substring(7)));
-								currentGroup = null;
+							if (currentTexture != null) {
+								currentTexture.texture = new ResourceLocation(LoliPickaxe.MODID, pathName == null ? currentLine.substring(7) : pathName + currentLine.substring(7));
+								mtl.put(currentTexture.name, currentTexture);
+								currentTexture = null;
 							} else {
 								throw new ModelFormatException("File Format Error: " + currentLine);
 							}
@@ -459,10 +507,6 @@ public class WavefrontObject {
 		}
 		groupObjectMatcher = groupObjectPattern.matcher(line);
 		return groupObjectMatcher.matches();
-	}
-
-	public String getType() {
-		return "obj";
 	}
 
 }

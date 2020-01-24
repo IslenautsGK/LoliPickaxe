@@ -1,6 +1,7 @@
 package com.anotherstar.common.config;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.anotherstar.network.NetworkHandler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -21,8 +23,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ConfigLoader {
 
@@ -84,7 +89,7 @@ public class ConfigLoader {
 	public static String loliPickaxeKickMessage;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "禁止死亡实体触发实体更新事件", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
 	public static boolean loliPickaxeForbidOnLivingUpdate;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "伊邪那美(需同时开启踢出玩家)", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "伊邪那美(需同时开启踢出玩家)", valueType = ValurType.BOOLEAN, booleanDefaultValue = false, warning = true)
 	public static boolean loliPickaxeReincarnation;
 	@ConfigField(type = { ConfigType.CONFIG }, comment = "伊邪那美玩家列表", valueType = ValurType.LIST, listDefaultValue = {})
 	public static List<String> loliPickaxeReincarnationPlayerList;
@@ -96,11 +101,11 @@ public class ConfigLoader {
 	public static boolean loliPickaxeFindOwner;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "寻找所有者范围", valueType = ValurType.INT, intDefaultValue = 50)
 	public static int loliPickaxeFindOwnerRange;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "蓝屏打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "蓝屏打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false, warning = true)
 	public static boolean loliPickaxeBlueScreenAttack;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "蹦溃打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "蹦溃打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false, warning = true)
 	public static boolean loliPickaxeExitAttack;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "未响应打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "未响应打击", valueType = ValurType.BOOLEAN, booleanDefaultValue = false, warning = true)
 	public static boolean loliPickaxeFailRespondAttack;
 	@ConfigField(type = { ConfigType.CONFIG }, comment = "强制死亡延迟特化列表(实体ID:Tick)", valueType = ValurType.MAP, mapDefaultValue = { "ender_dragon:::201" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.INT)
 	public static Map<String, Integer> loliPickaxeDelayRemoveList;
@@ -114,7 +119,7 @@ public class ConfigLoader {
 	public static double loliPickaxeKillFacingSlope;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "范围攻击最大斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
 	public static double loliPickaxeMaxKillFacingSlope;
-	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeBlockReachDistance", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope", "loliPickaxeInfiniteBattery" })
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeBlockReachDistance", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope", "loliPickaxeInfiniteBattery" }, warning = true, warningMethod = "guiChangeListWarning")
 	public static List<String> loliPickaxeGuiChangeList;
 	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = { "lolirecord:loliRecord:loli_record" })
 	public static List<String> loliRecodeNames;
@@ -150,10 +155,12 @@ public class ConfigLoader {
 	public static Map<String, Integer> loliPickaxePotionLimit;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "默认药水最大等级", valueType = ValurType.INT, intDefaultValue = 32)
 	public static int loliPickaxePotionDefaultLimit;
-	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "启用特效攻击炸弹", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "启用特效攻击炸弹", valueType = ValurType.BOOLEAN, booleanDefaultValue = false, warning = true)
 	public static boolean loliEnableBuffAttackTNT;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "超级电池", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeInfiniteBattery;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "跨世界传送", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
+	public static boolean loliPickaxeSpaceFolding;
 	@ConfigField(type = { ConfigType.CONFIG }, comment = "萝莉卡片URL", valueType = ValurType.MAP, mapDefaultValue = { "gk_head_portrait.png:::https://www.pixiv.net/artworks/61282195", "小莫女儿:::https://www.pixiv.net/users/5776001" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.STRING)
 	public static Map<String, String> loliCardURL;
 
@@ -406,6 +413,7 @@ public class ConfigLoader {
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static void receptionChange(NBTTagCompound data) {
 		try {
 			for (String flag : flags) {
@@ -414,15 +422,79 @@ public class ConfigLoader {
 				switch (annotation.valueType()) {
 				case INT:
 					field.setInt(null, data.getInteger(field.getName()));
+					if (annotation.warning()) {
+						boolean success = false;
+						if (!annotation.warningMethod().isEmpty()) {
+							try {
+								ConfigLoader.class.getMethod(annotation.warningMethod()).invoke(null);
+								success = true;
+							} catch (NoSuchMethodException e) {
+							} catch (SecurityException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}
+						if (!success) {
+							Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.int", annotation.comment(), data.getInteger(field.getName())));
+						}
+					}
 					break;
 				case DOUBLE:
 					field.setDouble(null, data.getDouble(field.getName()));
+					if (annotation.warning()) {
+						boolean success = false;
+						if (!annotation.warningMethod().isEmpty()) {
+							try {
+								ConfigLoader.class.getMethod(annotation.warningMethod()).invoke(null);
+								success = true;
+							} catch (NoSuchMethodException e) {
+							} catch (SecurityException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}
+						if (!success) {
+							Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.double", annotation.comment(), data.getDouble(field.getName())));
+						}
+					}
 					break;
 				case BOOLEAN:
 					field.setBoolean(null, data.getBoolean(field.getName()));
+					if (annotation.warning()) {
+						boolean success = false;
+						if (!annotation.warningMethod().isEmpty()) {
+							try {
+								ConfigLoader.class.getMethod(annotation.warningMethod()).invoke(null);
+								success = true;
+							} catch (NoSuchMethodException e) {
+							} catch (SecurityException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}
+						if (!success) {
+							if (data.getBoolean(field.getName())) {
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.boolean.enable", annotation.comment()));
+							} else {
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.boolean.disable", annotation.comment()));
+							}
+						}
+					}
 					break;
 				case STRING:
 					field.set(null, data.getString(field.getName()));
+					if (annotation.warning()) {
+						boolean success = false;
+						if (!annotation.warningMethod().isEmpty()) {
+							try {
+								ConfigLoader.class.getMethod(annotation.warningMethod()).invoke(null);
+								success = true;
+							} catch (NoSuchMethodException e) {
+							} catch (SecurityException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}
+						if (!success) {
+							Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.string", annotation.comment(), data.getString(field.getName())));
+						}
+					}
 					break;
 				case LIST: {
 					NBTTagList nbtlist = data.getTagList(field.getName(), 8);
@@ -431,6 +503,24 @@ public class ConfigLoader {
 						list.add(((NBTTagString) nbt).getString());
 					}
 					field.set(null, list);
+					if (annotation.warning()) {
+						boolean success = false;
+						if (!annotation.warningMethod().isEmpty()) {
+							try {
+								ConfigLoader.class.getMethod(annotation.warningMethod()).invoke(null);
+								success = true;
+							} catch (NoSuchMethodException e) {
+							} catch (SecurityException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}
+						if (!success) {
+							Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.list", annotation.comment()));
+							for (String element : list) {
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.list.element", element));
+							}
+						}
+					}
 					break;
 				}
 				case MAP: {
@@ -476,6 +566,25 @@ public class ConfigLoader {
 						map.put(key, value);
 					}
 					field.set(null, map);
+					if (annotation.warning()) {
+						boolean success = false;
+						if (!annotation.warningMethod().isEmpty()) {
+							try {
+								ConfigLoader.class.getMethod(annotation.warningMethod()).invoke(null);
+								success = true;
+							} catch (NoSuchMethodException e) {
+							} catch (SecurityException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}
+						if (!success) {
+							Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.map", annotation.comment()));
+							for (NBTBase nbt : list) {
+								String element = ((NBTTagString) nbt).getString();
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.map.element", element));
+							}
+						}
+					}
 					break;
 				}
 				default:
@@ -736,6 +845,20 @@ public class ConfigLoader {
 				stack.getTagCompound().removeTag(ILoli.CONFIG);
 			} else {
 				stack.getTagCompound().setTag(ILoli.CONFIG, config);
+			}
+		}
+	}
+
+	public static void guiChangeListWarning() {
+		boolean title = false;
+		for (String element : loliPickaxeGuiChangeList) {
+			ConfigField annotation = flagAnnotations.get(element);
+			if (annotation.warning()) {
+				if (!title) {
+					Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.guiChangeList"));
+					title = true;
+				}
+				Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.guiChangeList.element", annotation.comment()));
 			}
 		}
 	}

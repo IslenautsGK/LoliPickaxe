@@ -47,6 +47,10 @@ public @interface ConfigField {
 
 	ValurType mapValueType() default ValurType.INT;
 
+	boolean warning() default false;
+
+	String warningMethod() default "";
+
 	public static enum ConfigType {
 		NONE, CONFIG, COMMAND, GUI
 	}
