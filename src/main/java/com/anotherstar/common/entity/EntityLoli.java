@@ -1,5 +1,7 @@
 package com.anotherstar.common.entity;
 
+import javax.annotation.Nullable;
+
 import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.common.entity.ai.EntityAILoliAttack;
 import com.anotherstar.common.entity.ai.EntityAILoliNearestAttackableEntity;
@@ -7,7 +9,11 @@ import com.anotherstar.common.entity.ai.EntityAILoliNearestAttackablePlayer;
 import com.anotherstar.common.entity.ai.EntityAILoliSwimming;
 import com.anotherstar.common.entity.ai.EntityLoliMoveHelper;
 import com.anotherstar.common.item.ItemLoader;
+import com.github.alexthe666.iceandfire.IceAndFire;
+import com.github.alexthe666.iceandfire.entity.StoneEntityProperties;
 
+import net.ilexiconn.llibrary.server.capability.IEntityData;
+import net.ilexiconn.llibrary.server.capability.IEntityDataCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.MoverType;
@@ -19,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.fml.common.Optional;
 
 public class EntityLoli extends EntityCreature implements IEntityLoli {
 
@@ -131,6 +138,20 @@ public class EntityLoli extends EntityCreature implements IEntityLoli {
 			dispersal = true;
 		}
 		super.onRemovedFromWorld();
+	}
+
+	@Override
+	@Nullable
+	@Optional.Method(modid = IceAndFire.MODID)
+	public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing) {
+		T result = super.getCapability(capability, facing);
+		if (result instanceof IEntityDataCapability) {
+			IEntityData data = ((IEntityDataCapability) result).getData("Ice And Fire - Stone Property Tracker");
+			if (data != null && data instanceof StoneEntityProperties) {
+				((StoneEntityProperties) data).isStone = false;
+			}
+		}
+		return result;
 	}
 
 	@Override

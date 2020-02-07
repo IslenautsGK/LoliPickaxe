@@ -2,6 +2,8 @@ package com.anotherstar.common.item.tool;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 
@@ -14,8 +16,12 @@ import com.anotherstar.common.gui.InventoryLoliPickaxe;
 import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.util.IC2Util;
 import com.anotherstar.util.LoliPickaxeUtil;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.IBaublesItemHandler;
+import baubles.common.Baubles;
 import cofh.redstoneflux.RedstoneFluxProps;
 import cofh.redstoneflux.api.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
@@ -328,7 +334,11 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 				ItemStack toCharge = player.inventory.getStackInSlot(i);
 				if (!toCharge.isEmpty()) {
 					ElectricItem.manager.charge(toCharge, ElectricItem.manager.getMaxCharge(toCharge) - ElectricItem.manager.getCharge(toCharge), Integer.MAX_VALUE, true, false);
-
+				}
+			}
+			if (Loader.isModLoaded(Baubles.MODID)) {
+				for (ItemStack toCharge : getBaubles(player)) {
+					ElectricItem.manager.charge(toCharge, ElectricItem.manager.getMaxCharge(toCharge) - ElectricItem.manager.getCharge(toCharge), Integer.MAX_VALUE, true, false);
 				}
 			}
 		}
@@ -353,7 +363,30 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 					}
 				}
 			}
+			if (Loader.isModLoaded(Baubles.MODID)) {
+				for (ItemStack receive : getBaubles(player)) {
+					if (receive.getItem() instanceof IEnergyContainerItem) {
+						IEnergyContainerItem energy = (IEnergyContainerItem) receive.getItem();
+						energy.receiveEnergy(receive, energy.getMaxEnergyStored(receive) - energy.getEnergyStored(receive), false);
+					}
+					if (receive.hasCapability(CapabilityEnergy.ENERGY, null)) {
+						IEnergyStorage cap = (IEnergyStorage) stack.getCapability(CapabilityEnergy.ENERGY, null);
+						if ((cap != null) && (cap.canReceive())) {
+							cap.receiveEnergy(cap.getMaxEnergyStored() - cap.getEnergyStored(), false);
+						}
+					}
+				}
+			}
 		}
+	}
+
+	@Optional.Method(modid = Baubles.MODID)
+	private List<ItemStack> getBaubles(EntityPlayer player) {
+		IBaublesItemHandler handler = BaublesApi.getBaublesHandler(player);
+		if (handler == null) {
+			return Lists.newArrayList();
+		}
+		return IntStream.range(0, handler.getSlots()).mapToObj(handler::getStackInSlot).filter(stack -> !stack.isEmpty()).collect(Collectors.toList());
 	}
 
 	@Override

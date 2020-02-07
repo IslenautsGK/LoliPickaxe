@@ -49,7 +49,7 @@ public class LoliPickaxeEvent {
 	@SideOnly(Side.CLIENT)
 	public void onLiftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		EntityPlayer player = event.getEntityPlayer();
-		if (ConfigLoader.getBoolean(player.getHeldItemMainhand(), "loliPickaxeKillFacing") && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ILoli) {
+		if (ConfigLoader.getBoolean(player.getHeldItemMainhand(), "loliPickaxeKillFacing") && !player.isSpectator() && !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof ILoli) {
 			if (player.world.isRemote) {
 				NetworkHandler.INSTANCE.sendMessageToServer(new LoliKillFacingPacket());
 			}
@@ -156,10 +156,12 @@ public class LoliPickaxeEvent {
 					player.getFoodStats().addStats(20, 1);
 				}
 			} else {
-				if (!player.capabilities.isCreativeMode && flyingPlayer.contains(player.getName())) {
+				if (flyingPlayer.contains(player.getName())) {
 					flyingPlayer.remove(player.getName());
-					player.capabilities.allowFlying = false;
-					player.capabilities.isFlying = false;
+					if (!player.isSpectator() && !player.isCreative()) {
+						player.capabilities.allowFlying = false;
+						player.capabilities.isFlying = false;
+					}
 				}
 				if (loliPlayer.contains(player)) {
 					loliPlayer.remove(player);
