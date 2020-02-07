@@ -1,0 +1,42 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:small_loli_pickaxe"]
+	},
+	"criteria" : {
+		"has_iron_axe" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_axe"
+						}]
+			}
+		},
+		"has_iron_pickaxe" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_pickaxe"
+						}]
+			}
+		},
+		"has_iron_shovel" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_shovel"
+						}]
+			}
+		},
+		"has_iron_ingot" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_ingot"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_iron_axe", "has_iron_pickaxe", "has_iron_shovel",
+			"has_iron_ingot"]]
+}

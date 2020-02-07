@@ -110,13 +110,29 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 					mv.visitLocalVariable("this", "Lnet/minecraft/entity/EntityLivingBase;", null, start, end, 0);
 					mv.visitMaxs(1, 1);
 					mv.visitEnd();
+					if (!LoliPickaxeCore.debug) {
+						mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "onLoliFinishedPotionEffect", "(Lnet/minecraft/potion/PotionEffect;)V", null, null);
+						mv.visitCode();
+						start = new Label();
+						mv.visitLabel(start);
+						mv.visitVarInsn(Opcodes.ALOAD, 0);
+						mv.visitVarInsn(Opcodes.ALOAD, 1);
+						mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "vp", "b", "(Lva;)V", false);
+						mv.visitInsn(Opcodes.RETURN);
+						end = new Label();
+						mv.visitLabel(end);
+						mv.visitLocalVariable("this", "Lnet/minecraft/entity/EntityLivingBase;", null, start, end, 0);
+						mv.visitLocalVariable("effect", "Lnet/minecraft/potion/PotionEffect;", null, start, end, 1);
+						mv.visitMaxs(2, 2);
+						mv.visitEnd();
+					}
 				}
 
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-					if (name.equals("cd") && desc.equals("()F") || name.equals("getHealth")) {
+					if (name.equals("cd") && desc.equals("()F") || name.equals("getHealth") && desc.equals("()F")) {
 						return cv.visitMethod(access, "getHealth2", desc, signature, exceptions);
-					} else if (name.equals("cj") && desc.equals("()F") || name.equals("getMaxHealth")) {
+					} else if (name.equals("cj") && desc.equals("()F") || name.equals("getMaxHealth") && desc.equals("()F")) {
 						return cv.visitMethod(access, "getMaxHealth2", desc, signature, exceptions);
 					} else if (name.equals("getHealth2") || name.equals("getMaxHealth2")) {
 						return null;
@@ -191,6 +207,32 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 						FieldVisitor fv = cv.visitField(Opcodes.ACC_PUBLIC, "hodeLoli", "I", null, null);
 						fv.visitEnd();
 					}
+					MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, LoliPickaxeCore.debug ? "replaceItemInInventory" : "c", LoliPickaxeCore.debug ? "(ILnet/minecraft/item/ItemStack;)Z" : "(ILaip;)Z", null, null);
+					mv.visitCode();
+					Label start = new Label();
+					mv.visitLabel(start);
+					mv.visitVarInsn(Opcodes.ALOAD, 0);
+					mv.visitVarInsn(Opcodes.ILOAD, 1);
+					mv.visitVarInsn(Opcodes.ALOAD, 2);
+					mv.visitMethodInsn(Opcodes.INVOKESTATIC, "com/anotherstar/core/util/EventUtil", "replaceItemInInventory", "(Lnet/minecraft/entity/player/EntityPlayer;ILnet/minecraft/item/ItemStack;)Z", false);
+					mv.visitInsn(Opcodes.IRETURN);
+					Label end = new Label();
+					mv.visitLabel(end);
+					mv.visitLocalVariable("this", "Lnet/minecraft/entity/player/EntityPlayer;", null, start, end, 0);
+					mv.visitLocalVariable("slot", "I", null, start, end, 1);
+					mv.visitLocalVariable("stack", "Lnet/minecraft/item/ItemStack;", null, start, end, 2);
+					mv.visitMaxs(3, 3);
+					mv.visitEnd();
+				}
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+					if (name.equals("c") && desc.equals("(ILaip;)Z") || name.equals("replaceItemInInventory") && desc.equals("(ILnet/minecraft/item/ItemStack;)Z")) {
+						return cv.visitMethod(access, "replaceItemInInventory2", desc, signature, exceptions);
+					} else if (name.equals("replaceItemInInventory2")) {
+						return null;
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
 				}
 
 			};
@@ -252,11 +294,11 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-					if (name.equals("o") && desc.equals("()V") || name.equals("dropAllItems")) {
+					if (name.equals("o") && desc.equals("()V") || name.equals("dropAllItems") && desc.equals("()V")) {
 						return cv.visitMethod(access, "dropAllItems2", desc, signature, exceptions);
-					} else if (name.equals("a") && desc.equals("(Lain;IILfy;)I") || name.equals("clearMatchingItems")) {
+					} else if (name.equals("a") && desc.equals("(Lain;IILfy;)I") || name.equals("clearMatchingItems") && desc.equals("(Lnet/minecraft/item/Item;IILnet/minecraft/nbt/NBTTagCompound;)I")) {
 						return cv.visitMethod(access, "clearMatchingItems2", desc, signature, exceptions);
-					} else if (name.equals("m") && desc.equals("()V") || name.equals("clear")) {
+					} else if (name.equals("m") && desc.equals("()V") || name.equals("clear") && desc.equals("()V")) {
 						return cv.visitMethod(access, "clear2", desc, signature, exceptions);
 					} else if (name.equals("dropAllItems2") || name.equals("clearMatchingItems2") || name.equals("clear2")) {
 						return null;
@@ -293,7 +335,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-					if (name.equals("b") && desc.equals("(Lhh;)V") || name.equals("disconnect")) {
+					if (name.equals("b") && desc.equals("(Lhh;)V") || name.equals("disconnect") && desc.equals("(Lnet/minecraft/util/text/ITextComponent;)V")) {
 						return cv.visitMethod(access, "disconnect2", desc, signature, exceptions);
 					} else if (name.equals("disconnect2")) {
 						return null;
@@ -344,9 +386,9 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-					if (name.equals("b") && desc.equals("(Laed;)Lfy;") || name.equals("readPlayerData")) {
+					if (name.equals("b") && desc.equals("(Laed;)Lfy;") || name.equals("readPlayerData") && desc.equals("(Lnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/nbt/NBTTagCompound;")) {
 						return cv.visitMethod(access, "readPlayerData2", desc, signature, exceptions);
-					} else if (name.equals("a") && desc.equals("(Laed;)V") || name.equals("writePlayerData")) {
+					} else if (name.equals("a") && desc.equals("(Laed;)V") || name.equals("writePlayerData") && desc.equals("(Lnet/minecraft/entity/player/EntityPlayer;)V")) {
 						return cv.visitMethod(access, "writePlayerData2", desc, signature, exceptions);
 					} else if (name.equals("readPlayerData2") || name.equals("writePlayerData2")) {
 						return null;
@@ -548,7 +590,7 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 
 				@Override
 				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-					if (name.equals("a") && desc.equals("(Lafr;Lfi;)V") || name.equals("sendAllContents")) {
+					if (name.equals("a") && desc.equals("(Lafr;Lfi;)V") || name.equals("sendAllContents") && desc.equals("(Lnet/minecraft/inventory/Container;Lnet/minecraft/util/NonNullList;)V")) {
 						return cv.visitMethod(access, "sendAllContents2", desc, signature, exceptions);
 					} else if (name.equals("sendAllContents2")) {
 						return null;

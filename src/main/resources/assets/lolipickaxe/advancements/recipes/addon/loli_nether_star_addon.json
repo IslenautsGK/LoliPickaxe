@@ -1,0 +1,17 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_nether_star_addon"]
+	},
+	"criteria" : {
+		"has_nether_star" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:nether_star"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_nether_star"]]
+}

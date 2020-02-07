@@ -53,15 +53,15 @@ import net.minecraft.world.World;
 public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 
 	public static Map<ItemLoliPickaxeMaterial, String> nbtMap = Maps.newHashMap();
-	public static ItemStack full = null;
 	public static boolean isharvesting = false;
 	public static boolean autoFurnace = false;
 	public static int fortuneLevel = 0;
 	public static float exp = 0;
 	public static ILoliInventory inventory = null;
 	public static NonNullList<ItemStack> blacklist = null;
+	private static ItemStack full = null;
 
-	public static void init() {
+	private static void init() {
 		nbtMap.put(ItemLoader.coalAddon, "LoliDodge");
 		nbtMap.put(ItemLoader.ironAddon, "LoliDiggingSpeed");
 		nbtMap.put(ItemLoader.goldAddon, "LoliAttackDamage");
@@ -82,6 +82,13 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 		}
 		full.setTagCompound(nbt);
 		ItemLoader.smallLoliPickaxe.updateEnchantment(full);
+	}
+
+	public static ItemStack getFull() {
+		if (full == null) {
+			init();
+		}
+		return full;
 	}
 
 	public ItemSmallLoliPickaxe() {
@@ -284,7 +291,7 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 		if (isInCreativeTab(tab)) {
 			ItemStack stack = new ItemStack(this);
 			items.add(stack);
-			items.add(full);
+			items.add(getFull());
 		}
 	}
 

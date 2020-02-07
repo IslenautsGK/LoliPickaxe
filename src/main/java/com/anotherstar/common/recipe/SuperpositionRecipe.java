@@ -24,28 +24,41 @@ public class SuperpositionRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 		resultItem = ItemStack.EMPTY;
 		Item item = null;
 		int damage = -1;
+		int count = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack stack = inv.getStackInSlot(i);
-			if (!stack.isEmpty() && superpositionAble.containsKey(stack.getItem())) {
-				if (item == null) {
-					item = stack.getItem();
-				} else if (stack.getItem() != item) {
+			if (!stack.isEmpty()) {
+				if (superpositionAble.containsKey(stack.getItem())) {
+					count++;
+					if (item == null) {
+						item = stack.getItem();
+					} else if (stack.getItem() != item) {
+						return false;
+					}
+					if (damage == -1) {
+						damage = stack.getItemDamage();
+					} else if (stack.getItemDamage() != damage) {
+						return false;
+					}
+				} else {
 					return false;
 				}
-				if (damage == -1) {
-					damage = stack.getItemDamage();
-				} else if (stack.getItemDamage() != damage) {
-					return false;
-				}
-			} else {
-				return false;
 			}
 		}
-		if (damage >= superpositionAble.get(item)) {
-			return false;
+		if (count == 9) {
+			if (damage >= superpositionAble.get(item)) {
+				return false;
+			}
+			resultItem = new ItemStack(item, 1, damage + 1);
+			return true;
+		} else if (count == 1) {
+			if (damage <= 0) {
+				return false;
+			}
+			resultItem = new ItemStack(item, 9, damage - 1);
+			return true;
 		}
-		resultItem = new ItemStack(item, 1, damage + 1);
-		return true;
+		return false;
 	}
 
 	@Override
@@ -60,7 +73,7 @@ public class SuperpositionRecipe extends IForgeRegistryEntry.Impl<IRecipe> imple
 
 	@Override
 	public boolean canFit(int width, int height) {
-		return width == 3 && height == 3;
+		return width == 3 && height == 3 || width == 1 && height == 1;
 	}
 
 	@Override

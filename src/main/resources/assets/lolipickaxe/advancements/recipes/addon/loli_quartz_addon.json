@@ -1,0 +1,26 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_quartz_addon"]
+	},
+	"criteria" : {
+		"has_quartz" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:quartz"
+						}]
+			}
+		},
+		"has_quartz_block" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:quartz_block",
+							"data" : 0
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_quartz", "has_quartz_block"]]
+}

@@ -20,6 +20,7 @@ item.loliNetherStarAddon.name=储存容量升级
 item.loliAutoFurnaceAddon.name=自动熔炼升级
 item.loliFlyAddon.name=飞行升级
 item.loliEntitySoulAddon.name=生物灵魂
+item.magicKey.name=魔法钥匙
 
 item.loliMaterialFormat=%2$s%1$s
 item.loliMaterial.0=一级
@@ -33,7 +34,7 @@ item.loliMaterial.7=八级
 item.loliMaterial.8=九级
 item.loliMaterial.9=十级
 item.loliMaterial.end=终极
-item.loliMaterial.recipe=九个%1$s升级合成一个%2$s升级
+item.loliMaterial.recipe=九个%1$s升级合成一个%2$s升级,共%3$s
 
 enchantment.level.16=XVI
 enchantment.level.32=XXXII
@@ -61,6 +62,9 @@ gui.loliAdd=添加
 gui.loliRemove=移除
 gui.loliEnch=附魔
 gui.loliPotion=药水
+gui.loliAbsolute=绝对坐标
+gui.loliRelative=相对坐标
+gui.password=密码
 
 item.loliRecord.name=萝莉唱片
 item.record.lolirecord.desc=ばか変態煩い(av6752335)
@@ -73,6 +77,7 @@ tile.LoliBlueScreenTNT.name=§c蓝屏炸弹
 tile.LoliExitTNT.name=§c蹦溃炸弹
 tile.LoliFailRespondTNT.name=§c未响应炸弹
 tile.LoliAltar.name=萝莉祭坛
+tile.PasswordWorkBench.name=密码工作台
 
 loliAltar.use=按指定格式摆放祭坛后使用普通萝莉或氪金萝莉右键位于中心的祭坛即可召唤萝莉
 

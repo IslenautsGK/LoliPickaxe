@@ -1,0 +1,19 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_blue_screen_tnt",
+				"lolipickaxe:loli_fail_respond_tnt",
+				"lolipickaxe:loli_exit_tnt"]
+	},
+	"criteria" : {
+		"has_tnt" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:tnt"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_tnt"]]
+}

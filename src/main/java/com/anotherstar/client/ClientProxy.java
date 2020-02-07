@@ -3,6 +3,7 @@ package com.anotherstar.client;
 import com.anotherstar.client.event.LoliCardAlbumSwitchEvent;
 import com.anotherstar.client.event.LoliKeyEvent;
 import com.anotherstar.client.event.LoliPickaxeAntiClientRemoveEntity;
+import com.anotherstar.client.event.LoliPickaxeRenderPlayerEvent;
 import com.anotherstar.client.event.LoliPickaxeTooltipEvent;
 import com.anotherstar.client.event.ResourcePackReloadEvent;
 import com.anotherstar.client.key.KeyLoader;
@@ -33,6 +34,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new LoliPickaxeTooltipEvent());
 		MinecraftForge.EVENT_BUS.register(new LoliCardAlbumSwitchEvent());
 		MinecraftForge.EVENT_BUS.register(new LoliPickaxeAntiClientRemoveEntity());
+		MinecraftForge.EVENT_BUS.register(new LoliPickaxeRenderPlayerEvent());
 		LoliCardUtil.updateCustomArtDatas();
 		ObjModelManager.reload();
 		RenderLoliItem.init();

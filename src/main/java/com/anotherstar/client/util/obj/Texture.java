@@ -43,7 +43,6 @@ public class Texture {
 		manager.renderEngine.bindTexture(texture);
 		if (!inited) {
 			init();
-			inited = true;
 		}
 	}
 
@@ -60,6 +59,7 @@ public class Texture {
 		if (ns != null) {
 			GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SHININESS, ns);
 		}
+		inited = true;
 	}
 
 }

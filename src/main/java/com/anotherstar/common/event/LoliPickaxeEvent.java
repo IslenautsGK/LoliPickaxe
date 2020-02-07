@@ -1,6 +1,8 @@
 package com.anotherstar.common.event;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.anotherstar.common.config.ConfigLoader;
@@ -8,6 +10,7 @@ import com.anotherstar.common.item.tool.ILoli;
 import com.anotherstar.network.LoliKillFacingPacket;
 import com.anotherstar.network.NetworkHandler;
 import com.anotherstar.util.LoliPickaxeUtil;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
@@ -29,6 +32,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -101,7 +105,6 @@ public class LoliPickaxeEvent {
 			entity.isDead = false;
 			entity.deathTime = 0;
 			if (!entity.world.isRemote) {
-				entity.clearActivePotions();
 				entity.extinguish();
 				if (ConfigLoader.getBoolean(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRangeEntity")) {
 					int range = ConfigLoader.getInt(entity.getHeldItemMainhand(), "loliPickaxeAutoKillRange");
@@ -131,11 +134,23 @@ public class LoliPickaxeEvent {
 					player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).setBaseValue(5.0);
 				}
 				if (!player.world.isRemote) {
+					List<Potion> potions = Lists.newArrayList();
 					if (stack.hasTagCompound() && stack.getTagCompound().hasKey("LoliPotion")) {
 						NBTTagList list = stack.getTagCompound().getTagList("LoliPotion", 10);
 						for (int i = 0; i < list.tagCount(); i++) {
 							NBTTagCompound element = list.getCompoundTagAt(i);
-							player.addPotionEffect(new PotionEffect(Potion.getPotionById(element.getShort("id")), 410, element.getByte("lvl"), false, false));
+							Potion potion = Potion.getPotionById(element.getShort("id"));
+							byte level = element.getByte("lvl");
+							potions.add(potion);
+							player.addPotionEffect(new PotionEffect(potion, 410, level, false, false));
+						}
+					}
+					Iterator<Entry<Potion, PotionEffect>> iterator = player.getActivePotionMap().entrySet().iterator();
+					while (iterator.hasNext()) {
+						Entry<Potion, PotionEffect> entry = iterator.next();
+						if (!potions.contains(entry.getKey())) {
+							player.onLoliFinishedPotionEffect(entry.getValue());
+							iterator.remove();
 						}
 					}
 					player.getFoodStats().addStats(20, 1);
@@ -163,6 +178,8 @@ public class LoliPickaxeEvent {
 					}
 				}
 			}
+		} else if (isLoli) {
+			entity.clearActivePotions();
 		}
 	}
 
@@ -210,6 +227,13 @@ public class LoliPickaxeEvent {
 					player.world.onEntityAdded(player);
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onPlayerOut(PlayerEvent.PlayerLoggedOutEvent event) {
+		if (loliPlayer.contains(event.player)) {
+			loliPlayer.remove(event.player);
 		}
 	}
 

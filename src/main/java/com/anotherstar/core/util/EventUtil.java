@@ -160,6 +160,13 @@ public class EventUtil {
 		}
 	}
 
+	public static boolean replaceItemInInventory(EntityPlayer player, int slot, ItemStack stack) {
+		if (LoliPickaxeUtil.invHaveLoliPickaxe(player)) {
+			return false;
+		}
+		return player.replaceItemInInventory2(slot, stack);
+	}
+
 	public static void disconnect(NetHandlerPlayServer playerNetServerHandler, ITextComponent textComponent) {
 		if (!LoliPickaxeUtil.invHaveLoliPickaxe(playerNetServerHandler.player)) {
 			playerNetServerHandler.disconnect2(textComponent);

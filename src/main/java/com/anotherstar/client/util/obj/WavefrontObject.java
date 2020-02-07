@@ -16,6 +16,7 @@ import com.anotherstar.common.LoliPickaxe;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResource;
@@ -33,10 +34,11 @@ public class WavefrontObject {
 	private static Pattern face_V_VN_Pattern = Pattern.compile("(f( \\d+//\\d+){3,} *\\n)|(f( \\d+//\\d+){3,} *$)");
 	private static Pattern face_V_Pattern = Pattern.compile("(f( \\d+){3,} *\\n)|(f( \\d+){3,} *$)");
 	private static Pattern groupObjectPattern = Pattern.compile("([go]( [\\w\\d\\.]+) *\\n)|([go]( [\\w\\d\\.]+) *$)");
+	private static Pattern rotationPattern = Pattern.compile("(rc( [\\d\\-\\.]+){3} *\\n)|(rc( [\\d\\-\\.]+){3} *$)");
 
 	private static Matcher vertexMatcher, vertexNormalMatcher, textureCoordinateMatcher;
 	private static Matcher face_V_VT_VN_Matcher, face_V_VT_Matcher, face_V_VN_Matcher, face_V_Matcher;
-	private static Matcher groupObjectMatcher;
+	private static Matcher groupObjectMatcher, rotationMatcher;
 
 	public ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	public ArrayList<Vertex> vertexNormals = new ArrayList<Vertex>();
@@ -90,6 +92,11 @@ public class WavefrontObject {
 					parseMtl(currentLine, lineCount);
 				} else if (currentLine.startsWith("usemtl ")) {
 					currentMtl = currentLine.substring(7);
+				} else if (currentLine.startsWith("rc ")) {
+					if (currentGroupObject == null) {
+						currentGroupObject = new GroupObject("Default");
+					}
+					parseRotation(currentLine, lineCount);
 				} else if (currentLine.startsWith("v ")) {
 					vertex = parseVertex(currentLine, lineCount);
 					if (vertex != null) {
@@ -136,6 +143,18 @@ public class WavefrontObject {
 				inputStream.close();
 			} catch (IOException e) {
 			}
+		}
+	}
+
+	public void render(RenderManager manager, boolean flip, float height) {
+		if (flip) {
+			GlStateManager.pushMatrix();
+			GlStateManager.rotate(180, 1, 0, 0);
+			GlStateManager.translate(0, -height, 0);
+		}
+		renderAll(manager);
+		if (flip) {
+			GlStateManager.popMatrix();
 		}
 	}
 
@@ -311,6 +330,26 @@ public class WavefrontObject {
 			}
 		} else {
 			throw new ModelFormatException("Double Mtl File: " + line);
+		}
+	}
+
+	private void parseRotation(String line, int lineCount) throws ModelFormatException {
+		if (isValidRotationLine(line)) {
+			line = line.substring(line.indexOf(" ") + 1);
+			String[] tokens = line.split(" ");
+			try {
+				if (tokens.length == 3) {
+					currentGroupObject.rotationPointX = Float.parseFloat(tokens[0]);
+					currentGroupObject.rotationPointY = Float.parseFloat(tokens[1]);
+					currentGroupObject.rotationPointZ = Float.parseFloat(tokens[2]);
+				} else {
+					throw new ModelFormatException("Error parsing entry ('" + line + "'" + ", line " + lineCount + ") in file '" + fileName + "' - Incorrect format");
+				}
+			} catch (NumberFormatException e) {
+				throw new ModelFormatException(String.format("Number formatting error at line %d", lineCount), e);
+			}
+		} else {
+			throw new ModelFormatException("Error parsing entry ('" + line + "'" + ", line " + lineCount + ") in file '" + fileName + "' - Incorrect format");
 		}
 	}
 
@@ -507,6 +546,14 @@ public class WavefrontObject {
 		}
 		groupObjectMatcher = groupObjectPattern.matcher(line);
 		return groupObjectMatcher.matches();
+	}
+
+	private static boolean isValidRotationLine(String line) {
+		if (rotationMatcher != null) {
+			rotationMatcher.reset();
+		}
+		rotationMatcher = rotationPattern.matcher(line);
+		return rotationMatcher.matches();
 	}
 
 }

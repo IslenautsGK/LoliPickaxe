@@ -1,0 +1,85 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_altar"]
+	},
+	"criteria" : {
+		"has_coal" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:coal",
+							"data" : 0
+						}]
+			}
+		},
+		"has_iron_ingot" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_ingot"
+						}]
+			}
+		},
+		"has_gold_ingot" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:gold_ingot"
+						}]
+			}
+		},
+		"has_redstone" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:redstone"
+						}]
+			}
+		},
+		"has_lapis" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:dye",
+							"data" : 4
+						}]
+			}
+		},
+		"has_diamond" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:diamond"
+						}]
+			}
+		},
+		"has_emerald" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:emerald"
+						}]
+			}
+		},
+		"has_quartz" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:quartz"
+						}]
+			}
+		},
+		"has_glowstone_dust" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:glowstone_dust"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_coal", "has_iron_ingot", "has_gold_ingot",
+			"has_redstone", "has_lapis", "has_diamond", "has_emerald",
+			"has_quartz", "has_glowstone_dust"]]
+}

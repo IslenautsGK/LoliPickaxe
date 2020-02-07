@@ -14,7 +14,7 @@ public class RecipeLoader {
 	public final static LoliPickaxeRecipe loliPickaxeRecipe = new LoliPickaxeRecipe();
 
 	@SubscribeEvent
-	public void registerItem(RegistryEvent.Register<IRecipe> event) {
+	public void registerRecipe(RegistryEvent.Register<IRecipe> event) {
 		event.getRegistry().register(superpositionRecipe.setRegistryName(LoliPickaxe.MODID, "loli_superposition"));
 		superpositionRecipe.registItem(ItemLoader.coalAddon);
 		superpositionRecipe.registItem(ItemLoader.ironAddon);

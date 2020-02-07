@@ -1,0 +1,26 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_lapis_addon"]
+	},
+	"criteria" : {
+		"has_lapis" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:dye",
+							"data" : 4
+						}]
+			}
+		},
+		"has_lapis_block" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:lapis_block"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_lapis", "has_lapis_block"]]
+}

@@ -17,6 +17,7 @@ import com.anotherstar.common.event.SmallLoliFlyEvent;
 import com.anotherstar.common.gui.LoliGUIHandler;
 import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.common.recipe.RecipeLoader;
+import com.anotherstar.common.recipe.password.PasswordRecipeLoader;
 import com.anotherstar.network.NetworkHandler;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -34,6 +35,7 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new BlockLoader());
 		MinecraftForge.EVENT_BUS.register(new EntityLoader());
 		MinecraftForge.EVENT_BUS.register(new RecipeLoader());
+		MinecraftForge.EVENT_BUS.register(new PasswordRecipeLoader());
 		MinecraftForge.EVENT_BUS.register(new EnchantmentLoader());
 	}
 

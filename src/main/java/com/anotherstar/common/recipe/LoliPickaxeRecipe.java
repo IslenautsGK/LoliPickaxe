@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 
 import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.common.item.ItemLoliPickaxeMaterial;
+import com.anotherstar.common.item.tool.ItemLoliPickaxe;
 import com.anotherstar.common.item.tool.ItemSmallLoliPickaxe;
 
 import net.minecraft.inventory.InventoryCrafting;
@@ -17,7 +18,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class LoliPickaxeRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
-	private final ItemStack resultItem = new ItemStack(ItemLoader.loliPickaxe);
+	private ItemStack resultItem = ItemStack.EMPTY;
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World worldIn) {
@@ -44,6 +45,13 @@ public class LoliPickaxeRecipe extends IForgeRegistryEntry.Impl<IRecipe> impleme
 				return false;
 			}
 		}
+		resultItem = ItemLoliPickaxe.getDef().copy();
+		if (loli.getTagCompound().hasKey("Pages")) {
+			resultItem.getTagCompound().setTag("Pages", loli.getTagCompound().getCompoundTag("Pages"));
+		}
+		if (loli.getTagCompound().hasKey("Blacklist")) {
+			resultItem.getTagCompound().setTag("Blacklist", loli.getTagCompound().getCompoundTag("Blacklist"));
+		}
 		return true;
 	}
 
@@ -54,7 +62,7 @@ public class LoliPickaxeRecipe extends IForgeRegistryEntry.Impl<IRecipe> impleme
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return resultItem;
+		return ItemLoliPickaxe.getDef().copy();
 	}
 
 	@Override
@@ -65,7 +73,7 @@ public class LoliPickaxeRecipe extends IForgeRegistryEntry.Impl<IRecipe> impleme
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		NonNullList<Ingredient> list = NonNullList.create();
-		list.add(Ingredient.fromStacks(ItemSmallLoliPickaxe.full));
+		list.add(Ingredient.fromStacks(ItemSmallLoliPickaxe.getFull()));
 		list.add(Ingredient.fromStacks(new ItemStack(ItemLoader.entitySoul, 1, ItemLoader.entitySoul.getSubCount() - 1)));
 		return list;
 	}

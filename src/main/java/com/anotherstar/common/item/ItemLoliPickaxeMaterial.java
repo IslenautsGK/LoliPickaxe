@@ -58,7 +58,7 @@ public class ItemLoliPickaxeMaterial extends Item {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
 		if (stack.getItemDamage() < ((ItemLoliPickaxeMaterial) stack.getItem()).getSubCount() - 1) {
-			tooltip.add(I18n.format("item.loliMaterial.recipe", I18n.format("item.loliMaterial." + stack.getItemDamage()), stack.getItemDamage() == getSubCount() - 2 ? I18n.format("item.loliMaterial.end") : I18n.format("item.loliMaterial." + (stack.getItemDamage() + 1))));
+			tooltip.add(I18n.format("item.loliMaterial.recipe", I18n.format("item.loliMaterial." + stack.getItemDamage()), stack.getItemDamage() == getSubCount() - 2 ? I18n.format("item.loliMaterial.end") : I18n.format("item.loliMaterial." + (stack.getItemDamage() + 1)), I18n.format("item.loliMaterial." + (getSubCount() - 1))));
 		}
 	}
 

@@ -71,7 +71,6 @@ public class ItemLoader {
 			loliRecords.add(record);
 			event.getRegistry().register(record.setRegistryName(LoliPickaxe.MODID, name[2]));
 		}
-		ItemSmallLoliPickaxe.init();
 	}
 
 	@SubscribeEvent

@@ -119,9 +119,11 @@ public class ConfigLoader {
 	public static double loliPickaxeKillFacingSlope;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "范围攻击最大斜率", valueType = ValurType.DOUBLE, doubleDefaultValue = 1.0)
 	public static double loliPickaxeMaxKillFacingSlope;
-	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeBlockReachDistance", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope", "loliPickaxeInfiniteBattery" }, warning = true, warningMethod = "guiChangeListWarning")
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND, ConfigType.GUI }, comment = "视觉迷惑", valueType = ValurType.BOOLEAN, booleanDefaultValue = false)
+	public static boolean loliPickaxeInvisible;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "GUI可修改选项", valueType = ValurType.LIST, listType = ValurType.STRING, listDefaultValue = { "loliPickaxeMandatoryDrop", "loliPickaxeStopOnLiquid", "loliPickaxeBlockReachDistance", "loliPickaxeAutoAccept", "loliPickaxeThorns", "loliPickaxeKillRangeEntity", "loliPickaxeKillRange", "loliPickaxeAutoKillRangeEntity", "loliPickaxeAutoKillRange", "loliPickaxeCompulsoryRemove", "loliPickaxeValidToAmityEntity", "loliPickaxeValidToAllEntity", "loliPickaxeClearInventory", "loliPickaxeDropItems", "loliPickaxeKickPlayer", "loliPickaxeKickMessage", "loliPickaxeReincarnation", "loliPickaxeBeyondRedemption", "loliPickaxeBlueScreenAttack", "loliPickaxeExitAttack", "loliPickaxeFailRespondAttack", "loliPickaxeKillFacing", "loliPickaxeKillFacingRange", "loliPickaxeKillFacingSlope", "loliPickaxeInfiniteBattery", "loliPickaxeInvisible" }, warning = true, warningMethod = "guiChangeListWarning")
 	public static List<String> loliPickaxeGuiChangeList;
-	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listDefaultValue = { "lolirecord:loliRecord:loli_record" })
+	@ConfigField(type = {}, comment = "额外唱片列表(声音:唱片名:唱片ID)", valueType = ValurType.LIST, listType = ValurType.STRING, listDefaultValue = { "lolirecord:loliRecord:loli_record" })
 	public static List<String> loliRecodeNames;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "萝莉卡片掉落概率", valueType = ValurType.DOUBLE, doubleDefaultValue = 0.1)
 	public static double loliCardDropProbability;
@@ -161,8 +163,14 @@ public class ConfigLoader {
 	public static boolean loliPickaxeInfiniteBattery;
 	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "跨世界传送", valueType = ValurType.BOOLEAN, booleanDefaultValue = true)
 	public static boolean loliPickaxeSpaceFolding;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "跨世界传送黑名单", valueType = ValurType.LIST, listType = ValurType.INT, listDefaultValue = {})
+	public static List<Integer> loliPickaxeWorldBlacklist;
+	@ConfigField(type = { ConfigType.CONFIG, ConfigType.COMMAND }, comment = "传送最远距离", valueType = ValurType.DOUBLE, doubleDefaultValue = 512.0)
+	public static double loliPickaxeMaxTeleportDistance;
 	@ConfigField(type = { ConfigType.CONFIG }, comment = "萝莉卡片URL", valueType = ValurType.MAP, mapDefaultValue = { "gk_head_portrait.png:::https://www.pixiv.net/artworks/61282195", "小莫女儿:::https://www.pixiv.net/users/5776001" }, mapKeyType = ValurType.STRING, mapValueType = ValurType.STRING)
 	public static Map<String, String> loliCardURL;
+	@ConfigField(type = { ConfigType.CONFIG }, comment = "创造模式物品栏默认网络卡片", valueType = ValurType.LIST, listType = ValurType.STRING, listDefaultValue = { "https://bigimg.cheerfun.dev/get/https://i.pximg.net/img-original/img/2017/03/18/03/44/39/61965296_p0.png", "https://bigimg.cheerfun.dev/get/https://i.pximg.net/img-original/img/2015/10/23/18/05/06/53170539_p0.jpg", "https://bigimg.cheerfun.dev/get/https://i.pximg.net/img-original/img/2015/09/27/07/15/20/52735806_p0.jpg" })
+	public static List<String> loliCardOnlineDefURL;
 
 	static {
 		try {
@@ -231,9 +239,24 @@ public class ConfigLoader {
 					break;
 				case LIST: {
 					String[] strs = config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(), annotation.comment()).getStringList();
-					List<String> list = Lists.newArrayList();
+					List list = Lists.newArrayList();
 					for (String str : strs) {
-						list.add(str);
+						switch (annotation.listType()) {
+						case INT:
+							list.add(Integer.parseInt(str));
+							break;
+						case DOUBLE:
+							list.add(Double.parseDouble(str));
+							break;
+						case BOOLEAN:
+							list.add(Boolean.parseBoolean(str));
+							break;
+						case STRING:
+							list.add(str);
+							break;
+						default:
+							continue;
+						}
 					}
 					field.set(null, list);
 					break;
@@ -323,7 +346,7 @@ public class ConfigLoader {
 					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.stringDefaultValue(), annotation.comment()).setValue((String) field.get(null));
 					break;
 				case LIST: {
-					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(), annotation.comment()).setValues(((List<String>) field.get(null)).toArray(new String[0]));
+					config.get(Configuration.CATEGORY_GENERAL, field.getName(), annotation.listDefaultValue(), annotation.comment()).setValues(((List<?>) field.get(null)).stream().map(element -> element.toString()).toArray(String[]::new));
 					break;
 				}
 				case MAP: {
@@ -383,8 +406,8 @@ public class ConfigLoader {
 					break;
 				case LIST: {
 					NBTTagList list = new NBTTagList();
-					for (String str : (List<String>) field.get(null)) {
-						list.appendTag(new NBTTagString(str));
+					for (Object element : (List<?>) field.get(null)) {
+						list.appendTag(new NBTTagString(element.toString()));
 					}
 					data.setTag(field.getName(), list);
 					break;
@@ -498,9 +521,24 @@ public class ConfigLoader {
 					break;
 				case LIST: {
 					NBTTagList nbtlist = data.getTagList(field.getName(), 8);
-					List<String> list = Lists.newArrayList();
+					List list = Lists.newArrayList();
 					for (NBTBase nbt : nbtlist) {
-						list.add(((NBTTagString) nbt).getString());
+						switch (annotation.listType()) {
+						case INT:
+							list.add(Integer.parseInt(((NBTTagString) nbt).getString()));
+							break;
+						case DOUBLE:
+							list.add(Double.parseDouble(((NBTTagString) nbt).getString()));
+							break;
+						case BOOLEAN:
+							list.add(Boolean.parseBoolean(((NBTTagString) nbt).getString()));
+							break;
+						case STRING:
+							list.add(((NBTTagString) nbt).getString());
+							break;
+						default:
+							continue;
+						}
 					}
 					field.set(null, list);
 					if (annotation.warning()) {
@@ -516,8 +554,8 @@ public class ConfigLoader {
 						}
 						if (!success) {
 							Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.list", annotation.comment()));
-							for (String element : list) {
-								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.list.element", element));
+							for (Object element : list) {
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("config.worning.list.element", element.toString()));
 							}
 						}
 					}

@@ -1,0 +1,25 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_gold_addon"]
+	},
+	"criteria" : {
+		"has_gold_ingot" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:gold_ingot"
+						}]
+			}
+		},
+		"has_gold_block" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:gold_block"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_gold_ingot", "has_gold_block"]]
+}

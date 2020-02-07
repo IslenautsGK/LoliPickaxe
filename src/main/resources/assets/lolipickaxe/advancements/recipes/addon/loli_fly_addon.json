@@ -1,0 +1,34 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_fly_addon"]
+	},
+	"criteria" : {
+		"has_nether_star" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:nether_star"
+						}]
+			}
+		},
+		"has_loli_entity_soul_addon" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "lolipickaxe:loli_entity_soul_addon"
+						}]
+			}
+		},
+		"has_elytra" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:elytra"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_nether_star", "has_loli_entity_soul_addon",
+			"has_elytra"]]
+}

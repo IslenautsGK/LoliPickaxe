@@ -23,6 +23,8 @@ public class BlockLoader {
 	public static final ItemBlock itemLoliFailRespondTNT = new ItemBlock(loliFailRespondTNT);
 	public static final BlockLoliAltar loliAltar = new BlockLoliAltar();
 	public static final ItemBlock itemLoliAltar = new ItemBlock(loliAltar);
+	public static final BlockPasswordWorkBench passwordWorkBench = new BlockPasswordWorkBench();
+	public static final ItemBlock itemPasswordWorkBench = new ItemBlock(passwordWorkBench);
 
 	@SubscribeEvent
 	public void registerBlock(RegistryEvent.Register<Block> event) {
@@ -30,6 +32,7 @@ public class BlockLoader {
 		event.getRegistry().register(loliExitTNT.setRegistryName(LoliPickaxe.MODID, "loli_exit_tnt"));
 		event.getRegistry().register(loliFailRespondTNT.setRegistryName(LoliPickaxe.MODID, "loli_fail_respond_tnt"));
 		event.getRegistry().register(loliAltar.setRegistryName(LoliPickaxe.MODID, "loli_altar"));
+		event.getRegistry().register(passwordWorkBench.setRegistryName(LoliPickaxe.MODID, "password_work_bench"));
 	}
 
 	@SubscribeEvent
@@ -38,6 +41,7 @@ public class BlockLoader {
 		event.getRegistry().register(itemLoliExitTNT.setRegistryName(loliExitTNT.getRegistryName()));
 		event.getRegistry().register(itemLoliFailRespondTNT.setRegistryName(loliFailRespondTNT.getRegistryName()));
 		event.getRegistry().register(itemLoliAltar.setRegistryName(loliAltar.getRegistryName()));
+		event.getRegistry().register(itemPasswordWorkBench.setRegistryName(passwordWorkBench.getRegistryName()));
 	}
 
 	@SubscribeEvent
@@ -47,6 +51,7 @@ public class BlockLoader {
 		ModelLoader.setCustomModelResourceLocation(itemLoliExitTNT, 0, new ModelResourceLocation(itemLoliExitTNT.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(itemLoliFailRespondTNT, 0, new ModelResourceLocation(itemLoliFailRespondTNT.getRegistryName(), "inventory"));
 		ModelLoader.setCustomModelResourceLocation(itemLoliAltar, 0, new ModelResourceLocation(itemLoliAltar.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(itemPasswordWorkBench, 0, new ModelResourceLocation(itemPasswordWorkBench.getRegistryName(), "inventory"));
 	}
 
 }

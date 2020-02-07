@@ -12,6 +12,7 @@ import com.anotherstar.client.gui.GUILoliConfig;
 import com.anotherstar.client.gui.GUILoliEnchantment;
 import com.anotherstar.client.gui.GUILoliPotion;
 import com.anotherstar.client.gui.GUILoliSpaceFolding;
+import com.anotherstar.client.gui.GUIPasswordCrafting;
 import com.anotherstar.client.util.LoliCardUtil;
 import com.anotherstar.common.LoliPickaxe;
 import com.anotherstar.common.item.ItemLoliCardOnline;
@@ -22,9 +23,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public enum LoliGUIHandler implements IGuiHandler {
 
@@ -40,6 +44,7 @@ public enum LoliGUIHandler implements IGuiHandler {
 	public static final int GUI_LOLI_ENCHANTMENT = 8;
 	public static final int GUI_LOLI_POTION = 9;
 	public static final int GUI_LOLI_SPACEF_OLDING = 10;
+	public static final int GUI_PASSWORD_WORK_BENCH = 11;
 
 	private LoliGUIHandler() {
 		NetworkRegistry.INSTANCE.registerGuiHandler(LoliPickaxe.instance, this);
@@ -52,11 +57,14 @@ public enum LoliGUIHandler implements IGuiHandler {
 			return new ContainerLoliPickaxe(player, player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x);
 		case GUI_LOLI_PICKAXE_CONTAINER_BLACKLIST:
 			return new ContainerBlaceListLoliPickaxe(player, player.getHeldItem(y == 0 ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND), x);
+		case GUI_PASSWORD_WORK_BENCH:
+			return new ContainerPasswordWorkbench(player.inventory, world, new BlockPos(x, y, z));
 		}
 		return null;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		switch (ID) {
 		case GUI_LOLI_CONFIG: {
@@ -136,10 +144,12 @@ public enum LoliGUIHandler implements IGuiHandler {
 		case GUI_LOLI_SPACEF_OLDING: {
 			ItemStack stack = player.getHeldItemMainhand();
 			if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-				return new GUILoliSpaceFolding(player.dimension);
+				return new GUILoliSpaceFolding(player);
 			}
 			break;
 		}
+		case GUI_PASSWORD_WORK_BENCH:
+			return new GUIPasswordCrafting(new ContainerPasswordWorkbench(player.inventory, world, new BlockPos(x, y, z)));
 		}
 		return null;
 	}

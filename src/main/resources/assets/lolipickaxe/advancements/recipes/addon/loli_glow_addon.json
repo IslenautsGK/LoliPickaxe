@@ -1,0 +1,25 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_glow_addon"]
+	},
+	"criteria" : {
+		"has_glowstone_dust" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:glowstone_dust"
+						}]
+			}
+		},
+		"has_glowstone" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:glowstone"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_glowstone_dust", "has_glowstone"]]
+}

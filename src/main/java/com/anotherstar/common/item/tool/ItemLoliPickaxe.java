@@ -11,6 +11,7 @@ import com.anotherstar.common.enchantment.EnchantmentLoader;
 import com.anotherstar.common.entity.IEntityLoli;
 import com.anotherstar.common.gui.ILoliInventory;
 import com.anotherstar.common.gui.InventoryLoliPickaxe;
+import com.anotherstar.common.item.ItemLoader;
 import com.anotherstar.util.IC2Util;
 import com.anotherstar.util.LoliPickaxeUtil;
 import com.google.common.collect.Maps;
@@ -59,6 +60,33 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContainerItem, ISpecialElectricItem {
 
 	public static final Item.ToolMaterial LOLI = EnumHelper.addToolMaterial("LOLI", 32, 0, 0, 0, 0);
+
+	private static ItemStack def = null;
+
+	private static void init() {
+		def = new ItemStack(ItemLoader.loliPickaxe);
+		Map<Enchantment, Integer> enchMap = Maps.newHashMap();
+		enchMap.put(Enchantments.FORTUNE, 32);
+		enchMap.put(EnchantmentLoader.loliAutoFurnace, 1);
+		EnchantmentHelper.setEnchantments(enchMap, def);
+		NBTTagList list = new NBTTagList();
+		NBTTagCompound element = new NBTTagCompound();
+		element.setShort("id", (short) 16);
+		element.setByte("lvl", (byte) 0);
+		list.appendTag(element);
+		element = new NBTTagCompound();
+		element.setShort("id", (short) 13);
+		element.setByte("lvl", (byte) 0);
+		list.appendTag(element);
+		def.setTagInfo("LoliPotion", list);
+	}
+
+	public static ItemStack getDef() {
+		if (def == null) {
+			init();
+		}
+		return def;
+	}
 
 	public ItemLoliPickaxe() {
 		super(LOLI);
@@ -288,22 +316,7 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (isInCreativeTab(tab)) {
-			ItemStack stack = new ItemStack(this);
-			Map<Enchantment, Integer> enchMap = Maps.newHashMap();
-			enchMap.put(Enchantments.FORTUNE, 32);
-			enchMap.put(EnchantmentLoader.loliAutoFurnace, 1);
-			EnchantmentHelper.setEnchantments(enchMap, stack);
-			NBTTagList list = new NBTTagList();
-			NBTTagCompound element = new NBTTagCompound();
-			element.setShort("id", (short) 16);
-			element.setByte("lvl", (byte) 0);
-			list.appendTag(element);
-			element = new NBTTagCompound();
-			element.setShort("id", (short) 13);
-			element.setByte("lvl", (byte) 0);
-			list.appendTag(element);
-			stack.setTagInfo("LoliPotion", list);
-			items.add(stack);
+			items.add(getDef());
 		}
 	}
 

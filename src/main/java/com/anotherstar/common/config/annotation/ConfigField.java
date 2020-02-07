@@ -41,6 +41,8 @@ public @interface ConfigField {
 
 	String[] listDefaultValue() default {};
 
+	ValurType listType() default ValurType.STRING;
+
 	String[] mapDefaultValue() default {};
 
 	ValurType mapKeyType() default ValurType.STRING;

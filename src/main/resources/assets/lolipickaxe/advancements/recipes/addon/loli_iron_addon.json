@@ -1,0 +1,25 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_iron_addon"]
+	},
+	"criteria" : {
+		"has_iron_ingot" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_ingot"
+						}]
+			}
+		},
+		"has_iron_block" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:iron_block"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_iron_ingot", "has_iron_block"]]
+}

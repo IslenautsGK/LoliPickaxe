@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityLoader {
 
 	@SubscribeEvent
-	public void onEntityRegistation(RegistryEvent.Register<EntityEntry> event) {
+	public void registerEntity(RegistryEvent.Register<EntityEntry> event) {
 		event.getRegistry().register(EntityEntryBuilder.create().entity(EntityLoli.class).id(new ResourceLocation(LoliPickaxe.MODID, "loli"), 219).name("Loli").tracker(80, 3, false).build());
 		EntityRegistry.registerEgg(new ResourceLocation(LoliPickaxe.MODID, "loli"), 0xFFFFFF, 0x000000);
 		event.getRegistry().register(EntityEntryBuilder.create().entity(EntityLoliBuffAttackTNT.class).id(new ResourceLocation(LoliPickaxe.MODID, "loli_buff_attack_tnt"), 220).name("LoliBuffAttackTNT").tracker(80, 3, false).build());
@@ -28,7 +28,7 @@ public class EntityLoader {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void registerModel(ModelRegistryEvent event) {
-		RenderingRegistry.registerEntityRenderingHandler(EntityLoli.class, manager -> new RenderLoli(manager, new ModelLoli(), 0.2f));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLoli.class, manager -> new RenderLoli(manager, new ModelLoli(), 0.3f));
 		RenderingRegistry.registerEntityRenderingHandler(EntityLoliBuffAttackTNT.class, manager -> new RenderLoliBuffAttackTNT(manager));
 	}
 

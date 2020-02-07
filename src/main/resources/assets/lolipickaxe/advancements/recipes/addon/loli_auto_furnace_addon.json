@@ -1,0 +1,25 @@
+{
+	"parent" : "lolipickaxe:recipes/root",
+	"rewards" : {
+		"recipes" : ["lolipickaxe:loli_auto_furnace_addon"]
+	},
+	"criteria" : {
+		"has_blaze_rod" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:blaze_rod"
+						}]
+			}
+		},
+		"has_lava_bucket" : {
+			"trigger" : "minecraft:inventory_changed",
+			"conditions" : {
+				"items" : [{
+							"item" : "minecraft:lava_bucket"
+						}]
+			}
+		}
+	},
+	"requirements" : [["has_blaze_rod", "has_lava_bucket"]]
+}
