@@ -11,7 +11,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
@@ -32,12 +31,12 @@ public class DestroyBedrockEvent {
 
 	@SubscribeEvent
 	public void onPlayerMine(PlayerInteractEvent.LeftClickBlock event) {
-		if (!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ILoli) {
-			breakBlock(event.getItemStack(), event.getPos(), event.getEntityPlayer());
+		if (!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ILoli && !event.getEntityPlayer().world.isRemote && event.getEntityPlayer() instanceof EntityPlayerMP) {
+			breakBlock(event.getItemStack(), event.getPos(), (EntityPlayerMP) event.getEntityPlayer());
 		}
 	}
 
-	private void breakBlock(ItemStack loli, BlockPos pos, EntityPlayer player) {
+	private void breakBlock(ItemStack loli, BlockPos pos, EntityPlayerMP player) {
 		if (!player.world.isRemote && !player.capabilities.isCreativeMode && loli.getItem() instanceof ILoli) {
 			int range = MathHelper.clamp(((ILoli) loli.getItem()).getRange(loli), 0, ConfigLoader.loliPickaxeMaxRange);
 			boolean mandatoryDrop = ConfigLoader.getBoolean(loli, "loliPickaxeMandatoryDrop");
@@ -56,6 +55,9 @@ public class DestroyBedrockEvent {
 				for (int j = -range; j <= range; j++) {
 					for (int k = -range; k <= range; k++) {
 						BlockPos curPos = pos.add(i, j, k);
+						if (ConfigLoader.loliPickaxeTriggerBreakEvent && net.minecraftforge.common.ForgeHooks.onBlockBreakEvent(player.world, player.interactionManager.getGameType(), player, pos) == -1) {
+							continue;
+						}
 						IBlockState state = player.world.getBlockState(curPos);
 						Block block = state.getBlock();
 						int meta = block.getMetaFromState(state);

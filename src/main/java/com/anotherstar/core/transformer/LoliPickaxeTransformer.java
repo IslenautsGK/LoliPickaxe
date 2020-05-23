@@ -633,6 +633,34 @@ public class LoliPickaxeTransformer implements IClassTransformer {
 			};
 			classReader.accept(classVisitor, Opcodes.ASM4);
 			return classWriter.toByteArray();
+		} else if (transformedName.equals("net.minecraft.client.renderer.entity.RenderLivingBase")) {
+			ClassReader classReader = new ClassReader(basicClass);
+			ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS);
+			ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM4, classWriter) {
+
+				@Override
+				public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+					if (name.equals("canRenderName") || name.equals("renderModel") || name.equals("a") && (desc.equals("(Lvp;)Z") || desc.equals("(Lvp;FFFFFF)V"))) {
+						return new MethodVisitor(Opcodes.ASM4, cv.visitMethod(access, name, desc, signature, exceptions)) {
+
+							public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+								if (owner.equals("net/minecraft/entity/EntityLivingBase") && name.equals("isInvisibleToPlayer") && desc.equals("(Lnet/minecraft/entity/player/EntityPlayer;)Z") || owner.equals("vp") && name.equals("e") && desc.equals("(Laed;)Z")) {
+									opcode = Opcodes.INVOKESTATIC;
+									owner = "com/anotherstar/core/util/EventUtil";
+									name = "isInvisibleToPlayer";
+									desc = "(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/player/EntityPlayer;)Z";
+								}
+								super.visitMethodInsn(opcode, owner, name, desc, itf);
+							};
+
+						};
+					}
+					return cv.visitMethod(access, name, desc, signature, exceptions);
+				}
+
+			};
+			classReader.accept(classVisitor, Opcodes.ASM4);
+			return classWriter.toByteArray();
 		}
 		return basicClass;
 	}

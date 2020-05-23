@@ -41,7 +41,8 @@ public class LoliSlotChangePacket implements IMessage {
 			int count = buf.readInt();
 			int meta = buf.readShort();
 			stack = new ItemStack(Item.getItemById(itemId), count, meta);
-			stack.getItem().readNBTShareTag(stack, ByteBufUtils.readTag(buf));
+			// stack.getItem().readNBTShareTag(stack, ByteBufUtils.readTag(buf));
+			stack.setTagCompound(ByteBufUtils.readTag(buf));
 		}
 	}
 
@@ -57,7 +58,8 @@ public class LoliSlotChangePacket implements IMessage {
 			buf.writeShort(stack.getMetadata());
 			NBTTagCompound nbt = null;
 			if (stack.getItem().isDamageable() || stack.getItem().getShareTag()) {
-				nbt = stack.getItem().getNBTShareTag(stack);
+				// nbt = stack.getItem().getNBTShareTag(stack);
+				nbt = stack.getTagCompound();
 			}
 			ByteBufUtils.writeTag(buf, nbt);
 		}

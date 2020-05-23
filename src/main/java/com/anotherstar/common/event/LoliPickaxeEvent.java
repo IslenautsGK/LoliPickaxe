@@ -173,8 +173,7 @@ public class LoliPickaxeEvent {
 					ItemStack estack = entityItem.getItem();
 					if (!estack.isEmpty() && estack.getItem() instanceof ILoli) {
 						ILoli loli = (ILoli) estack.getItem();
-						String owner = loli.getOwner(estack);
-						if (!owner.isEmpty() && owner.equals(player.getName())) {
+						if (loli.hasOwner(estack) && loli.isOwner(estack, player)) {
 							entityItem.onCollideWithPlayer(player);
 						}
 					}
@@ -210,8 +209,7 @@ public class LoliPickaxeEvent {
 		ItemStack stack = event.getItem().getItem();
 		if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
 			ILoli loli = (ILoli) stack.getItem();
-			String owner = loli.getOwner(stack);
-			if (!(owner.isEmpty() || owner.equals(event.getEntityPlayer().getName()))) {
+			if (loli.hasOwner(stack) && !loli.isOwner(stack, event.getEntityPlayer())) {
 				event.setCanceled(true);
 			}
 		}

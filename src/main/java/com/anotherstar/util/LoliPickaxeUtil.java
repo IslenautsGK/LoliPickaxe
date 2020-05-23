@@ -189,37 +189,21 @@ public class LoliPickaxeUtil {
 				for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
 					ItemStack stack = player.inventory.getStackInSlot(i);
 					if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-						ILoli loli = (ILoli) stack.getItem();
-						String owner = loli.getOwner(stack);
-						if (!owner.isEmpty()) {
-							if (owner.equals(player.getName())) {
-								int time = ConfigLoader.loliPickaxeDuration;
-								if (time > 0 && time > player.hodeLoli) {
-									player.hodeLoli = time;
-								}
-								hasLoli = true;
-							} else {
-								player.dropItem(stack, true, false);
-								player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-							}
+						if (checkOwner(player, stack)) {
+							hasLoli = true;
+						} else {
+							player.dropItem(stack, true, false);
+							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 						}
 					}
 				}
 				ItemStack stack = player.inventory.getItemStack();
 				if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-					ILoli loli = (ILoli) stack.getItem();
-					String owner = loli.getOwner(stack);
-					if (!owner.isEmpty()) {
-						if (owner.equals(player.getName())) {
-							int time = ConfigLoader.loliPickaxeDuration;
-							if (time > 0 && time > player.hodeLoli) {
-								player.hodeLoli = time;
-							}
-							hasLoli = true;
-						} else {
-							player.dropItem(stack, true, false);
-							player.inventory.setItemStack(ItemStack.EMPTY);
-						}
+					if (checkOwner(player, stack)) {
+						hasLoli = true;
+					} else {
+						player.dropItem(stack, true, false);
+						player.inventory.setItemStack(ItemStack.EMPTY);
 					}
 				}
 				return hasLoli || player.hodeLoli > 0;
@@ -237,43 +221,43 @@ public class LoliPickaxeUtil {
 				for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
 					ItemStack stack = player.inventory.getStackInSlot(i);
 					if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-						ILoli loli = (ILoli) stack.getItem();
-						String owner = loli.getOwner(stack);
-						if (!owner.isEmpty()) {
-							if (owner.equals(player.getName())) {
-								int time = ConfigLoader.loliPickaxeDuration;
-								if (time > 0 && time > player.hodeLoli) {
-									player.hodeLoli = time;
-								}
-								iloli = stack;
-							} else {
-								player.dropItem(stack, true, false);
-								player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-							}
+						if (checkOwner(player, stack)) {
+							iloli = stack;
+						} else {
+							player.dropItem(stack, true, false);
+							player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 						}
 					}
 				}
 				ItemStack stack = player.inventory.getItemStack();
 				if (!stack.isEmpty() && stack.getItem() instanceof ILoli) {
-					ILoli loli = (ILoli) stack.getItem();
-					String owner = loli.getOwner(stack);
-					if (!owner.isEmpty()) {
-						if (owner.equals(player.getName())) {
-							int time = ConfigLoader.loliPickaxeDuration;
-							if (time > 0 && time > player.hodeLoli) {
-								player.hodeLoli = time;
-							}
-							iloli = stack;
-						} else {
-							player.dropItem(stack, true, false);
-							player.inventory.setItemStack(ItemStack.EMPTY);
-						}
+					if (checkOwner(player, stack)) {
+						iloli = stack;
+					} else {
+						player.dropItem(stack, true, false);
+						player.inventory.setItemStack(ItemStack.EMPTY);
 					}
 				}
 				return iloli;
 			}
 		}
 		return ItemStack.EMPTY;
+	}
+
+	private static boolean checkOwner(EntityPlayer player, ItemStack stack) {
+		ILoli loli = (ILoli) stack.getItem();
+		if (loli.hasOwner(stack)) {
+			if (loli.isOwner(stack, player)) {
+				int time = ConfigLoader.loliPickaxeDuration;
+				if (time > 0 && time > player.hodeLoli) {
+					player.hodeLoli = time;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

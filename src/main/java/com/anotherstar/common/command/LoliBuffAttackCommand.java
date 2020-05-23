@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.anotherstar.common.config.ConfigLoader;
 import com.anotherstar.network.LoliDeadPacket;
 import com.anotherstar.network.NetworkHandler;
 
@@ -30,6 +31,9 @@ public class LoliBuffAttackCommand extends CommandBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if (!ConfigLoader.loliEnableBuffAttackTNT) {
+			throw new WrongUsageException("commands.loliattack.disable");
+		}
 		if (args.length == 2) {
 			EntityPlayerMP player = getPlayer(server, sender, args[0]);
 			switch (args[1]) {

@@ -197,21 +197,6 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener {
 		this.interactionManager = interactionManagerIn;
 		BlockPos blockpos = worldIn.provider.getRandomizedSpawnPoint();
 
-		if (false && worldIn.provider.hasSkyLight() && worldIn.getWorldInfo().getGameType() != GameType.ADVENTURE) {
-			int i = Math.max(0, server.getSpawnRadius(worldIn));
-			int j = MathHelper.floor(worldIn.getWorldBorder().getClosestDistance((double) blockpos.getX(), (double) blockpos.getZ()));
-
-			if (j < i) {
-				i = j;
-			}
-
-			if (j <= 1) {
-				i = 1;
-			}
-
-			blockpos = worldIn.getTopSolidOrLiquidBlock(blockpos.add(this.rand.nextInt(i * 2 + 1) - i, 0, this.rand.nextInt(i * 2 + 1) - i));
-		}
-
 		this.mcServer = server;
 		this.statsFile = server.getPlayerList().getPlayerStatsFile(this);
 		this.advancements = server.getPlayerList().getPlayerAdvancements(this);

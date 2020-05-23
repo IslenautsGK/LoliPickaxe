@@ -44,6 +44,7 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -296,25 +297,26 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		super.onUpdate(stack, world, entity, itemSlot, isSelected);
-		if (entity instanceof EntityPlayer) {
-			NBTTagCompound nbt;
-			if (stack.hasTagCompound()) {
-				nbt = stack.getTagCompound();
-			} else {
-				nbt = new NBTTagCompound();
-				stack.setTagCompound(nbt);
+		if (!world.isRemote) {
+			if (entity instanceof EntityPlayer) {
+				NBTTagCompound nbt;
+				if (stack.hasTagCompound()) {
+					nbt = stack.getTagCompound();
+				} else {
+					nbt = new NBTTagCompound();
+					stack.setTagCompound(nbt);
+				}
+				if (!hasOwner(stack)) {
+					setOwner(stack, (EntityPlayer) entity);
+				}
 			}
-			if (!nbt.hasKey("Owner")) {
-				nbt.setString("Owner", ((EntityPlayer) entity).getName());
-			}
-		}
-		if (ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery")) {
-			if (Loader.isModLoaded(IC2.MODID)) {
-				ic2charge(stack, world, entity, itemSlot, isSelected);
-			}
-			if (Loader.isModLoaded(RedstoneFluxProps.MOD_ID)) {
-				rfReceive(stack, world, entity, itemSlot, isSelected);
+			if (ConfigLoader.getBoolean(stack, "loliPickaxeInfiniteBattery")) {
+				if (Loader.isModLoaded(IC2.MODID)) {
+					ic2charge(stack, world, entity, itemSlot, isSelected);
+				}
+				if (Loader.isModLoaded(RedstoneFluxProps.MOD_ID)) {
+					rfReceive(stack, world, entity, itemSlot, isSelected);
+				}
 			}
 		}
 	}
@@ -390,14 +392,18 @@ public class ItemLoliPickaxe extends ItemPickaxe implements ILoli, IEnergyContai
 	}
 
 	@Override
-	public String getOwner(ItemStack stack) {
-		if (stack.hasTagCompound()) {
-			NBTTagCompound nbt = stack.getTagCompound();
-			if (nbt.hasKey("Owner")) {
-				return nbt.getString("Owner");
-			}
-		}
-		return "";
+	public boolean hasOwner(ItemStack stack) {
+		return stack.hasTagCompound() && (stack.getTagCompound().hasKey("Owner") || stack.getTagCompound().hasKey("OwnerUUID"));
+	}
+
+	@Override
+	public boolean isOwner(ItemStack stack, EntityPlayer player) {
+		return stack.getTagCompound().getString("Owner").equals(player.getName()) || stack.getTagCompound().getString("OwnerUUID").equals(player.getUniqueID().toString());
+	}
+
+	public void setOwner(ItemStack stack, EntityPlayer player) {
+		stack.setTagInfo("Owner", new NBTTagString(player.getName()));
+		stack.setTagInfo("OwnerUUID", new NBTTagString(player.getUniqueID().toString()));
 	}
 
 	@Override

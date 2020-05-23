@@ -222,4 +222,14 @@ public class EventUtil {
 		return entity.world.rayTraceBlocks(vec3d, vec3d2, stopOnLiquid, false, true);
 	}
 
+	public static boolean isInvisibleToPlayer(Entity entity, EntityPlayer player) {
+		ItemStack loli = LoliPickaxeUtil.getLoliPickaxe(player);
+		if (!loli.isEmpty()) {
+			if (ConfigLoader.getBoolean(loli, "loliPickaxeShowInvisible")) {
+				return false;
+			}
+		}
+		return entity.isInvisibleToPlayer(player);
+	}
+
 }

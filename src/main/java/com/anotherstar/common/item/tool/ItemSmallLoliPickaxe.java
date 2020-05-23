@@ -166,8 +166,8 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 
 	@Override
 	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase entity) {
-		if (!world.isRemote && entity instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) entity;
+		if (!world.isRemote && entity instanceof EntityPlayerMP) {
+			EntityPlayerMP player = (EntityPlayerMP) entity;
 			int range = getRange(stack);
 			isharvesting = true;
 			autoFurnace = stack.getTagCompound().hasKey("LoliAutoFurnace") ? getTransformValue("LoliAutoFurnace", stack.getTagCompound().getInteger("LoliAutoFurnace")) == 0 : false;
@@ -193,6 +193,10 @@ public class ItemSmallLoliPickaxe extends ItemTool implements IContainer {
 				for (int j = -range; j <= range; j++) {
 					for (int k = -range; k <= range; k++) {
 						BlockPos curPos = pos.add(i, j, k);
+						int exp = net.minecraftforge.common.ForgeHooks.onBlockBreakEvent(world, player.interactionManager.getGameType(), player, pos);
+						if (exp == -1) {
+							continue;
+						}
 						IBlockState curState = world.getBlockState(curPos);
 						Block curBlock = curState.getBlock();
 						if (!curBlock.isAir(curState, world, curPos) && curBlock.canCollideCheck(curState, false)) {
